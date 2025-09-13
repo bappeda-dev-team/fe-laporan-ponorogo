@@ -1,7 +1,12 @@
-const TableComponent = () => {
+interface TableComponent {
+    children: React.ReactNode;
+    className?: string;
+}
+
+const TableComponent: React.FC<TableComponent> = ({ children, className }) => {
     return(
-        <div className="overflow-auto mt-2 rounded-t-lg border border-gray-700">
-            table awalan
+        <div className={`overflow-auto rounded-t-lg border ${className}`}>
+            {children}
         </div>
     )
 }

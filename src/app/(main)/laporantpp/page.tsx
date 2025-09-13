@@ -1,7 +1,9 @@
+import Table from "./table";
+
 const laporantpp = () => {
     return(
         <>
-            halaman laporan tpp
+            <Table />
         </>
     )
 }

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout, TbDatabase, TbReportAnalytics } from "react-icons/tb";
+import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbCalendarEvent, TbDeviceImacDollar} from "react-icons/tb";
 interface OptionType {
   label: string;
   value: number;
@@ -86,7 +86,7 @@ export const Header = () => {
   };
 
   return (
-    <nav className={`inset-x-1 m-1 ml-2 bg-white border border-gray-100 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <nav className={`inset-x-1 m-1 ml-2 bg-white border border-sky-200 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
         <div className="flex justify-start gap-5">
           <Link href="/">
@@ -104,7 +104,7 @@ export const Header = () => {
                 url.startsWith('/jadwalpelaksanaan'), 'default'
               )}`}
             >
-              <TbDatabase />
+              <TbCalendarEvent />
               Jadwal Pelaksanaan
             </Link>
             <Link
@@ -113,7 +113,7 @@ export const Header = () => {
                 url.startsWith('/laporantpp'), 'default'
               )}`}
             >
-              <TbAlertTriangle />
+              <TbDeviceImacDollar />
               Laporan TPP Konker
             </Link>
             <Link
