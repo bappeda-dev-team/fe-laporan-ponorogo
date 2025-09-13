@@ -1,25 +1,26 @@
 import TableLaporan from "./table/TableLaporan";
+import TableAnggota from "./table/TableAnggota";
 import { TbCircleFilled } from "react-icons/tb";
 
 const laporantpp = () => {
-    return(
+    return (
         <>
             <div className="flex items-start gap-1 my-1">
-                <TbCircleFilled className="mt-1 text-blue-500"/>
-               <div className="flex flex-col">
+                <TbCircleFilled className="mt-1 text-blue-500" />
+                <div className="flex flex-col">
                     <h1 className="font-semibold">Laporan Kinerja Program Unggulan Bupati Ponorogo</h1>
                     <h3>Tim Monev Pembangunan 1</h3>
-                </div> 
+                </div>
             </div>
             <TableLaporan />
             <div className="flex items-start gap-1 my-1">
-                <TbCircleFilled className="mt-1 text-emerald-500"/>
-               <div className="flex flex-col">
+                <TbCircleFilled className="mt-1 text-emerald-500" />
+                <div className="flex flex-col">
                     <h1 className="font-semibold">Susunan Anggota</h1>
                     <h3>Tim Monev Pembangunan 1</h3>
-                </div> 
+                </div>
             </div>
-            <TableLaporan />
+            <TableAnggota />
         </>
     )
 }
