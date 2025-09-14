@@ -1,7 +1,7 @@
-import Table from "./table";
+import { Table } from "./table";
 
 const laporantpp = () => {
-    return(
+    return (
         <>
             <Table />
         </>
