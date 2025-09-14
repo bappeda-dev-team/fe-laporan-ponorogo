@@ -1,6 +1,6 @@
 import Table from "./table";
 
-const JadwalPelaksanaan  = () => {
+const laporantpp = () => {
     return(
         <>
             <Table />
@@ -8,4 +8,4 @@ const JadwalPelaksanaan  = () => {
     )
 }
 
-export default JadwalPelaksanaan;
+export default laporantpp;

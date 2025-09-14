@@ -99,22 +99,13 @@ export const Header = () => {
           </Link>
           <ul className="hidden lg:flex space-x-2 items-center">
             <Link
-              href='/jadwalpelaksanaan'
+              href='/susunantim'
               className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/jadwalpelaksanaan'), 'default'
+                url.startsWith('/susunantim'), 'default'
               )}`}
             >
               <TbCalendarEvent />
-              Jadwal Pelaksanaan
-            </Link>
-            <Link
-              href='/laporantpp'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/laporantpp'), 'default'
-              )}`}
-            >
-              <TbDeviceImacDollar />
-              Laporan TPP Konker
+              Susunan Tim
             </Link>
             <Link
               href='/laporankinerja'
@@ -124,6 +115,24 @@ export const Header = () => {
             >
               <TbDeviceAnalytics />
               Laporan Kinerja Konker
+            </Link>
+            <Link
+              href='/penilaiankinerjatim'
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/penilaiankinerjatim'), 'default'
+              )}`}
+            >
+              <TbDeviceImacDollar />
+              Penilaian Kinerja Tim
+            </Link>
+            <Link
+              href='/laporantpp'
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/laporantpp'), 'default'
+              )}`}
+            >
+              <TbDeviceImacDollar />
+              Laporan TPP Konker
             </Link>
           </ul>
         </div>
@@ -144,60 +153,32 @@ export const Header = () => {
       {/* Mobile Menu Content */}
       <div className={`lg:hidden rounded-lg border border-gray-300 bg-white py-2 mt-1 absolute top-full left-0 w-full shadow-md transition ease-in-out duration-300 ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
         <ul className="flex flex-col items-center space-y-2 mx-2">
-          <div
-            onClick={() => setKinerjaMobileMenu((prev) => !prev)}
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5
-                        ${url === '/Pemda' ? "text-white bg-sky-500" : "hover:text-white text-sky-500 hover:bg-sky-700 border border-sky-500"}
-                      `}
-          >
-            <TbSettingsCog />
-            Manrisk Kinerja
-          </div>
-          {/* DROPDOWN MANRISK KINERJA */}
-          <div className={`w-full flex flex-col items-center rounded-lg border transition-all duration-200 ease-in-out ${KinerjaMobileMenu ? "opacity-100 space-y-2 p-3" : "opacity-0 max-h-0 pointer-events-none"}`}>
-            <Link
-              href='/manrisk-kinerja/pemda/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
-                url.startsWith('/manrisk-kinerja/pemda'), 'dropdown'
-              )}`}
-            >
-              Pemda
-            </Link>
-            <Link
-              href='/manrisk-kinerja/opd/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
-                url.startsWith('/manrisk-kinerja/opd'), 'dropdown'
-              )}`}
-            >
-              OPD
-            </Link>
-            <Link
-              href='/manrisk-kinerja/individu/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
-                url.startsWith('/manrisk-kinerja/individu'), 'dropdown'
-              )}`}
-            >
-              Individu
-            </Link>
-          </div>
-
           <Link
-            href='/manrisk-fraut/identifikasi'
+            href='/susunantim'
             className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-              url.startsWith('/manrisk-fraut')
+              url.startsWith('/susunantim')
             )}`}
           >
             <TbAlertTriangle />
-            Manrisk Fraud
+            Susunan Tim
           </Link>
           <Link
-            href='/manrisk-spbe/identifikasi'
+            href='/penilaiankinerjatim'
             className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-              url.startsWith('/manrisk-spbe')
+              url.startsWith('/penilaiankinerjatim')
             )}`}
           >
             <TbDeviceAnalytics />
-            Manrisk SPBE
+            Penilaian Kinerja Tim
+          </Link>
+          <Link
+            href='/laporankinerja'
+            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+              url.startsWith('/laporankinerja')
+            )}`}
+          >
+            <TbDeviceAnalytics />
+            Laporan Kinerja Konker
           </Link>
         </ul>
       </div>

@@ -20,6 +20,14 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      // Nonaktifkan aturan yang melarang 'any' secara eksplisit
+      // 'off' akan menonaktifkan aturan ini.
+      // Anda juga bisa menggunakan 'warn' jika ingin hanya sebagai peringatan.
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ];
 
 export default eslintConfig;

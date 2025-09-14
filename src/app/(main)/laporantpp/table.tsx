@@ -1,5 +1,4 @@
 import TableComponent from "@/components/page/TableComponent";
-import { TbCircleCheck } from "react-icons/tb";
 
 const Table = () => {
     return (
