@@ -1,6 +1,6 @@
 import TableComponent from "@/components/page/TableComponent";
 
-const Table = () => {
+export const Table = () => {
     return (
         <>
             <TableComponent className="border-blue-500">
@@ -106,5 +106,3 @@ const Table = () => {
         </>
     )
 }
-
-export default Table;
