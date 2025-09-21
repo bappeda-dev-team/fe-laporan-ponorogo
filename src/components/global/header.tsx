@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbCalendarEvent, TbDeviceImacDollar} from "react-icons/tb";
+import { TbUsersGroup, TbFileSettings, TbAlertTriangle, TbDeviceAnalytics, TbDeviceImacDollar} from "react-icons/tb";
 interface OptionType {
   label: string;
   value: number;
@@ -104,17 +104,26 @@ export const Header = () => {
                 url.startsWith('/susunantim'), 'default'
               )}`}
             >
-              <TbCalendarEvent />
+              <TbUsersGroup />
               Susunan Tim
             </Link>
             <Link
-              href='/laporankinerja'
+              href='/laporankinerjakonker'
               className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/laporankinerja'), 'default'
+                url.startsWith('/laporankinerjakonker'), 'default'
               )}`}
             >
               <TbDeviceAnalytics />
               Laporan Kinerja Konker
+            </Link>
+            <Link
+              href='/laporankinerjasekretariat'
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/laporankinerjasekretariat'), 'default'
+              )}`}
+            >
+              <TbDeviceAnalytics />
+              Laporan Kinerja Sekretariat
             </Link>
             <Link
               href='/penilaiankinerjatim'
@@ -122,7 +131,7 @@ export const Header = () => {
                 url.startsWith('/penilaiankinerjatim'), 'default'
               )}`}
             >
-              <TbDeviceImacDollar />
+              <TbFileSettings />
               Penilaian Kinerja Tim
             </Link>
             <Link

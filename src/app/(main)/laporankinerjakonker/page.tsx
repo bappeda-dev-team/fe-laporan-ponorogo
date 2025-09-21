@@ -1,7 +1,7 @@
 import TableLaporan from "./table/TableLaporan";
 import { TbCircleFilled } from "react-icons/tb";
 
-const laporantpp = () => {
+const LaporanKinerjaKonker = () => {
     return (
         <>
             <div className="flex items-start gap-1 my-1">
@@ -16,4 +16,4 @@ const laporantpp = () => {
     )
 }
 
-export default laporantpp;
+export default LaporanKinerjaKonker;
