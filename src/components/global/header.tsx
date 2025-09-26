@@ -150,7 +150,7 @@ export const Header = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={logout}
-            className="flex items-center text-white shadow gap-1 font-medium border-1 bg-red-700 rounded-lg cursor-pointer py-1 px-5 hover:bg-gray-100"
+            className="flex items-center text-white shadow gap-1 font-medium border-1 bg-red-700 rounded-lg cursor-pointer py-1 px-5 hover:bg-gray-100 hover:text-red-700"
           >
             <TbLogout />
             Logout

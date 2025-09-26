@@ -258,6 +258,7 @@ export const FloatingLabelSelect: React.FC<FloatingLabelSelectProps> = ({
           pointer-events-none
           transition-all
           duration-200
+          cursor-pointer
           ${
           // Logika untuk label floating:
           // Jika select memiliki nilai ATAU sedang difokuskan, label akan "mengambang" di atas

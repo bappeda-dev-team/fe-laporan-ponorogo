@@ -38,7 +38,6 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis })
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const FormData = {
             nama_tim: data.nama_tim,
-            kode_tim: data.kode_tim,
             keterangan: data.keterangan,
             is_active: true,
             tahun: "2025"
@@ -69,27 +68,10 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis })
                             <FloatingLabelInput
                                 {...field}
                                 id="nama_tim"
-                                label="nama_tim"
+                                label="nama tim"
                             />
                             {errors.nama_tim &&
                                 <p className="text-red-400 italic">{errors.nama_tim.message}</p>
-                            }
-                        </>
-                    )}
-                />
-                <Controller
-                    name="kode_tim"
-                    control={control}
-                    rules={{ required: "kode tim wajib terisi" }}
-                    render={({ field }) => (
-                        <>
-                            <FloatingLabelInput
-                                {...field}
-                                id="kode_tim"
-                                label="kode_tim"
-                            />
-                            {errors.kode_tim &&
-                                <p className="text-red-400 italic">{errors.kode_tim.message}</p>
                             }
                         </>
                     )}

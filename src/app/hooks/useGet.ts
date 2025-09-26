@@ -19,11 +19,11 @@ export function useGet<T = unknown>(url: string, fetchTrigger: boolean) {
 
     useEffect(() => {
         const controller = new AbortController();
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        // const API_URL = `/${url}`;
 
         async function fetchData() {
             try {
-                const response = await fetch(`${API_URL}/${url}`, {
+                const response = await fetch(`${url}`, {
                     headers: {
                         "Content-Type": 'application/json',
                     },
