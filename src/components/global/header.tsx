@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { logout } from "@/lib/auth"
 import { usePathname } from "next/navigation";
-import { TbUsersGroup, TbFileSettings, TbAlertTriangle, TbDeviceAnalytics, TbDeviceImacDollar} from "react-icons/tb";
+import { TbUsersGroup, TbFileSettings, TbAlertTriangle, TbDeviceAnalytics, TbDeviceImacDollar, TbLogout } from "react-icons/tb";
+
 interface OptionType {
   label: string;
   value: number;
@@ -143,6 +145,16 @@ export const Header = () => {
               Laporan TPP Konker
             </Link>
           </ul>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={logout}
+            className="flex items-center text-white shadow gap-1 font-medium border-1 bg-red-700 rounded-lg cursor-pointer py-1 px-5 hover:bg-gray-100"
+          >
+            <TbLogout />
+            Logout
+          </button>
         </div>
 
         {/* Mobile Menu Toggle */}
