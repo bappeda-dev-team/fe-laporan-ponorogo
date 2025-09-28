@@ -3,18 +3,18 @@ import type { NextConfig } from "next";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
 
 const nextConfig: NextConfig = {
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/:path*", // panggilan fe
-  //       destination: `${API_URL}/:path*` // backend
-  //     },
-  //     {
-  //       source: "/auth/:path*",
-  //       destination: `${API_URL}/auth/:path*` // backend
-  //     }
-  //   ]
-  // },
+  async rewrites() {
+    return [
+      {
+        source: "/:path*", // panggilan fe
+        destination: `${API_URL}/:path*` // backend
+      },
+      {
+        source: "/auth/:path*",
+        destination: `${API_URL}/auth/:path*` // backend
+      }
+    ]
+  },
   output: "standalone",
   images: {
     remotePatterns: [

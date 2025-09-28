@@ -2,48 +2,78 @@
 
 import { useState } from "react";
 import TableComponent from "@/components/page/TableComponent";
-import { ButtonGreenBorder } from "@/components/button/button";
-import { TbCirclePlus } from "react-icons/tb";
 import { AnggotaGetResponse, TimGetResponse } from "@/types/tim";
-import { ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
-import { TbPencil, TbTrash } from "react-icons/tb";
+import { ButtonSkyBorder, ButtonRedBorder, ButtonGreenBorder } from "@/components/button/button";
+import { TbPencil, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalAnggota } from "./ModalAnggota";
+import { ModalTim } from "./ModalTim";
+import { AlertQuestion } from "@/components/global/sweetalert2";
 
 interface Table {
     data: TimGetResponse;
+    onSuccess: () => void;
 }
 
-export const TableAnggota: React.FC<Table> = ({ data }) => {
+export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
 
-    const [ModalOpen, setModalOpen] = useState<boolean>(false);
-    const [DataModal, setDataModal] = useState<any>(null);
+    const [ModalAnggotaOpen, setModalAnggotaOpen] = useState<boolean>(false);
+    const [ModalTimOpen, setModalTimOpen] = useState<boolean>(false);
+    const [DataModalAnggota, setDataModalAnggota] = useState<any>(null);
+    const [DataModalTim, setDataModalTim] = useState<any>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
 
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    
-    const handleModal = (jenis: "baru" | "edit" | "", data?: any) => {
-        if(ModalOpen){
-            setModalOpen(false);
-            setDataModal(null);
+    const handleModalAnggota = (jenis: "baru" | "edit" | "", data?: any) => {
+        if (ModalAnggotaOpen) {
+            setModalAnggotaOpen(false);
+            setDataModalAnggota(null);
             setJenisModal("");
         } else {
-            setModalOpen(true);
-            setDataModal(data);
+            setModalAnggotaOpen(true);
+            setDataModalAnggota(data);
             setJenisModal(jenis);
+        }
+    }
+    const handleModalTim = (data?: any) => {
+        if (ModalTimOpen) {
+            setModalTimOpen(false);
+            setDataModalTim(null);
+        } else {
+            setModalTimOpen(true);
+            setDataModalTim(data);
         }
     }
 
     return (
         <div className="flex flex-col p-2 border border-emerald-500 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-wrap items-center justify-between mb-2">
                 <h1 className="uppercase font-bold text-2xl">Susunan : {data.nama_tim || "tanpa nama"}</h1>
-                <ButtonGreenBorder 
-                    className="flex items-center gap-1"
-                    onClick={() => handleModal('baru', null)}
-                >
-                    <TbCirclePlus />
-                    Tambah Anggota
-                </ButtonGreenBorder>
+                <div className="flex flex-wrap gap-2">
+                    <ButtonGreenBorder
+                        className="flex items-center gap-1"
+                        onClick={() => handleModalAnggota('baru', null)}
+                    >
+                        <TbCirclePlus />
+                        Tambah Anggota
+                    </ButtonGreenBorder>
+                    <ButtonSkyBorder
+                        className="flex items-center gap-1"
+                        onClick={() => handleModalTim(data)}
+                    >
+                        <TbPencil />
+                        Edit Tim
+                    </ButtonSkyBorder>
+                    <ButtonRedBorder
+                        className="flex items-center gap-1"
+                        onClick={() => AlertQuestion("Hapus Tim", "Tim akan terhapus bersama dengan anggota tim yang sudah terisi", "warning", "Hapus", "Batal").then((result) => {
+                            if(result.isConfirmed){
+
+                            }
+                        })}
+                    >
+                        <TbTrash />
+                        Hapus Tim
+                    </ButtonRedBorder>
+                </div>
             </div>
             <TableComponent className="border-emerald-500">
                 <table className="w-full">
@@ -81,7 +111,7 @@ export const TableAnggota: React.FC<Table> = ({ data }) => {
                                             <div className="flex flex-col gap-2 justify-center items-center">
                                                 <ButtonSkyBorder
                                                     className="flex items-center gap-1 w-full"
-                                                    onClick={() => handleModal('edit', item)}
+                                                    onClick={() => handleModalAnggota('edit', item)}
                                                 >
                                                     <TbPencil />
                                                     Edit
@@ -104,13 +134,25 @@ export const TableAnggota: React.FC<Table> = ({ data }) => {
                     </tbody>
                 </table>
             </TableComponent>
-            <ModalAnggota 
-                isOpen={ModalOpen}
-                onClose={() => handleModal("", null)}
-                jenis={JenisModal}
-                kode_tim={data.kode_tim}
-                onSuccess={() => setFetchTrigger((prev) => !prev)}
-            />
+            {ModalAnggotaOpen &&
+                <ModalAnggota
+                    isOpen={ModalAnggotaOpen}
+                    onClose={() => handleModalAnggota("", null)}
+                    jenis={JenisModal}
+                    kode_tim={data.kode_tim}
+                    onSuccess={onSuccess}
+                    data={DataModalAnggota}
+                />
+            }
+            {ModalTimOpen && 
+                <ModalTim 
+                    isOpen={ModalTimOpen}
+                    data={DataModalTim}
+                    onClose={() => handleModalTim(null)}
+                    onSuccess={onSuccess}
+                    jenis="edit"
+                />
+            }
         </div>
     )
 }

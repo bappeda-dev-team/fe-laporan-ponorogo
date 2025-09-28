@@ -1,17 +1,19 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
+import { TimGetResponse } from "@/types/tim";
 
 interface Modal {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
     jenis: "baru" | "edit";
+    data?: TimGetResponse;
 }
 interface FormValue {
     is_active: boolean;
@@ -21,15 +23,15 @@ interface FormValue {
     tahun: string;
 }
 
-export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis }) => {
+export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
             is_active: true,
             keterangan: "",
-            kode_tim: "",
-            nama_tim: "",
-            tahun: ""
+            kode_tim: data?.kode_tim,
+            nama_tim: data?.nama_tim,
+            tahun: "2025"
         }
     })
 

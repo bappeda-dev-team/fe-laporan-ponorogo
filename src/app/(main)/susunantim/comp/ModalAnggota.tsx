@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { OptionTypeString } from "@/types";
+import { AnggotaGetResponse } from "@/types/tim";
 
 interface Modal {
     isOpen: boolean;
@@ -14,7 +15,7 @@ interface Modal {
     onSuccess: () => void;
     jenis: "baru" | "edit" | "";
     kode_tim: string;
-    data?: any;
+    data?: AnggotaGetResponse | null;
 }
 interface FormValue {
     is_active: boolean;
@@ -25,19 +26,19 @@ interface FormValue {
     nip: string;
 }
 
-export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, kode_tim }) => {
+export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, kode_tim, data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            is_active: true,
-            keterangan: "",
+            is_active: data?.is_active,
+            keterangan: data?.keterangan,
             kode_tim: kode_tim,
-            nama_jabatan_tim: "",
+            nama_jabatan_tim: data?.nama_jabatan,
             nama_anggota: null,
-            nip: ""
+            nip: data?.nip
         }
     })
-
+    
     const [Proses, setProses] = useState<boolean>(false);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
