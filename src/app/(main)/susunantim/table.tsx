@@ -13,7 +13,7 @@ export const Table = () => {
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
-    const { data, loading, error, message } = useGet<TimGetResponse[]>('timkerja', FetchTrigger);
+    const { data, loading, error, message } = useGet<TimGetResponse[]>('api/v1/timkerja/timkerja', FetchTrigger);
 
     if (loading) {
         return (

@@ -1,9 +1,12 @@
+'use client'
+
 type LoginResponse = {
     sessionId: string;
 }
 
 export async function login(username: string, password: string): Promise<void> {
-    const res = await fetch("/auth/login", {
+    const API_LOGIN = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${API_LOGIN}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -13,7 +16,7 @@ export async function login(username: string, password: string): Promise<void> {
         throw new Error("Login gagal")
     }
 
-    const data: LoginResponse = await res.json()
+    const data: LoginResponse = await res.json();
     localStorage.setItem("sessionId", data.sessionId)
 
     // cookie buat middleware
@@ -21,6 +24,7 @@ export async function login(username: string, password: string): Promise<void> {
 }
 
 export function getSessionId(): string | null {
+    if (typeof window === "undefined") return null;
     return localStorage.getItem("sessionId")
 }
 
@@ -37,6 +41,7 @@ export async function logout() {
         })
 
         if (res.ok) {
+            if (typeof window === "undefined") return null;
             localStorage.removeItem("sessionId")
             document.cookie = `sessionId=; path=/; max-age=0; secure; samesite=strict`
             window.location.href = "/login"
