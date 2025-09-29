@@ -8,6 +8,8 @@ import { FloatingLabelInput } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { TimGetResponse } from "@/types/tim";
 import { apiFetch } from "@/lib/apiFetch";
+import useToast from "@/components/global/toast";
+import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Modal {
     isOpen: boolean;
@@ -37,6 +39,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
     })
 
     const [Proses, setProses] = useState<boolean>(false);
+    const { toastError, toastSuccess } = useToast();
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const formData = new FormData();
@@ -45,14 +48,18 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
         formData.append("is_active", "true");
         formData.append("tahun", "2025");
 
-        // console.log(formData);
+        // console.log("Memeriksa Isi FormData:");
+        // for (const pair of formData.entries()) {
+        //     console.log(`${pair[0]}: ${pair[1]}`);
+        // }
         await apiFetch("/api/v1/timkerja/timkerja", {
-            method: "POST",
+            method: jenis === "baru" ? "POST" : "PUT",
             body: formData
         }).then(resp => {
-            alert("data berhasil disimpan");
+            toastSuccess("data berhasil disimpan");
+            onSuccess();
         }).catch(err => {
-            alert(err);
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
     }
 
@@ -66,7 +73,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
                 <h1 className="flex items-center justify-center gap-1 text-xl uppercase font-semibold pb-1">
                     <TbUsersGroup />
-                    {jenis === "baru" ? "Tambah" : "Edit"} Tim
+                    {jenis === "baru" ? "Tambah" : "Edit"} Tim {jenis === "edit" && `code : ${data?.kode_tim || "no code"}`}
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>

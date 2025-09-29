@@ -12,7 +12,7 @@ interface FetchState<T> {
     message: string;
 }
 
-export function useGet<T = unknown>(url: string, fetchTrigger: boolean) {
+export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
 
     const { toastError } = useToast();
     

@@ -6,33 +6,12 @@ import { ButtonSky } from "@/components/button/button";
 import { TbUsersGroup } from "react-icons/tb";
 import { TimGetResponse } from "@/types/tim";
 import { useGet } from "@/app/hooks/useGet";
-import { apiFetch } from "@/lib/apiFetch";
 import { ModalTim } from "./comp/ModalTim";
-import { ApiResp, TimKerja } from "@/types";
 
 export const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    
-    const [timKerja, setTimKerja] = useState<TimKerja[]>([])
-    // const [loading, setLoading] = useState(true)
-    // const [error, setError] = useState<string | null>(null)
-
-    // useEffect(() => {
-    //     apiFetch<ApiResp<TimKerja>>("/api/v1/timkerja/timkerja")
-    //         .then(resp => {
-    //             setTimKerja(resp.data)
-    //             setError(null)
-    //         })
-    //         .catch(err => {
-    //             console.error(err)
-    //             setError("terjadi kesalahan")
-    //         })
-    //         .finally(() => {
-    //             setLoading(false)
-    //         })
-    // }, [FetchTrigger])
 
     const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja', FetchTrigger);
 

@@ -7,7 +7,9 @@ import { ButtonSkyBorder, ButtonRedBorder, ButtonGreenBorder } from "@/component
 import { TbPencil, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalAnggota } from "./ModalAnggota";
 import { ModalTim } from "./ModalTim";
-import { AlertQuestion } from "@/components/global/sweetalert2";
+import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
+import useToast from "@/components/global/toast";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface Table {
     data: TimGetResponse;
@@ -21,6 +23,8 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
     const [DataModalAnggota, setDataModalAnggota] = useState<any>(null);
     const [DataModalTim, setDataModalTim] = useState<any>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
+
+    const {toastError, toastSuccess} = useToast();
 
     const handleModalAnggota = (jenis: "baru" | "edit" | "", data?: any) => {
         if (ModalAnggotaOpen) {
@@ -43,10 +47,24 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
         }
     }
 
+    const HapusTim = async (id: number) => {
+        await apiFetch(`/api/v1/timkerja/timkerja/${id}`, {
+            method: "DELETE",
+        }).then(resp => {
+            toastSuccess("data berhasil dihapus");
+            onSuccess();
+        }).catch(err => {
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        })
+    }
+
     return (
         <div className="flex flex-col p-2 border border-emerald-500 rounded-lg">
             <div className="flex flex-wrap items-center justify-between mb-2">
-                <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
+                <div className="flex flex-col items-center gap-1">
+                    <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
+                    {/* <h1 className="font-medium text-xl">{data.keterangan || "-"}</h1> */}
+                </div>
                 <div className="flex flex-wrap gap-2">
                     <ButtonGreenBorder
                         className="flex items-center gap-1"
@@ -65,8 +83,8 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                     <ButtonRedBorder
                         className="flex items-center gap-1"
                         onClick={() => AlertQuestion("Hapus Tim", "Tim akan terhapus bersama dengan anggota tim yang sudah terisi", "warning", "Hapus", "Batal").then((result) => {
-                            if(result.isConfirmed){
-
+                            if (result.isConfirmed) {
+                                HapusTim(data.id);
                             }
                         })}
                     >
@@ -109,13 +127,6 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                                         <td className="border border-emerald-500 px-6 py-4">{item.keterangan || "-"}</td>
                                         <td className="border border-emerald-500 px-6 py-4">
                                             <div className="flex flex-col gap-2 justify-center items-center">
-                                                <ButtonSkyBorder
-                                                    className="flex items-center gap-1 w-full"
-                                                    onClick={() => handleModalAnggota('edit', item)}
-                                                >
-                                                    <TbPencil />
-                                                    Edit
-                                                </ButtonSkyBorder>
                                                 <ButtonRedBorder
                                                     className="flex items-center gap-1 w-full"
                                                 >
@@ -144,8 +155,8 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                     data={DataModalAnggota}
                 />
             }
-            {ModalTimOpen && 
-                <ModalTim 
+            {ModalTimOpen &&
+                <ModalTim
                     isOpen={ModalTimOpen}
                     data={DataModalTim}
                     onClose={() => handleModalTim(null)}
