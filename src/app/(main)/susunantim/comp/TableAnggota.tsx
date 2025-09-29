@@ -46,7 +46,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
     return (
         <div className="flex flex-col p-2 border border-emerald-500 rounded-lg">
             <div className="flex flex-wrap items-center justify-between mb-2">
-                <h1 className="uppercase font-bold text-2xl">Susunan : {data.nama_tim || "tanpa nama"}</h1>
+                <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
                 <div className="flex flex-wrap gap-2">
                     <ButtonGreenBorder
                         className="flex items-center gap-1"
@@ -96,14 +96,14 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.susunan_tims.length ?
+                        {(data.susunan_tims != null) ?
                             data.susunan_tims
                                 .slice()
                                 .sort((a, b) => a.level_jabatan - b.level_jabatan)
                                 .map((item: AnggotaGetResponse, index: number) => (
                                     <tr key={index}>
                                         <td className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
-                                        <td className="border border-emerald-500 px-6 py-4">nama</td>
+                                        <td className="border border-emerald-500 px-6 py-4">{item.nama_pegawai || "-"}</td>
                                         <td className="border border-emerald-500 px-6 py-4 text-center">{item.nip || "-"}</td>
                                         <td className="border border-emerald-500 px-6 py-4 text-center">{item.nama_jabatan || "-"}</td>
                                         <td className="border border-emerald-500 px-6 py-4">{item.keterangan || "-"}</td>

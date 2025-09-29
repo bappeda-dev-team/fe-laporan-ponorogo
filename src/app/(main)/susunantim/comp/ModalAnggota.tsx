@@ -7,7 +7,10 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { OptionTypeString } from "@/types";
+import { apiFetch } from "@/lib/apiFetch";
 import { AnggotaGetResponse } from "@/types/tim";
+import { AlertNotification } from "@/components/global/sweetalert2";
+import useToast from "@/components/global/toast";
 
 interface Modal {
     isOpen: boolean;
@@ -22,7 +25,7 @@ interface FormValue {
     keterangan: string;
     kode_tim: string;
     nama_jabatan_tim: string;
-    nama_anggota: OptionTypeString | null;
+    nama_pegawai: string;
     nip: string;
 }
 
@@ -34,29 +37,53 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             keterangan: data?.keterangan,
             kode_tim: kode_tim,
             nama_jabatan_tim: data?.nama_jabatan,
-            nama_anggota: null,
+            nama_pegawai: data?.nama_pegawai,
             nip: data?.nip
         }
     })
-    
+
     const [Proses, setProses] = useState<boolean>(false);
+    const { toastError, toastSuccess } = useToast();
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        const FormData = {
-            nama_jabatan_tim: data.nama_jabatan_tim,
-            nip: data.nip,
-            kode_tim: kode_tim,
-            keterangan: data.keterangan,
-            is_active: true,
-        }
-        console.log(FormData);
+        // const FormData = {
+        //     nama_jabatan_tim: data.nama_jabatan_tim,
+        //     nip: data.nip,
+        //     kode_tim: kode_tim,
+        //     keterangan: data.keterangan,
+        //     is_active: true,
+        // }
+        // console.log(FormData);
+        const formData = new FormData();
+
+        formData.append("is_active", "true");
+        formData.append("keterangan", data.keterangan);
+        formData.append("kode_tim", kode_tim);
+        formData.append("nama_pegawai", data?.nama_pegawai);
+        formData.append("nama_jabatan_tim", data.nama_jabatan_tim);
+        formData.append("nip", data?.nip);
+
+        await apiFetch("/api/v1/timkerja/susunantim", {
+            method: "POST",
+            body: formData
+        })
+            .then(resp => {
+                if(resp === 200 || resp === 201){
+                    toastSuccess("data berhasil disimpan");
+                } else {
+                    AlertNotification("GAGAL", `${resp}`, "error", 3000, true);
+                }
+            })
+            .catch(err => {
+                AlertNotification("GAGAL", `${err}`, "error", 3000, true);
+            })
     }
 
     const OptionPegawai = [
-        {value: "1", label: "Pegawai 1"},
-        {value: "2", label: "Pegawai 2"},
-        {value: "3", label: "Pegawai 3"},
-        {value: "4", label: "Pegawai 4"}
+        { value: "1", label: "Pegawai 1" },
+        { value: "2", label: "Pegawai 2" },
+        { value: "3", label: "Pegawai 3" },
+        { value: "4", label: "Pegawai 4" }
     ]
 
     const handleClose = () => {
@@ -74,20 +101,18 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                    name="nama_anggota"
+                    name="nama_pegawai"
                     control={control}
-                    rules={{ required: "jabatan dalam tim wajib terisi" }}
+                    rules={{ required: "Nama Pegawai wajib terisi" }}
                     render={({ field }) => (
                         <>
-                            <FloatingLabelSelect
+                            <FloatingLabelInput
                                 {...field}
-                                options={OptionPegawai}
-                                id="nama_anggota"
-                                label="Pilih Anggota Tim"
-                                isClearable
+                                id="nama_pegawai"
+                                label="Nama Pegawai"
                             />
-                            {errors.nama_anggota &&
-                                <p className="text-red-400 italic">{errors.nama_anggota.message}</p>
+                            {errors.nama_pegawai &&
+                                <p className="text-red-400 italic">{errors.nama_pegawai.message}</p>
                             }
                         </>
                     )}

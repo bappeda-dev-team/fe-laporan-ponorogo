@@ -9,6 +9,7 @@ export interface AnggotaGetResponse {
     id: number,
     nip: string,
     nama_jabatan: string,
+    nama_pegawai: string,
     level_jabatan: number,
     keterangan: string,
     is_active: boolean

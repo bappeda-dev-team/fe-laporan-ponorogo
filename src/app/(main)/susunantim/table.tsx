@@ -16,25 +16,25 @@ export const Table = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     
     const [timKerja, setTimKerja] = useState<TimKerja[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    // const [loading, setLoading] = useState(true)
+    // const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
-        apiFetch<ApiResp<TimKerja>>("/api/v1/timkerja/timkerja")
-            .then(resp => {
-                setTimKerja(resp.data)
-                setError(null)
-            })
-            .catch(err => {
-                console.error(err)
-                setError("terjadi kesalahan")
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }, [FetchTrigger])
+    // useEffect(() => {
+    //     apiFetch<ApiResp<TimKerja>>("/api/v1/timkerja/timkerja")
+    //         .then(resp => {
+    //             setTimKerja(resp.data)
+    //             setError(null)
+    //         })
+    //         .catch(err => {
+    //             console.error(err)
+    //             setError("terjadi kesalahan")
+    //         })
+    //         .finally(() => {
+    //             setLoading(false)
+    //         })
+    // }, [FetchTrigger])
 
-    // const { data, loading, error, message } = useGet<TimGetResponse[]>('api/v1/timkerja/timkerja', FetchTrigger);
+    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja', FetchTrigger);
 
     if (loading) {
         return (
@@ -42,8 +42,7 @@ export const Table = () => {
         )
     } else if (error) {
         return (
-            // <h1>{message || "-"}</h1>
-            <h1>Error Server</h1>
+            <h1>{message || "-"}</h1>
         )
     } else {
         return (
@@ -53,7 +52,7 @@ export const Table = () => {
                         <TbUsersGroup />
                         Tambah Tim
                     </ButtonSky>
-                    {timKerja?.map((item: TimGetResponse, index: number) => (
+                    {data?.map((item: TimGetResponse, index: number) => (
                         <div key={index} className="flex flex-col gap-2">
                             <TableAnggota data={item} onSuccess={() => setFetchTrigger((prev) => !prev)}/>
                         </div>

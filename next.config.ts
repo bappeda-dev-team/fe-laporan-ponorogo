@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/:path*", // panggilan fe
-        destination: `${API_URL}/:path*` // backend
+        source: "/api/v1/:path*", // panggilan fe
+        destination: `${API_URL}/api/v1/:path*` // backend
       },
       {
         source: "/auth/:path*",

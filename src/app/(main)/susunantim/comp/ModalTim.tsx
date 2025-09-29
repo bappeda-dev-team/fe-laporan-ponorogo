@@ -7,6 +7,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { TimGetResponse } from "@/types/tim";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface Modal {
     isOpen: boolean;
@@ -38,13 +39,21 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
     const [Proses, setProses] = useState<boolean>(false);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        const FormData = {
-            nama_tim: data.nama_tim,
-            keterangan: data.keterangan,
-            is_active: true,
-            tahun: "2025"
-        }
-        console.log(FormData);
+        const formData = new FormData();
+        formData.append("nama_tim", data.nama_tim);
+        formData.append("keterangan", data.keterangan);
+        formData.append("is_active", "true");
+        formData.append("tahun", "2025");
+
+        // console.log(formData);
+        await apiFetch("/api/v1/timkerja/timkerja", {
+            method: "POST",
+            body: formData
+        }).then(resp => {
+            alert("data berhasil disimpan");
+        }).catch(err => {
+            alert(err);
+        })
     }
 
     const handleClose = () => {
