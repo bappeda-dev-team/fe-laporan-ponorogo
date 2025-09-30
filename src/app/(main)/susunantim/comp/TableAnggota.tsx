@@ -51,7 +51,19 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
         await apiFetch(`/api/v1/timkerja/timkerja/${id}`, {
             method: "DELETE",
         }).then(resp => {
-            toastSuccess("data berhasil dihapus");
+            // toastSuccess("tim berhasil dihapus");
+            AlertNotification("Berhasil", "Tim Berhasil Dihapus", "success", 3000, true);
+            onSuccess();
+        }).catch(err => {
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        })
+    }
+    const HapusAnggota = async (id: number) => {
+        await apiFetch(`/api/v1/timkerja/susunantim/${id}`, {
+            method: "DELETE",
+        }).then(resp => {
+            // toastSuccess("anggota berhasil dihapus");
+            AlertNotification("Berhasil", "Anggota Berhasil Dihapus", "success", 3000, true);
             onSuccess();
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
@@ -129,6 +141,12 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                                             <div className="flex flex-col gap-2 justify-center items-center">
                                                 <ButtonRedBorder
                                                     className="flex items-center gap-1 w-full"
+                                                    onClick={() => AlertQuestion("Hapus", `Hapus Anggota Dari Tim ${data.nama_tim} ?`, "question", "Hapus", "Batal").then((result) => {
+                                                        if(result.isConfirmed){
+                                                            HapusAnggota(item.id)
+                                                        }
+                                                    })
+                                                    }
                                                 >
                                                     <TbTrash />
                                                     Hapus

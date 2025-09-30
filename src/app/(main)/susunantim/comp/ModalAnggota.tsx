@@ -55,6 +55,12 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
     const [Opd, setOpd] = useState<OptionTypeString | null>(null);
     const [Loading, setLoading] = useState<boolean>(true);
 
+    const handleClose = () => {
+        onClose();
+        setOpd(null);
+        reset();
+    }
+
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
       // backend tidak terima formdata
         const payload = {
@@ -70,11 +76,15 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             method: "POST",
             body: payload as any
         })
-            .then(resp => {
-                if (resp === 200 || resp === 201) {
-                    toastSuccess("data berhasil disimpan");
+            .then((resp: any) => {
+                if (resp.code === 200 || resp.code === 201) {
+                    // toastSuccess("data anggota berhasil disimpan");
+                    AlertNotification("Berhasil", "anggota berhasil ditambahkan", "success", 2000, true);
+                    handleClose();
+                    onSuccess();
                 } else {
                     AlertNotification("GAGAL", `${resp}`, "error", 3000, true);
+                    console.log(resp);
                 }
             })
             .catch(err => {
@@ -114,11 +124,6 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
         }
     }, [dataOpd, Opd, loadingOpd]);
 
-    const handleClose = () => {
-        onClose();
-        setOpd(null);
-        reset();
-    }
 
     return (
         <ModalComponent isOpen={isOpen} onClose={handleClose}>

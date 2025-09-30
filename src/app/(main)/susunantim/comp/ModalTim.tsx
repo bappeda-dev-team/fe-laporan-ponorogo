@@ -59,7 +59,9 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             body: payload as any
         }).then(_ => {
             toastSuccess("data berhasil disimpan");
+            AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
             onSuccess();
+            handleClose();
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
