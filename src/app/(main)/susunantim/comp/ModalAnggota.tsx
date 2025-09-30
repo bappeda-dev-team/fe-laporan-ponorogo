@@ -56,18 +56,19 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
     const [Loading, setLoading] = useState<boolean>(true);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        const formData = new FormData();
-
-        formData.append("is_active", "true");
-        formData.append("keterangan", data.keterangan);
-        formData.append("kode_tim", kode_tim);
-        formData.append("nama_pegawai", data?.nip?.label ?? "");
-        formData.append("nama_jabatan_tim", data.nama_jabatan_tim);
-        formData.append("nip", data?.nip?.value ?? "");
+      // backend tidak terima formdata
+        const payload = {
+          is_active: true,
+          keterangan: data.keterangan,
+          kode_tim: kode_tim,
+          nama_pegawai: data?.nip?.label,
+          nip: data?.nip?.value,
+          nama_jabatan_tim: data.nama_jabatan_tim
+        }
 
         await apiFetch("/api/v1/timkerja/susunantim", {
             method: "POST",
-            body: formData
+            body: payload as any
         })
             .then(resp => {
                 if (resp === 200 || resp === 201) {

@@ -42,11 +42,13 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
     const { toastError, toastSuccess } = useToast();
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        const formData = new FormData();
-        formData.append("nama_tim", data.nama_tim);
-        formData.append("keterangan", data.keterangan);
-        formData.append("is_active", "true");
-        formData.append("tahun", "2025");
+        // backend tidak terima formdata
+        const payload = {
+            nama_tim: data.nama_tim,
+            keterangan: data.keterangan,
+            is_active: true,
+            tahun: "2025"
+        }
 
         // console.log("Memeriksa Isi FormData:");
         // for (const pair of formData.entries()) {
@@ -54,8 +56,8 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
         // }
         await apiFetch("/api/v1/timkerja/timkerja", {
             method: jenis === "baru" ? "POST" : "PUT",
-            body: formData
-        }).then(resp => {
+            body: payload as any
+        }).then(_ => {
             toastSuccess("data berhasil disimpan");
             onSuccess();
         }).catch(err => {
