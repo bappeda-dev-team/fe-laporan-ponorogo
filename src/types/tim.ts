@@ -14,3 +14,17 @@ export interface AnggotaGetResponse {
     keterangan: string,
     is_active: boolean
 }
+export interface JabatanGetResponse {
+    id: number,
+    level_jabatan: number,
+    nama_jabatan: string,
+    created_at: string,
+    updated_at: string
+}
+export interface PegawaiGetResponse {
+    id: string,
+    nama_pegawai: string,
+    nip: string,
+    kode_opd: string,
+    nama_opd: string
+}

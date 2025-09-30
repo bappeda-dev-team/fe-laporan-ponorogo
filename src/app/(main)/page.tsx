@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { ButtonBlackBorder } from '@/components/button/button';
+import { TbSettings } from 'react-icons/tb';
 
 export default function Home() {
 
@@ -19,6 +21,13 @@ export default function Home() {
           />
           <h1 className="text-4xl uppercase font-extrabold">Laporan</h1>
           <h3 className="text-base font-light">Kabupaten Ponorogo</h3>
+          <ButtonBlackBorder 
+            halaman_url='/datamaster'
+            className="flex items-center gap-1"
+          >
+            <TbSettings />
+            Data Master
+          </ButtonBlackBorder>
         </div>
       </div>
     </>

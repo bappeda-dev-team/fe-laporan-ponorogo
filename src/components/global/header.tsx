@@ -89,7 +89,7 @@ export const Header = () => {
   return (
     <nav className={`inset-x-1 m-1 ml-2 bg-white border border-sky-200 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
-        <div className="flex justify-start gap-5">
+        <div className="flex flex-wrap justify-start gap-5">
           <Link href="/">
             <Image
               src={logo || "/placeholder-logo.png"}

@@ -26,7 +26,7 @@ interface FormValue {
     is_active: boolean;
     keterangan: string;
     kode_tim: string;
-    nama_jabatan_tim: string;
+    nama_jabatan_tim: OptionTypeString | null;
     nama_pegawai: string;
     nip: OptionTypeString | null;
 }
@@ -38,7 +38,10 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             is_active: data?.is_active || true,
             keterangan: data?.keterangan || "",
             kode_tim: kode_tim || "",
-            nama_jabatan_tim: data?.nama_jabatan || "",
+            nama_jabatan_tim: data?.nama_jabatan ? {
+                value: data.nama_jabatan,
+                label: data.nama_jabatan || '',
+            } : null,
             nama_pegawai: data?.nama_pegawai || "",
             nip: data?.nip ? {
                 value: data.nip,
@@ -48,28 +51,26 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
     })
 
     const [Proses, setProses] = useState<boolean>(false);
-    const { toastSuccess } = useToast();
 
-    const [OpdOption, setOpdOption] = useState<OptionTypeString[]>([]);
     const [OptionPegawai, setOptionPegawai] = useState<OptionTypeString[]>([]);
-    const [Opd, setOpd] = useState<OptionTypeString | null>(null);
+    const [OptionJabatan, setOptionJabatan] = useState<OptionTypeString[]>([]);
     const [Loading, setLoading] = useState<boolean>(true);
 
     const handleClose = () => {
         onClose();
-        setOpd(null);
         reset();
     }
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-      // backend tidak terima formdata
+        // backend tidak terima formdata
+        setProses(true);
         const payload = {
-          is_active: true,
-          keterangan: data.keterangan,
-          kode_tim: kode_tim,
-          nama_pegawai: data?.nip?.label,
-          nip: data?.nip?.value,
-          nama_jabatan_tim: data.nama_jabatan_tim
+            is_active: true,
+            keterangan: data.keterangan,
+            kode_tim: kode_tim,
+            nama_pegawai: data?.nip?.label,
+            nip: data?.nip?.value,
+            nama_jabatan_tim: data.nama_jabatan_tim?.value
         }
 
         await apiFetch("/api/v1/timkerja/susunantim", {
@@ -82,30 +83,23 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                     AlertNotification("Berhasil", "anggota berhasil ditambahkan", "success", 2000, true);
                     handleClose();
                     onSuccess();
+                    setProses(false);
                 } else {
                     AlertNotification("GAGAL", `${resp}`, "error", 3000, true);
                     console.log(resp);
+                    setProses(false);
                 }
             })
             .catch(err => {
                 AlertNotification("GAGAL", `${err}`, "error", 3000, true);
+                setProses(false);
             })
     }
 
-    const { data: dataOpd, loading: loadingOpd, error, message } = useGet<OpdGetResponse[]>("/api/v1/laporan/api/external/opdlist")
-
     useEffect(() => {
-        if (dataOpd) {
-            const listOpd = dataOpd.map((item: OpdGetResponse) => ({
-                value: item.kode_opd,
-                label: item.nama_opd,
-            }));
-            setOpdOption(listOpd);
-            setLoading(loadingOpd);
-            // console.log(dataOpd);
-        }
-        if (Opd) {
-            apiFetch(`/api/v1/perencanaan/pegawai/findall?kode_opd=${Opd?.value}`)
+        if (OptionPegawai.length === 0) {
+            const kode_opd = process.env.NEXT_PUBLIC_KODE_OPD;
+            apiFetch(`/api/v1/perencanaan/pegawai/findall?kode_opd=${kode_opd}`)
                 .then((resp: any) => {
                     if (resp.code === 200) {
                         const DataPegawai = resp.data.map((p: any) => ({
@@ -114,7 +108,7 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                         }))
                         setOptionPegawai(DataPegawai);
                     } else {
-                        AlertNotification("GAGAL", `${resp.data}`, "error", 3000, true);
+                        AlertNotification("GAGAL", `pegawai : ${resp.data}`, "error", 3000, true);
                     }
                 })
                 .catch(err => {
@@ -122,7 +116,26 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                     console.log(err);
                 })
         }
-    }, [dataOpd, Opd, loadingOpd]);
+        if (OptionJabatan.length === 0) {
+            apiFetch(`/api/v1/timkerja/jabatantim`)
+                .then((resp: any) => {
+                    if (resp.code === 200) {
+                        const J = resp.data.map((p: any) => ({
+                            value: p.nama_jabatan,
+                            label: p.nama_jabatan,
+                        }))
+                        setOptionJabatan(J);
+                    } else {
+                        AlertNotification("GAGAL", `jabatan : ${resp.data}`, "error", 3000, true);
+                    }
+                })
+                .catch(err => {
+                    AlertNotification("GAGAL", `gagal mendapatkan data jabatan`, "error", 3000, true);
+                    console.log(err);
+                })
+
+        }
+    }, [OptionPegawai, OptionJabatan]);
 
 
     return (
@@ -134,7 +147,7 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
-                <FloatingLabelSelect
+                {/* <FloatingLabelSelect
                     id="kode_opd"
                     label="Pilih OPD untuk Pilih Pegawai"
                     options={OpdOption}
@@ -143,62 +156,57 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                     isSearchable
                     onChange={(option) => {
                         setOpd(option as OptionTypeString);
-                        // console.log(option);
+                        console.log(option);
                     }}
                     isLoading={Loading}
+                /> */}
+                <Controller
+                    name="nip"
+                    control={control}
+                    rules={{ required: "Nama Pegawai wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="nip"
+                                options={OptionPegawai}
+                                label="Nama Pegawai"
+                            />
+                            {errors.nip &&
+                                <p className="text-red-400 italic">{errors.nip.message}</p>
+                            }
+                        </>
+                    )}
                 />
-                {!Opd ?
-                    <h1 className="flex justify-center border rounded-lg p-1 bg-gray-500 text-white">pilih opd terlebih dahulu</h1>
-                    :
-                    <>
-                        <Controller
-                            name="nip"
-                            control={control}
-                            rules={{ required: "Nama Pegawai wajib terisi" }}
-                            render={({ field }) => (
-                                <>
-                                    <FloatingLabelSelect
-                                        {...field}
-                                        id="nip"
-                                        options={OptionPegawai}
-                                        label="Nama Pegawai"
-                                    />
-                                    {errors.nip &&
-                                        <p className="text-red-400 italic">{errors.nip.message}</p>
-                                    }
-                                </>
-                            )}
+                <Controller
+                    name="nama_jabatan_tim"
+                    control={control}
+                    rules={{ required: "jabatan dalam tim wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="nama_jabatan_tim"
+                                options={OptionJabatan}
+                                label="Jabatan Dalam Tim"
+                            />
+                            {errors.nama_jabatan_tim &&
+                                <p className="text-red-400 italic">{errors.nama_jabatan_tim.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                <Controller
+                    name="keterangan"
+                    control={control}
+                    render={({ field }) => (
+                        <FloatingLabelInput
+                            {...field}
+                            id="keterangan"
+                            label="keterangan"
                         />
-                        <Controller
-                            name="nama_jabatan_tim"
-                            control={control}
-                            rules={{ required: "jabatan dalam tim wajib terisi" }}
-                            render={({ field }) => (
-                                <>
-                                    <FloatingLabelInput
-                                        {...field}
-                                        id="nama_jabatan_tim"
-                                        label="Jabatan Dalam Tim"
-                                    />
-                                    {errors.nama_jabatan_tim &&
-                                        <p className="text-red-400 italic">{errors.nama_jabatan_tim.message}</p>
-                                    }
-                                </>
-                            )}
-                        />
-                        <Controller
-                            name="keterangan"
-                            control={control}
-                            render={({ field }) => (
-                                <FloatingLabelInput
-                                    {...field}
-                                    id="keterangan"
-                                    label="keterangan"
-                                />
-                            )}
-                        />
-                    </>
-                }
+                    )}
+                />
                 <div className="flex flex-col gap-2 mt-3">
                     <ButtonSky
                         className="w-full"
