@@ -40,6 +40,11 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
+    const timId = data?.id
+    const urlConfig = jenis === "baru" ?
+        { url: "/api/v1/timkerja/timkerja", method: "POST" }
+        :
+        { url: `/api/v1/timkerja/timkerja/${timId}`, method: "PUT" }
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
@@ -54,8 +59,9 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
         // for (const pair of formData.entries()) {
         //     console.log(`${pair[0]}: ${pair[1]}`);
         // }
-        await apiFetch("/api/v1/timkerja/timkerja", {
-            method: jenis === "baru" ? "POST" : "PUT",
+
+        await apiFetch(urlConfig.url, {
+            method: urlConfig.method,
             body: payload as any
         }).then(_ => {
             toastSuccess("data berhasil disimpan");
