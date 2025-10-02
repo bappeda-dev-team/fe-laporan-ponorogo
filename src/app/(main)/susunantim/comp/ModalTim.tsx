@@ -31,7 +31,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
             is_active: true,
-            keterangan: "",
+            keterangan: data?.keterangan,
             kode_tim: data?.kode_tim,
             nama_tim: data?.nama_tim,
             tahun: "2025"

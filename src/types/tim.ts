@@ -2,6 +2,7 @@ export interface TimGetResponse {
     id: number,
     kode_tim: string,
     nama_tim: string,
+    keterangan: string;
     susunan_tims: AnggotaGetResponse[];
 }
 
