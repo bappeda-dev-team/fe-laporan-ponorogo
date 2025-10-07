@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "../globals.css";
 import { Header } from "@/components/global/header";
+import ToastProvider from "@/components/global/toastProvider";
 
 const font = Poppins({
     subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function MainLayout({
             <div className="pt-[90px] px-5 pb-5">
                 <Header />
                 {children}
+                <ToastProvider />
             </div>
         </>
     );

@@ -2,75 +2,73 @@
 
 import { useEffect, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
-import { TbUsersGroup, TbDeviceFloppy, TbX, TbCircleCheck, TbSquare } from "react-icons/tb";
+import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { FloatingLabelInput } from "@/components/global/input";
+import { FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { TimGetResponse } from "@/types/tim";
 import { apiFetch } from "@/lib/apiFetch";
 import useToast from "@/components/global/toast";
 import { AlertNotification } from "@/components/global/sweetalert2";
+import { useGet } from "@/app/hooks/useGet";
+import { ProgramUnggulanGetResponse, OptionType } from "@/types";
 
 interface Modal {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    jenis: "baru" | "edit";
-    data?: TimGetResponse;
+    Data?: TimGetResponse | null;
 }
 interface FormValue {
-    is_active: boolean;
-    sekretariat: boolean;
-    keterangan: string;
-    kode_tim: string;
-    nama_tim: string;
+    id_program_unggulan: OptionType | null;
     tahun: string;
+    kode_opd: string;
 }
 
-export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
+export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data }) => {
 
-    const [Sekretariat, setSekretariat] = useState<boolean>(false);
+    const opd = process.env.NEXT_PUBLIC_KODE_OPD;
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            is_active: true,
-            keterangan: data?.keterangan,
-            kode_tim: data?.kode_tim,
-            nama_tim: data?.nama_tim,
-            sekretariat: false,
-            tahun: "2025"
+            id_program_unggulan: null,
+            tahun: "2025",
+            kode_opd: opd,
         }
-    })
+    });
+
+    const [OptionProgram, setOptionProgram] = useState<OptionType[]>([]);
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
-    const timId = data?.id
-    const urlConfig = jenis === "baru" ?
-        { url: "/api/v1/timkerja/timkerja", method: "POST" }
-        :
-        { url: `/api/v1/timkerja/timkerja/${timId}`, method: "PUT" }
+
+    const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/program_unggulan/findall/2025/2030`)
+
+    useEffect(() => {
+        if (data) {
+            const programUnggulan = data.map((p: ProgramUnggulanGetResponse) => ({
+                value: p.id,
+                label: `${p.nama_program_unggulan || "-"} - ${p.rencana_implementasi || "-"}`,
+            }));
+            setOptionProgram(programUnggulan);
+        }
+    }, [data]);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         const payload = {
-            nama_tim: data.nama_tim,
-            keterangan: data.keterangan,
-            is_active: true,
-            sekretariat: Sekretariat,
-            tahun: "2025"
+            id_program_unggulan: data.id_program_unggulan?.value,
+            tahun: "2025",
+            kode_opd: opd
         }
 
-        // console.log("Memeriksa Isi FormData:");
-        // for (const pair of formData.entries()) {
-        //     console.log(`${pair[0]}: ${pair[1]}`);
-        // }
+        // console.log(payload);
 
-        await apiFetch(urlConfig.url, {
-            method: urlConfig.method,
+        await apiFetch(`/api/v1/timkerja/timkerja/${Data?.kode_tim}/program_unggulan`, {
+            method: "POST",
             body: payload as any
         }).then(_ => {
             toastSuccess("data berhasil disimpan");
-            AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
             onSuccess();
             handleClose();
         }).catch(err => {
@@ -88,52 +86,29 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
                 <h1 className="flex items-center justify-center gap-1 text-xl uppercase font-semibold pb-1">
                     <TbUsersGroup />
-                    {jenis === "baru" ? "Tambah" : "Edit"} Tim {jenis === "edit" && `code : ${data?.kode_tim || "no code"}`}
+                    Tambah Program Unggulan
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                    name="nama_tim"
+                    name="id_program_unggulan"
                     control={control}
                     rules={{ required: "nama tim wajib terisi" }}
                     render={({ field }) => (
                         <>
-                            <FloatingLabelInput
+                            <FloatingLabelSelect
                                 {...field}
-                                id="nama_tim"
-                                label="nama tim"
+                                id="id_program_unggulan"
+                                label="Program Unggulan"
+                                options={OptionProgram}
+                                isLoading={loading}
                             />
-                            {errors.nama_tim &&
-                                <p className="text-red-400 italic">{errors.nama_tim.message}</p>
+                            {errors.id_program_unggulan &&
+                                <p className="text-red-400 italic">{errors.id_program_unggulan.message}</p>
                             }
                         </>
                     )}
                 />
-                <Controller
-                    name="keterangan"
-                    control={control}
-                    render={({ field }) => (
-                        <FloatingLabelInput
-                            {...field}
-                            id="keterangan"
-                            label="keterangan"
-                        />
-                    )}
-                />
-                <div className="flex justify-center items-center">
-                    <button 
-                        type="button"
-                        className={`flex items-center gap-2 py-1 px-2 border rounded-lg cursor-pointer ${Sekretariat ? "bg-green-500 text-white" : "border-green-500 text-green-500"}`} 
-                        onClick={() => setSekretariat((prev) => !prev)}
-                    >
-                        {Sekretariat ? 
-                            <TbCircleCheck />
-                        :
-                            <TbSquare />
-                        }
-                        Tim Sekretariat
-                    </button>
-                </div>
                 <div className="flex flex-col gap-2 mt-3">
                     <ButtonSky
                         className="w-full"

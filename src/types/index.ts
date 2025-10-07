@@ -47,3 +47,21 @@ export interface OpdGetResponse {
     is_active: boolean;
   }
 }
+export interface ProgramUnggulanGetResponse {
+  id: number;
+  kode_program_unggulan: string;
+  nama_program_unggulan: string;
+  rencana_implementasi: string;
+  keterangan: string;
+  tahun_awal: string;
+  tahun_akhir: string;
+  is_active: boolean;
+}
+export interface KinerjaKonkerGetResponse {
+  id: number;
+  kode_tim: string;
+  id_program_unggulan: number;
+  program_unggulan: string;
+  tahun: string;
+  kode_opd: string;
+}

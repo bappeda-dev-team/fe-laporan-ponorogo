@@ -5,6 +5,7 @@ type LoginResponse = {
 }
 
 export async function login(username: string, password: string): Promise<void> {
+
     const API_LOGIN = process.env.NEXT_PUBLIC_API_URL;
     const res = await fetch(`${API_LOGIN}/auth/login`, {
         method: "POST",
@@ -17,7 +18,8 @@ export async function login(username: string, password: string): Promise<void> {
     }
 
     const data: LoginResponse = await res.json();
-    localStorage.setItem("sessionId", data.sessionId)
+    localStorage.setItem("sessionId", data.sessionId);
+
 
     // cookie buat middleware
     document.cookie = `sessionId=${data.sessionId}; path=/; secure; samesite=strict`

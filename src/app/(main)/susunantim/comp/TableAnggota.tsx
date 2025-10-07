@@ -73,7 +73,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
     return (
         <div className="flex flex-col p-2 border-2 border-emerald-500 rounded-lg">
             <div className="flex flex-wrap items-center justify-between mb-2">
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col">
                     <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
                     <h1 className="font-medium">{data.keterangan || "-"}</h1>
                 </div>

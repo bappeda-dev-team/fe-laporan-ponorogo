@@ -6,6 +6,7 @@ import Link from "next/link";
 import { logout } from "@/lib/auth"
 import { usePathname } from "next/navigation";
 import { TbUsersGroup, TbFileSettings, TbAlertTriangle, TbDeviceAnalytics, TbDeviceImacDollar, TbLogout } from "react-icons/tb";
+import useToast from "./toast";
 
 interface OptionType {
   label: string;
@@ -30,6 +31,8 @@ export const Header = () => {
   const [Nip, setNip] = useState<string>("");
   const url = usePathname();
   const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
+
+  const {toastSuccess} = useToast();
 
   //handle header scroll animation 
   useEffect(() => {
@@ -151,7 +154,8 @@ export const Header = () => {
           <button
             onClick={() => {
               localStorage.removeItem("sessionId");
-              window.location.href = "/login"
+              window.location.href = "/login";
+              toastSuccess("Berhasil Logout")
             }}
             className="flex items-center text-white shadow gap-1 font-medium border-1 bg-red-700 rounded-lg cursor-pointer py-1 px-5 hover:bg-gray-100 hover:text-red-700"
           >
