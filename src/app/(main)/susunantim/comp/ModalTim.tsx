@@ -20,7 +20,7 @@ interface Modal {
 }
 interface FormValue {
     is_active: boolean;
-    sekretariat: boolean;
+    is_sekretariat: boolean;
     keterangan: string;
     kode_tim: string;
     nama_tim: string;
@@ -37,7 +37,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             keterangan: data?.keterangan,
             kode_tim: data?.kode_tim,
             nama_tim: data?.nama_tim,
-            sekretariat: false,
+            is_sekretariat: false,
             tahun: "2025"
         }
     })
@@ -56,7 +56,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             nama_tim: data.nama_tim,
             keterangan: data.keterangan,
             is_active: true,
-            sekretariat: Sekretariat,
+            is_sekretariat: Sekretariat,
             tahun: "2025"
         }
 
