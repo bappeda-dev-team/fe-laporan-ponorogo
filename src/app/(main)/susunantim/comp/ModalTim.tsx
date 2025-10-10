@@ -37,10 +37,18 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             keterangan: data?.keterangan,
             kode_tim: data?.kode_tim,
             nama_tim: data?.nama_tim,
-            is_sekretariat: false,
+            is_sekretariat: data?.is_sekretariat,
             tahun: "2025"
         }
-    })
+    });
+
+    useEffect(() => {
+        if(data?.is_sekretariat){
+            setSekretariat(true);
+        } else {
+            setSekretariat(false);
+        }
+    }, [data])
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();

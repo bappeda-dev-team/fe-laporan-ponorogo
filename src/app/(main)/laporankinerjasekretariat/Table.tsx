@@ -4,20 +4,25 @@ import TableComponent from "@/components/page/TableComponent";
 import { ButtonSkyBorder } from "@/components/button/button";
 import { TbCirclePlus } from "react-icons/tb";
 import { useState } from "react";
+import { TimGetResponse } from "@/types/tim";
 
-export const Table = () => {
-    
+interface Table {
+    data: TimGetResponse;
+}
+
+export const Table: React.FC<Table> = ({ data }) => {
+
     return (
-        <div className="flex flex-col p-2 border-2 border-emerald-500 rounded-lg">
+        <>
             <div className="flex flex-wrap items-center justify-between mb-2">
                 <div className="flex flex-col">
-                    <h1 className="uppercase font-bold text-2xl">Susunan Tim: </h1>
-                    <h1 className="font-medium">-</h1>
+                    <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
+                    <h1 className="font-medium">{data.keterangan || ""}</h1>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <ButtonSkyBorder
                         className="flex items-center gap-1"
-                        // onClick={() => handleModalTim(data)}
+                    // onClick={() => handleModalTim(data)}
                     >
                         <TbCirclePlus />
                         Tambah Rencana Kinerja
@@ -71,6 +76,6 @@ export const Table = () => {
                     </tbody>
                 </table>
             </TableComponent>
-        </div>
+        </>
     )
 }

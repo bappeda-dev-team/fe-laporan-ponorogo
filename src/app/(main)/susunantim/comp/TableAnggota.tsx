@@ -71,7 +71,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
     }
 
     return (
-        <div className="flex flex-col p-2 border-2 border-emerald-500 rounded-lg">
+        <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
             <div className="flex flex-wrap items-center justify-between mb-2">
                 <div className="flex flex-col">
                     <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
@@ -105,10 +105,10 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                     </ButtonRedBorder>
                 </div>
             </div>
-            <TableComponent className="border-emerald-500">
+            <TableComponent className={`${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
                 <table className="w-full">
                     <thead>
-                        <tr className="text-white bg-emerald-500">
+                        <tr className={`text-white ${data.is_sekretariat ? "bg-emerald-500" : "bg-blue-500"}`}>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[50px] text-center">No</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nama</th>
                             <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[200px] text-center">NIP</th>
@@ -116,7 +116,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Keterangan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">Aksi</th>
                         </tr>
-                        <tr className="text-white bg-emerald-600">
+                        <tr className={`text-white ${data.is_sekretariat ? "bg-emerald-600" : "bg-blue-600"} `}>
                             <th className="border-r border-b py-1 border-gray-300 text-center">1</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">2</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">3</th>
@@ -132,12 +132,12 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                                 .sort((a, b) => a.level_jabatan - b.level_jabatan)
                                 .map((item: AnggotaGetResponse, index: number) => (
                                     <tr key={index}>
-                                        <td className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
-                                        <td className="border border-emerald-500 px-6 py-4">{item.nama_pegawai || "-"}</td>
-                                        <td className="border border-emerald-500 px-6 py-4 text-center">{item.nip || "-"}</td>
-                                        <td className="border border-emerald-500 px-6 py-4 text-center">{item.nama_jabatan || "-"}</td>
-                                        <td className="border border-emerald-500 px-6 py-4">{item.keterangan || "-"}</td>
-                                        <td className="border border-emerald-500 px-6 py-4">
+                                        <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_pegawai || "-"}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nip || "-"}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nama_jabatan || "-"}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.keterangan || "-"}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
                                             <div className="flex flex-col gap-2 justify-center items-center">
                                                 <ButtonRedBorder
                                                     className="flex items-center gap-1 w-full"
@@ -145,8 +145,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                                                         if(result.isConfirmed){
                                                             HapusAnggota(item.id)
                                                         }
-                                                    })
-                                                    }
+                                                    })}
                                                 >
                                                     <TbTrash />
                                                     Hapus

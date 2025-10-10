@@ -6,7 +6,7 @@ import { TimGetResponse } from "@/types/tim";
 
 const LaporanKinerjaKonker = () => {
 
-    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja');
+    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja-non-sekretariat');
 
     if (loading) {
         return (
