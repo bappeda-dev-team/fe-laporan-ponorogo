@@ -4,7 +4,7 @@ import { Table } from "./Table";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
 
-const laporankinerjasekretariat = () => {
+const LaporanKinerjaSekretariat = () => {
 
     const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja-sekretariat');
 
@@ -33,4 +33,4 @@ const laporankinerjasekretariat = () => {
     }
 }
 
-export default laporankinerjasekretariat;
+export default LaporanKinerjaSekretariat;

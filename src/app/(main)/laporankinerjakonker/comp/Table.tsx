@@ -11,6 +11,8 @@ import { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
 import { KinerjaKonkerGetResponse } from "@/types";
+import { LoadingButtonClip2 } from "@/components/global/Loading";
+import { Realisasi } from "./Realisasi";
 
 interface Table {
     data: TimGetResponse;
@@ -19,15 +21,16 @@ interface Table {
 const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
+    const [ModalRealisasi, setModalRealisasi] = useState<boolean>(false);
     const [DataTim, setDataTim] = useState<TimGetResponse | null>(null);
 
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const { toastSuccess } = useToast();
 
-    const { data: DataTable, error, loading } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
+    const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
 
     const handleModalProgram = (data: TimGetResponse | null) => {
-        if(ModalProgram){
+        if (ModalProgram) {
             setModalProgram(false);
             setDataTim(null);
         } else {
@@ -94,76 +97,86 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center">14</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {DataTable?.length === 0 ? 
+                    {LoadingProgram ?
+                        <tbody>
                             <tr>
-                                <td colSpan={30} className="px-6 py-4">Data Kosong, Tambahkan Program Unggulan</td>
+                                <td colSpan={30} className="flex gap-1 px-6 py-4 text-blue-500">
+                                    <LoadingButtonClip2 />
+                                    Loading...
+                                </td>
                             </tr>
+                        </tbody>
                         :
-                            DataTable?.map((item: KinerjaKonkerGetResponse, index: number) => (
-                                <tr key={index}>
-                                    <td className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
-                                    <td className="border border-blue-500 px-6 py-4">
-                                        <div className="flex flex-col gap-1">
-                                            {item.program_unggulan || "-"}
-                                            <ButtonRedBorder
-                                                className="flex items-center gap-1"
-                                                onClick={() => {
-                                                    AlertQuestion("Hapus Program", "data dari kolom 9 sampai 13 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            hapusProgram();
-                                                        }
-                                                    })
-                                                }}
-                                            >
-                                                <TbTrash />
-                                                Hapus
-                                            </ButtonRedBorder>
-                                        </div>
-                                    </td>
-                                    <td className="border border-blue-500 px-6 py-4">Pelaksanaan Program didalam lingkup Bappeda</td>
-                                    <td className="border border-blue-500 px-6 py-4">indikator program 1 T</td>
-                                    <td className="border border-blue-500 px-6 py-4">30</td>
-                                    <td className="border border-blue-500 px-6 py-4">Badan Perencanaan Penelitian dan Pengembangan Daerah</td>
-                                    <td className="border border-blue-500 px-6 py-4">(5.01.02.2.01) Penyusunan dan Perancangan</td>
-                                    <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(2000000)}</td>
-                                    <td className="border border-blue-500 px-6 py-4">
-                                        <div className="flex items-center justify-center gap-2">
-                                            Rp.{formatRupiah(5000000)}
-                                            <button
-                                                className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
-                                                type="button"
-                                                onClick={() => {
-                                                    toastSuccess("dalam pengembangan");
-                                                }}
-                                            >
-                                                <TbPencil />
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td className="border border-blue-500 px-6 py-4">contoh rencana aksi</td>
-                                    <td className="border border-blue-500 px-6 py-4">contoh faktor pendorong</td>
-                                    <td className="border border-blue-500 px-6 py-4">contoh faktor penghambat</td>
-                                    <td className="border border-blue-500 px-6 py-4">rekomendasi tindak lanjut</td>
-                                    <td className="border-b border-blue-500 px-6 py-4">
-                                        <div className="flex justify-center">
-                                            <ButtonSkyBorder 
-                                                className="flex items-center gap-2"
-                                                onClick={() => toastSuccess("dalam pengembangan")}
-                                            >
-                                                <TbUpload />
-                                                Upload
-                                            </ButtonSkyBorder>
-                                        </div>
+                        ErrorProgram ?
+                            <tbody>
+                                <tr>
+                                    <td colSpan={30} className="flex gap-1 px-6 py-4 text-blue-500">
+                                        <LoadingButtonClip2 />
+                                        Error saat mendapatkan data program unggulan, jika terus berlanjut hubungi tim developer
                                     </td>
                                 </tr>
-                            ))
-                        }
-                    </tbody>
+                            </tbody>
+                            :
+                            <tbody>
+                                {DataTable?.length === 0 ?
+                                    <tr>
+                                        <td colSpan={30} className="px-6 py-4">Data Kosong, Tambahkan Program Unggulan</td>
+                                    </tr>
+                                    :
+                                    DataTable?.map((item: KinerjaKonkerGetResponse, index: number) => (
+                                        <tr key={index}>
+                                            <td className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
+                                            <td className="border border-blue-500 px-6 py-4">
+                                                <div className="flex flex-col gap-1">
+                                                    {item.program_unggulan || "-"}
+                                                    <ButtonRedBorder
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => {
+                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 13 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    hapusProgram();
+                                                                }
+                                                            })
+                                                        }}
+                                                    >
+                                                        <TbTrash />
+                                                        Hapus
+                                                    </ButtonRedBorder>
+                                                </div>
+                                            </td>
+                                            <td className="border border-blue-500 px-6 py-4">Pelaksanaan Program didalam lingkup Bappeda</td>
+                                            <td className="border border-blue-500 px-6 py-4">indikator program 1 T</td>
+                                            <td className="border border-blue-500 px-6 py-4">30</td>
+                                            <td className="border border-blue-500 px-6 py-4">Badan Perencanaan Penelitian dan Pengembangan Daerah</td>
+                                            <td className="border border-blue-500 px-6 py-4">(5.01.02.2.01) Penyusunan dan Perancangan</td>
+                                            <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(2000000)}</td>
+                                            <td className="border border-blue-500 px-6 py-4">
+                                                <Realisasi anggaran={5000000} />
+                                            </td>
+                                            <td className="border border-blue-500 px-6 py-4">contoh rencana aksi</td>
+                                            <td className="border border-blue-500 px-6 py-4">contoh faktor pendorong</td>
+                                            <td className="border border-blue-500 px-6 py-4">contoh faktor penghambat</td>
+                                            <td className="border border-blue-500 px-6 py-4">rekomendasi tindak lanjut</td>
+                                            <td className="border-b border-blue-500 px-6 py-4">
+                                                <div className="flex justify-center">
+                                                    <ButtonSkyBorder
+                                                        className="flex items-center gap-2"
+                                                        onClick={() => toastSuccess("dalam pengembangan")}
+                                                    >
+                                                        <TbUpload />
+                                                        Upload
+                                                    </ButtonSkyBorder>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                    }
                 </table>
             </TableComponent>
             {ModalProgram &&
-                <ModalProgramUnggulan 
+                <ModalProgramUnggulan
                     isOpen={ModalProgram}
                     onClose={() => handleModalProgram(null)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}

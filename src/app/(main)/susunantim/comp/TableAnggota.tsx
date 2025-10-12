@@ -75,7 +75,11 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
             <div className="flex flex-wrap items-center justify-between mb-2">
                 <div className="flex flex-col">
                     <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
-                    <h1 className="font-medium">{data.keterangan || "-"}</h1>
+                    {data.is_sekretariat ? 
+                        <h1 className="font-medium">Tim Sekretariat - {data.keterangan || ""}</h1>
+                    :
+                        <h1 className="font-medium">{data.keterangan || ""}</h1>
+                    }
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <ButtonGreenBorder
