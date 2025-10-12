@@ -13,6 +13,7 @@ import { useGet } from "@/app/hooks/useGet";
 import { KinerjaKonkerGetResponse } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
+import { ModalUpload } from "./ModalUpload";
 
 interface Table {
     data: TimGetResponse;
@@ -22,6 +23,7 @@ const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
     const [ModalRealisasi, setModalRealisasi] = useState<boolean>(false);
+    const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
     const [DataTim, setDataTim] = useState<TimGetResponse | null>(null);
 
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
@@ -161,7 +163,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                 <div className="flex justify-center">
                                                     <ButtonSkyBorder
                                                         className="flex items-center gap-2"
-                                                        onClick={() => toastSuccess("dalam pengembangan")}
+                                                        onClick={() => setModalBuktiOpen(true)}
                                                     >
                                                         <TbUpload />
                                                         Upload
@@ -181,6 +183,13 @@ const Table: React.FC<Table> = ({ data }) => {
                     onClose={() => handleModalProgram(null)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
                     Data={DataTim}
+                />
+            }
+            {ModalBuktiOpen &&
+                <ModalUpload 
+                    isOpen={ModalBuktiOpen}
+                    onClose={() => setModalBuktiOpen(false)}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
                 />
             }
         </>

@@ -1,4 +1,4 @@
-import Table from "./table";
+import Table from "./comp/table";
 
 const laporantpp = () => {
     return(

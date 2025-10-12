@@ -5,12 +5,16 @@ import { ButtonSkyBorder } from "@/components/button/button";
 import { TbCirclePlus } from "react-icons/tb";
 import { useState } from "react";
 import { TimGetResponse } from "@/types/tim";
+import { ModalRekin } from "./ModalRekin";
 
 interface Table {
     data: TimGetResponse;
 }
 
 export const Table: React.FC<Table> = ({ data }) => {
+
+    const [ModalRekinOpen, setModalRekinOpen] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
     return (
         <>
@@ -22,7 +26,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <div className="flex flex-wrap gap-2">
                     <ButtonSkyBorder
                         className="flex items-center gap-1"
-                    // onClick={() => handleModalTim(data)}
+                        onClick={() => setModalRekinOpen(true)}
                     >
                         <TbCirclePlus />
                         Tambah Rencana Kinerja
@@ -76,6 +80,13 @@ export const Table: React.FC<Table> = ({ data }) => {
                     </tbody>
                 </table>
             </TableComponent>
+            {ModalRekinOpen &&
+                <ModalRekin
+                    isOpen={ModalRekinOpen}
+                    onClose={() => setModalRekinOpen(false)}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                />
+            }
         </>
     )
 }
