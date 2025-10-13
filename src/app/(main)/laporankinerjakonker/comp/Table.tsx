@@ -14,6 +14,7 @@ import { KinerjaKonkerGetResponse } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
 import { ModalUpload } from "./ModalUpload";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface Table {
     data: TimGetResponse;
@@ -41,8 +42,16 @@ const Table: React.FC<Table> = ({ data }) => {
         }
     }
 
-    const hapusProgram = () => {
-        AlertNotification("Maintenance", "Fitur dalam pengembangan developer", "info", 2000, true);
+    const hapusProgram = async (id: number) => {
+        await apiFetch(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan/${id}`, {
+            method: "DELETE",
+        }).then(resp => {
+            // toastSuccess("tim berhasil dihapus");
+            AlertNotification("Berhasil", "Tim Berhasil Dihapus", "success", 3000, true);
+            setFetchTrigger((prev) => !prev);
+        }).catch(err => {
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        })
     }
 
     return (
@@ -134,9 +143,9 @@ const Table: React.FC<Table> = ({ data }) => {
                                                     <ButtonRedBorder
                                                         className="flex items-center gap-1"
                                                         onClick={() => {
-                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 13 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
+                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
                                                                 if (result.isConfirmed) {
-                                                                    hapusProgram();
+                                                                    hapusProgram(item.id);
                                                                 }
                                                             })
                                                         }}
@@ -186,7 +195,7 @@ const Table: React.FC<Table> = ({ data }) => {
                 />
             }
             {ModalBuktiOpen &&
-                <ModalUpload 
+                <ModalUpload
                     isOpen={ModalBuktiOpen}
                     onClose={() => setModalBuktiOpen(false)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}

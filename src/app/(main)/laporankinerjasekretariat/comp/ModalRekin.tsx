@@ -36,22 +36,23 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess }) => {
         }
     });
 
-    const [OptionProgram, setOptionProgram] = useState<OptionType[]>([]);
+    const [OptionRekin, setOptionRekin] = useState<OptionType[]>([]);
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
 
-    // const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/rencana_kinerja/kode_opd`)
+    const { data, error, loading } = useGet<any[]>(`/api/v1/perencanaan/rencana_kinerja_opd/findall?kode_opd=${opd}&tahun=2025`)
 
-    // useEffect(() => {
-    //     if (data) {
-    //         const programUnggulan = data.map((p: ProgramUnggulanGetResponse) => ({
-    //             value: p.id,
-    //             label: `${p.nama_program_unggulan || "-"} - ${p.rencana_implementasi || "-"}`,
-    //         }));
-    //         setOptionProgram(programUnggulan);
-    //     }
-    // }, [data]);
+    useEffect(() => {
+        if (data) {
+            const rekin = data.map((p: any) => ({
+                value: p.id_rencana_kinerja,
+                label: p.nama_rencana_kinerja,
+            }));
+            // console.log("data rekin: ", data);
+            setOptionRekin(rekin);
+        }
+    }, [data]);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
@@ -99,8 +100,8 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess }) => {
                                 {...field}
                                 id="id_rencana_kinerja"
                                 label="Rencana Kinerja"
-                                options={OptionProgram}
-                                // isLoading={loading}
+                                options={OptionRekin}
+                                isLoading={loading}
                             />
                             {errors.id_rencana_kinerja &&
                                 <p className="text-red-400 italic">{errors.id_rencana_kinerja.message}</p>

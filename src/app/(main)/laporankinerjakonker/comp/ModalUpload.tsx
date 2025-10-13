@@ -104,7 +104,7 @@ export const ModalUpload: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data 
                         control={control}
                         render={({ field: { onBlur, onChange, ref } }) => (
                             <input
-                                className="border px-4 py-2 rounded-lg"
+                                className="border px-4 py-2 rounded-lg hover:bg-blue-500"
                                 id="file"
                                 onChange={(e) => onChange(e.target.files)}
                                 type="file"
