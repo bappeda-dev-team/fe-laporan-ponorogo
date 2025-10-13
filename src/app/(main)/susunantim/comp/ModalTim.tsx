@@ -67,23 +67,27 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             is_sekretariat: Sekretariat,
             tahun: "2025"
         }
+        // console.log(payload);
 
-        // console.log("Memeriksa Isi FormData:");
-        // for (const pair of formData.entries()) {
-        //     console.log(`${pair[0]}: ${pair[1]}`);
-        // }
-
-        await apiFetch(urlConfig.url, {
-            method: urlConfig.method,
-            body: payload as any
-        }).then(_ => {
-            toastSuccess("data berhasil disimpan");
-            AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
-            onSuccess();
-            handleClose();
-        }).catch(err => {
+        try{
+            setProses(true);
+            await apiFetch(urlConfig.url, {
+                method: urlConfig.method,
+                body: payload as any
+            }).then(_ => {
+                toastSuccess("data berhasil disimpan");
+                AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
+                onSuccess();
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch(err){
+            console.log(err);
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        })
+        } finally {
+            setProses(false);
+        }
     }
 
     const handleClose = () => {

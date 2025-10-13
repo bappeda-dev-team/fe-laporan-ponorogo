@@ -38,9 +38,8 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
     });
 
     const [OptionProgram, setOptionProgram] = useState<OptionType[]>([]);
-
     const [Proses, setProses] = useState<boolean>(false);
-    const { toastError, toastSuccess } = useToast();
+    const { toastSuccess } = useToast();
 
     const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/program_unggulan/findall/2025/2030`)
 
@@ -63,17 +62,24 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
         }
 
         // console.log(payload);
-
-        await apiFetch(`/api/v1/timkerja/timkerja/${Data?.kode_tim}/program_unggulan`, {
-            method: "POST",
-            body: payload as any
-        }).then(_ => {
-            toastSuccess("data berhasil disimpan");
-            onSuccess();
-            handleClose();
-        }).catch(err => {
+        try{
+            setProses(true);
+            await apiFetch(`/api/v1/timkerja/timkerja/${Data?.kode_tim}/program_unggulan`, {
+                method: "POST",
+                body: payload as any
+            }).then(_ => {
+                toastSuccess("data berhasil disimpan");
+                onSuccess();
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch(err){
+            console.log(err);
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        })
+        } finally {
+            setProses(false);
+        }
     }
 
     const handleClose = () => {
@@ -89,49 +95,54 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
                     Tambah Program Unggulan
                 </h1>
             </div>
-            <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
-                <Controller
-                    name="id_program_unggulan"
-                    control={control}
-                    rules={{ required: "nama tim wajib terisi" }}
-                    render={({ field }) => (
-                        <>
-                            <FloatingLabelSelect
-                                {...field}
-                                id="id_program_unggulan"
-                                label="Program Unggulan"
-                                options={OptionProgram}
-                                isLoading={loading}
-                            />
-                            {errors.id_program_unggulan &&
-                                <p className="text-red-400 italic">{errors.id_program_unggulan.message}</p>
+            {error &&
+                <h1 className="text-red-500">Error saat mengambil data dropwdown program unggulan</h1>
+            }
+            <div className="min-h-[420px] flex flex-col">
+                <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
+                    <Controller
+                        name="id_program_unggulan"
+                        control={control}
+                        rules={{ required: "nama tim wajib terisi" }}
+                        render={({ field }) => (
+                            <>
+                                <FloatingLabelSelect
+                                    {...field}
+                                    id="id_program_unggulan"
+                                    label="Program Unggulan"
+                                    options={OptionProgram}
+                                    isLoading={loading}
+                                />
+                                {errors.id_program_unggulan &&
+                                    <p className="text-red-400 italic">{errors.id_program_unggulan.message}</p>
+                                }
+                            </>
+                        )}
+                    />
+                    <div className="flex flex-col gap-2 mt-3">
+                        <ButtonSky
+                            className="w-full"
+                            type="submit"
+                            disabled={Proses}
+                        >
+                            {Proses ?
+                                <span className="flex">
+                                    Menyimpan...
+                                </span>
+                                :
+                                <span className="flex items-center gap-1">
+                                    <TbDeviceFloppy />
+                                    Simpan
+                                </span>
                             }
-                        </>
-                    )}
-                />
-                <div className="flex flex-col gap-2 mt-3">
-                    <ButtonSky
-                        className="w-full"
-                        type="submit"
-                        disabled={Proses}
-                    >
-                        {Proses ?
-                            <span className="flex">
-                                Menyimpan...
-                            </span>
-                            :
-                            <span className="flex items-center gap-1">
-                                <TbDeviceFloppy />
-                                Simpan
-                            </span>
-                        }
-                    </ButtonSky>
-                    <ButtonRed className="w-full flex items-center gap-1" type="button" onClick={handleClose}>
-                        <TbX />
-                        Batal
-                    </ButtonRed>
-                </div>
-            </form>
+                        </ButtonSky>
+                        <ButtonRed className="w-full flex items-center gap-1" type="button" onClick={handleClose}>
+                            <TbX />
+                            Batal
+                        </ButtonRed>
+                    </div>
+                </form>
+            </div>
         </ModalComponent>
     )
 }

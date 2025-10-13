@@ -41,22 +41,26 @@ export const ModalJabatan: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             nama_jabatan: data.nama_jabatan,
             level_jabatan: Number(data.level_jabatan)
         }
-
-        // console.log("Memeriksa Isi FormData:");
-        // for (const pair of formData.entries()) {
-        //     console.log(`${pair[0]}: ${pair[1]}`);
-        // }
-        await apiFetch("/api/v1/timkerja/jabatantim", {
-            method: jenis === "baru" ? "POST" : "PUT",
-            body: payload as any
-        }).then(_ => {
-            toastSuccess("data berhasil disimpan");
-            AlertNotification("Berhasil", "Berhasil Menambahkan Data Jabatan", "success", 3000, true);
-            onSuccess();
-            handleClose();
-        }).catch(err => {
+        console.log(payload);
+        try{
+            setProses(true);
+            await apiFetch("/api/v1/timkerja/jabatantim", {
+                method: jenis === "baru" ? "POST" : "PUT",
+                body: payload as any
+            }).then(_ => {
+                toastSuccess("data berhasil disimpan");
+                AlertNotification("Berhasil", "Berhasil Menambahkan Data Jabatan", "success", 3000, true);
+                onSuccess();
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch(err){
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        })
+            console.log(err)
+        } finally{
+            setProses(false);
+        }
     }
 
     const handleClose = () => {

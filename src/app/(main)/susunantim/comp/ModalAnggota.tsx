@@ -72,12 +72,14 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             nip: data?.nip?.value,
             nama_jabatan_tim: data.nama_jabatan_tim?.value
         }
+        // console.log(payload);
 
-        await apiFetch("/api/v1/timkerja/susunantim", {
-            method: "POST",
-            body: payload as any
-        })
-            .then((resp: any) => {
+        try{
+            setProses(true);
+            await apiFetch("/api/v1/timkerja/susunantim", {
+                method: "POST",
+                body: payload as any
+            }).then((resp: any) => {
                 if (resp.code === 200 || resp.code === 201) {
                     // toastSuccess("data anggota berhasil disimpan");
                     AlertNotification("Berhasil", "anggota berhasil ditambahkan", "success", 2000, true);
@@ -89,11 +91,16 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                     console.log(resp);
                     setProses(false);
                 }
-            })
-            .catch(err => {
+            }).catch(err => {
                 AlertNotification("GAGAL", `${err}`, "error", 3000, true);
                 setProses(false);
             })
+        } catch(err){
+            console.log(err);
+            AlertNotification("GAGAL", `${err}`, "error", 3000, true);
+        } finally{
+            setProses(false);
+        }
     }
 
     useEffect(() => {
