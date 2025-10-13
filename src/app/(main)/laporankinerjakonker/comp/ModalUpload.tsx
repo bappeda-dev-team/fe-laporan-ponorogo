@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
-import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
+import { TbFileIsr, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { TimGetResponse } from "@/types/tim";
@@ -24,26 +24,14 @@ interface FormValue {
 
 export const ModalUpload: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data }) => {
 
-    const opd = process.env.NEXT_PUBLIC_KODE_OPD;
+    // const opd = process.env.NEXT_PUBLIC_KODE_OPD;
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>();
-
-    const [OptionProgram, setOptionProgram] = useState<OptionType[]>([]);
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
 
     const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/program_unggulan/findall/2025/2030`)
-
-    useEffect(() => {
-        if (data) {
-            const programUnggulan = data.map((p: ProgramUnggulanGetResponse) => ({
-                value: p.id,
-                label: `${p.nama_program_unggulan || "-"} - ${p.rencana_implementasi || "-"}`,
-            }));
-            setOptionProgram(programUnggulan);
-        }
-    }, [data]);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const url_pdf = "https://kab-bontang-upload.zeabur.app"
@@ -86,7 +74,7 @@ export const ModalUpload: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data 
         <ModalComponent isOpen={isOpen} onClose={handleClose}>
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
                 <h1 className="flex items-center justify-center gap-1 text-xl uppercase font-semibold pb-1">
-                    <TbUsersGroup />
+                    <TbFileIsr />
                     Upload Bukti Pendukung
                 </h1>
             </div>
@@ -96,7 +84,7 @@ export const ModalUpload: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data 
                         className="uppercase text-xs font-bold text-gray-700 my-2"
                         htmlFor="file"
                     >
-                        File PDF:
+                        File:
                     </label>
                     <Controller
                         name="file"
@@ -104,7 +92,7 @@ export const ModalUpload: React.FC<Modal> = ({ isOpen, onClose, onSuccess, Data 
                         control={control}
                         render={({ field: { onBlur, onChange, ref } }) => (
                             <input
-                                className="border px-4 py-2 rounded-lg hover:bg-blue-500"
+                                className="border px-4 py-2 rounded-lg hover:bg-blue-500 hover:border-white hover:text-white cursor-pointer"
                                 id="file"
                                 onChange={(e) => onChange(e.target.files)}
                                 type="file"

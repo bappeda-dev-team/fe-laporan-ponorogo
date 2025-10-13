@@ -2,7 +2,7 @@
 
 import TableComponent from "@/components/page/TableComponent";
 import { ButtonRedBorder, ButtonSkyBorder, ButtonGreenBorder } from "@/components/button/button";
-import { TbPencil, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus } from "react-icons/tb";
+import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus } from "react-icons/tb";
 import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import useToast from "@/components/global/toast";
@@ -46,8 +46,7 @@ const Table: React.FC<Table> = ({ data }) => {
         await apiFetch(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan/${id}`, {
             method: "DELETE",
         }).then(resp => {
-            // toastSuccess("tim berhasil dihapus");
-            AlertNotification("Berhasil", "Tim Berhasil Dihapus", "success", 3000, true);
+            toastSuccess("Program dihapus");
             setFetchTrigger((prev) => !prev);
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
@@ -121,8 +120,8 @@ const Table: React.FC<Table> = ({ data }) => {
                         ErrorProgram ?
                             <tbody>
                                 <tr>
-                                    <td colSpan={30} className="flex gap-1 px-6 py-4 text-blue-500">
-                                        <LoadingButtonClip2 />
+                                    <td colSpan={30} className="flex gap-1 px-6 py-4 text-red-500">
+                                        <TbX />
                                         Error saat mendapatkan data program unggulan, jika terus berlanjut hubungi tim developer
                                     </td>
                                 </tr>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
-import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
+import { TbFileDescription, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
@@ -85,7 +85,7 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
         <ModalComponent isOpen={isOpen} onClose={handleClose}>
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
                 <h1 className="flex items-center justify-center gap-1 text-xl uppercase font-semibold pb-1">
-                    <TbUsersGroup />
+                    <TbFileDescription />
                     Tambah Program Unggulan
                 </h1>
             </div>

@@ -1,11 +1,17 @@
 'use client'
 
 import TableComponent from "@/components/page/TableComponent";
-import { ButtonSkyBorder } from "@/components/button/button";
-import { TbCirclePlus } from "react-icons/tb";
+import { ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
+import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
 import { useState } from "react";
+import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
+import { RencanaKinerjaSekretariatResponse } from "@/types";
 import { ModalRekin } from "./ModalRekin";
+import { LoadingButtonClip2 } from "@/components/global/Loading";
+import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
+import useToast from "@/components/global/toast";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface Table {
     data: TimGetResponse;
@@ -15,6 +21,21 @@ export const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalRekinOpen, setModalRekinOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+
+    const { toastSuccess } = useToast();
+
+    const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja`, FetchTrigger)
+
+    const hapusRekin = async (id: number) => {
+        await apiFetch(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja/${id}`, {
+            method: "DELETE",
+        }).then(resp => {
+            toastSuccess("Rencana Kinerja dihapus");
+            setFetchTrigger((prev) => !prev);
+        }).catch(err => {
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        })
+    }
 
     return (
         <>
@@ -63,21 +84,67 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">11</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td className="border-b border-emerald-500 px-6 py-4 text-center">1</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                        </tr>
-                    </tbody>
+                    {LoadingRekin ?
+                        <tbody>
+                            <tr>
+                                <td colSpan={30} className="flex gap-1 px-6 py-4 text-blue-500">
+                                    <LoadingButtonClip2 />
+                                    Loading...
+                                </td>
+                            </tr>
+                        </tbody>
+                        :
+                        ErrorRekin ?
+                            <tbody>
+                                <tr>
+                                    <td colSpan={30} className="flex gap-1 px-6 py-4 text-red-500">
+                                        <TbX />
+                                        Error saat mendapatkan data Rencana Kinerja di tim sekretariat, jika terus berlanjut hubungi tim developer
+                                    </td>
+                                </tr>
+                            </tbody>
+                            :
+                            <tbody>
+                                {DataTable?.length === 0 ?
+                                    <tr>
+                                        <td colSpan={30} className="px-6 py-4">Data Kosong, Tambahkan Rencana Kinerja</td>
+                                    </tr>
+                                    :
+                                    DataTable?.map((item: RencanaKinerjaSekretariatResponse, index: number) => (
+                                        <tr key={index}>
+                                            <td className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
+                                            <td className="border border-emerald-500 px-6 py-4">
+                                                <div className="flex flex-col gap-1">
+                                                    {item.rencana_kinerja || "-"}
+                                                    <ButtonRedBorder
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => {
+                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    hapusRekin(item.id);
+                                                                }
+                                                            })
+                                                        }}
+                                                    >
+                                                        <TbTrash />
+                                                        Hapus
+                                                    </ButtonRedBorder>
+                                                </div>
+                                            </td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                    }
                 </table>
             </TableComponent>
             {ModalRekinOpen &&
@@ -85,6 +152,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                     isOpen={ModalRekinOpen}
                     onClose={() => setModalRekinOpen(false)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    kode_tim={data.kode_tim}
                 />
             }
         </>
