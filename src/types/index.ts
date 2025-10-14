@@ -64,6 +64,25 @@ export interface KinerjaKonkerGetResponse {
   program_unggulan: string;
   tahun: string;
   kode_opd: string;
+  pohon_kinerja: PohonKinerjaKonker[];
+}
+
+export interface PohonKinerjaKonker {
+  kode_program_unggulan: string;
+  nama_program_unggulan: string;
+  rencana_implementasi: string;
+  id_tagging: number;
+  id_pohon: number;
+  tahun: number;
+  nama_pohon: string;
+  kode_opd: string;
+  nama_opd: string;
+  jenis_pohon: string;
+  keterangan_tagging: string;
+  status: string;
+  pelaksanas: any | null; // Use a specific type if structure is known, otherwise 'any' or 'null'
+  keterangan: string;
+  indikator: IndikatorRencanaKinerja[];
 }
 
 export interface RencanaKinerjaGetResponse {
@@ -88,6 +107,24 @@ interface Target {
   target: string;
   satuan: string;
 }
+interface SubKegiatan {
+  subkegiatanterpilih_id: string;
+  id: string;
+  rekin_id: string;
+  kode_subkegiatan: string;
+  nama_sub_kegiatan: string;
+}
+interface TimRencanaKinerja {
+  id: number;
+  kode_tim: string;
+  id_rencana_kinerja: string;
+  id_pegawai: string;
+  rencana_kinerja: string;
+  tahun: string;
+  kode_opd: string;
+  indikators: IndikatorRencanaKinerja[];
+  subkegiatan: SubKegiatan[];
+}
 export interface IndikatorRencanaKinerja {
   id_indikator: string;
   rencana_kinerja_id: string;
@@ -97,10 +134,13 @@ export interface IndikatorRencanaKinerja {
 }
 
 export interface RencanaKinerjaSekretariatResponse {
-  id: number,
+  id: number;
   kode_tim: string;
   id_rencana_kinerja: string;
+  id_pegawai: string;
   rencana_kinerja: string;
   tahun: string;
   kode_opd: string;
+  indikators: IndikatorRencanaKinerja[];
+  subkegiatan: SubKegiatan[];
 }

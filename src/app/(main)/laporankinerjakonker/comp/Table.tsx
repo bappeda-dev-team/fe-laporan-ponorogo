@@ -10,7 +10,7 @@ import { TimGetResponse } from "@/types/tim";
 import { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
-import { KinerjaKonkerGetResponse } from "@/types";
+import { KinerjaKonkerGetResponse, PohonKinerjaKonker } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
 import { ModalUpload } from "./ModalUpload";
@@ -154,19 +154,27 @@ const Table: React.FC<Table> = ({ data }) => {
                                                     </ButtonRedBorder>
                                                 </div>
                                             </td>
-                                            <td className="border border-blue-500 px-6 py-4">Pelaksanaan Program didalam lingkup Bappeda</td>
-                                            <td className="border border-blue-500 px-6 py-4">indikator program 1 T</td>
-                                            <td className="border border-blue-500 px-6 py-4">30</td>
-                                            <td className="border border-blue-500 px-6 py-4">Badan Perencanaan Penelitian dan Pengembangan Daerah</td>
-                                            <td className="border border-blue-500 px-6 py-4">(5.01.02.2.01) Penyusunan dan Perancangan</td>
+                                            {item.pohon_kinerja ? 
+                                                    <td className="border border-blue-500 px-6 py-4">
+                                                        {item.pohon_kinerja.map((p: PohonKinerjaKonker, p_index: number) => (
+                                                            <p key={p_index}>{p.nama_pohon || "-"}</p>
+                                                        ))}
+                                                    </td>
+                                            :
+                                                <td className="border border-blue-500 px-6 py-4">-</td>
+                                            }
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
                                             <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(2000000)}</td>
                                             <td className="border border-blue-500 px-6 py-4">
                                                 <Realisasi anggaran={5000000} />
                                             </td>
-                                            <td className="border border-blue-500 px-6 py-4">contoh rencana aksi</td>
-                                            <td className="border border-blue-500 px-6 py-4">contoh faktor pendorong</td>
-                                            <td className="border border-blue-500 px-6 py-4">contoh faktor penghambat</td>
-                                            <td className="border border-blue-500 px-6 py-4">rekomendasi tindak lanjut</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
+                                            <td className="border border-blue-500 px-6 py-4">-</td>
                                             <td className="border-b border-blue-500 px-6 py-4">
                                                 <div className="flex justify-center">
                                                     <ButtonSkyBorder

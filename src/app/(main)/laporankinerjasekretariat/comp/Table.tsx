@@ -3,10 +3,10 @@
 import TableComponent from "@/components/page/TableComponent";
 import { ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
 import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
-import { RencanaKinerjaSekretariatResponse } from "@/types";
+import { RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja } from "@/types";
 import { ModalRekin } from "./ModalRekin";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
@@ -131,8 +131,25 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     </ButtonRedBorder>
                                                 </div>
                                             </td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            {item.indikators ?
+                                                item.indikators.map((ind: IndikatorRencanaKinerja, ind_index: number) => (
+                                                    <React.Fragment key={ind_index}>
+                                                        <td className="border border-emerald-500 px-6 py-4">
+                                                            <p>{ind.nama_indikator || "-"}</p>
+                                                        </td>
+                                                        {ind.targets.map((t: any, t_index: number) => (
+                                                            <td key={t_index} className="border border-emerald-500 px-6 py-4">
+                                                                <p>{t.target || "-"} / {t.satuan || "-"}</p>
+                                                            </td>
+                                                        ))}
+                                                    </React.Fragment>
+                                                ))
+                                                :
+                                                <>
+                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                </>
+                                            }
                                             <td className="border border-emerald-500 px-6 py-4">-</td>
                                             <td className="border border-emerald-500 px-6 py-4">-</td>
                                             <td className="border border-emerald-500 px-6 py-4">-</td>
