@@ -21,6 +21,7 @@ interface Modal {
 }
 interface FormValue {
     id_program_unggulan: OptionType | null;
+    kode_program_unggulan: string;
     tahun: string;
     kode_opd: string;
 }
@@ -32,6 +33,7 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
             id_program_unggulan: null,
+            kode_program_unggulan: "",
             tahun: "2025",
             kode_opd: opd,
         }
@@ -57,6 +59,7 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
         // backend tidak terima formdata
         const payload = {
             id_program_unggulan: data.id_program_unggulan?.value,
+            kode_program_unggulan: data.kode_program_unggulan,
             tahun: "2025",
             kode_opd: opd
         }
