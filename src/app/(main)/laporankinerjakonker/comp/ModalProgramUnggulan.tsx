@@ -20,7 +20,7 @@ interface Modal {
     Data?: TimGetResponse | null;
 }
 interface FormValue {
-    id_program_unggulan: OptionType | null;
+    id_program_unggulan: ProgramUnggulanGetResponse | null;
     kode_program_unggulan: string;
     tahun: string;
     kode_opd: string;
@@ -39,7 +39,7 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
         }
     });
 
-    const [OptionProgram, setOptionProgram] = useState<OptionType[]>([]);
+    const [OptionProgram, setOptionProgram] = useState<ProgramUnggulanGetResponse[]>([]);
     const [Proses, setProses] = useState<boolean>(false);
     const { toastSuccess } = useToast();
 
@@ -50,6 +50,15 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
             const programUnggulan = data.map((p: ProgramUnggulanGetResponse) => ({
                 value: p.id,
                 label: `${p.nama_program_unggulan || "-"} - ${p.rencana_implementasi || "-"}`,
+                id: p.id,
+                kode_program_unggulan: p.kode_program_unggulan,
+                nama_program_unggulan: p.nama_program_unggulan,
+                rencana_implementasi: p.rencana_implementasi,
+                keterangan: p.keterangan,
+                tahun_awal: p.tahun_awal,
+                tahun_akhir: p.tahun_akhir,
+                is_active: p.is_active
+
             }));
             setOptionProgram(programUnggulan);
         }
@@ -58,8 +67,8 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         const payload = {
-            id_program_unggulan: data.id_program_unggulan?.value,
-            kode_program_unggulan: data.kode_program_unggulan,
+            id_program_unggulan: data.id_program_unggulan?.id,
+            kode_program_unggulan: data?.id_program_unggulan?.kode_program_unggulan,
             tahun: "2025",
             kode_opd: opd
         }
