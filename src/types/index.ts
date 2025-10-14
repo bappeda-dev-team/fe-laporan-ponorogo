@@ -101,7 +101,7 @@ interface OperasionalDaerah {
   kode_opd: string;
   nama_opd: string;
 }
-interface Target {
+export interface Target {
   id_target: string;
   indikator_id: string;
   target: string;

@@ -6,7 +6,7 @@ import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
 import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
-import { RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja } from "@/types";
+import { Target, RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja } from "@/types";
 import { ModalRekin } from "./ModalRekin";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
@@ -111,53 +111,69 @@ export const Table: React.FC<Table> = ({ data }) => {
                                     </tr>
                                     :
                                     DataTable?.map((item: RencanaKinerjaSekretariatResponse, index: number) => (
-                                        <tr key={index}>
-                                            <td className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
-                                            <td className="border border-emerald-500 px-6 py-4">
-                                                <div className="flex flex-col gap-1">
-                                                    {item.rencana_kinerja || "-"}
-                                                    <ButtonRedBorder
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => {
-                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    hapusRekin(item.id);
-                                                                }
-                                                            })
-                                                        }}
-                                                    >
-                                                        <TbTrash />
-                                                        Hapus
-                                                    </ButtonRedBorder>
-                                                </div>
-                                            </td>
-                                            {item.indikators ?
-                                                item.indikators.map((ind: IndikatorRencanaKinerja, ind_index: number) => (
-                                                    <React.Fragment key={ind_index}>
+                                        <React.Fragment key={index}>
+                                            <tr>
+                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
+                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border border-emerald-500 px-6 py-4">
+                                                    <div className="flex flex-col gap-1">
+                                                        {item.rencana_kinerja || "-"}
+                                                        <ButtonRedBorder
+                                                            className="flex items-center gap-1"
+                                                            onClick={() => {
+                                                                AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        hapusRekin(item.id);
+                                                                    }
+                                                                })
+                                                            }}
+                                                        >
+                                                            <TbTrash />
+                                                            Hapus
+                                                        </ButtonRedBorder>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                {item.indikators ?
+                                                    <>
+                                                        {/* INDIKATOR */}
                                                         <td className="border border-emerald-500 px-6 py-4">
-                                                            <p>{ind.nama_indikator || "-"}</p>
+                                                            <div className="flex flex-col gap-1">
+                                                                {item.indikators.map((i: IndikatorRencanaKinerja, i_index: number) => (
+                                                                    <p className="p-1" key={i_index}>
+                                                                        {i_index + 1}. {i.nama_indikator || "-"}
+                                                                    </p>
+                                                                ))}
+                                                            </div>
                                                         </td>
-                                                        {ind.targets.map((t: any, t_index: number) => (
-                                                            <td key={t_index} className="border border-emerald-500 px-6 py-4">
-                                                                <p>{t.target || "-"} / {t.satuan || "-"}</p>
-                                                            </td>
-                                                        ))}
-                                                    </React.Fragment>
-                                                ))
-                                                :
-                                                <>
-                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                </>
-                                            }
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                            <td className="border border-emerald-500 px-6 py-4">-</td>
-                                        </tr>
+                                                        {/* TARGET SATUAN */}
+                                                        <td className="border border-emerald-500 px-6 py-4">
+                                                            <div className="flex flex-col gap-1">
+                                                                {item.indikators.map((i: IndikatorRencanaKinerja, i_index: number) => (
+                                                                    i.targets.map((t: Target, t_index: number) => (
+                                                                        <p className="p-1" key={t_index}>
+                                                                            {i_index + 1}. {t.target || "-"} / {t.satuan || "-"}
+                                                                        </p>
+                                                                    ))
+                                                                ))}
+                                                            </div>
+                                                        </td>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                        <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                    </>
+                                                }
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                            </tr>
+                                        </React.Fragment>
                                     ))
                                 }
                             </tbody>

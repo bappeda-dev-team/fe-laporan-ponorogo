@@ -59,7 +59,6 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
         { url: `/api/v1/timkerja/timkerja/${timId}`, method: "PUT" }
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        // backend tidak terima formdata
         const payload = {
             nama_tim: data.nama_tim,
             keterangan: data.keterangan,
@@ -100,7 +99,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
                 <h1 className="flex items-center justify-center gap-1 text-xl uppercase font-semibold pb-1">
                     <TbUsersGroup />
-                    {jenis === "baru" ? "Tambah" : "Edit"} Tim {jenis === "edit" && `code : ${data?.kode_tim || "no code"}`}
+                    {jenis === "baru" ? "Tambah" : "Edit"} Tim
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
@@ -135,7 +134,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
                 <div className="flex justify-center items-center">
                     <button 
                         type="button"
-                        className={`flex items-center gap-2 py-1 px-2 border rounded-lg cursor-pointer ${Sekretariat ? "bg-green-500 text-white" : "border-green-500 text-green-500"}`} 
+                        className={`flex items-center gap-2 py-1 px-2 border rounded-lg cursor-pointer ${Sekretariat ? "bg-green-700 text-white" : "border-green-700 text-green-700"}`} 
                         onClick={() => setSekretariat((prev) => !prev)}
                     >
                         {Sekretariat ? 

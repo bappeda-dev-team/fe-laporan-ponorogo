@@ -7,10 +7,10 @@ import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import useToast from "@/components/global/toast";
 import { TimGetResponse } from "@/types/tim";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
-import { KinerjaKonkerGetResponse, PohonKinerjaKonker } from "@/types";
+import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, PohonKinerjaKonker, Target } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
 import { ModalUpload } from "./ModalUpload";
@@ -23,7 +23,6 @@ interface Table {
 const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
-    const [ModalRealisasi, setModalRealisasi] = useState<boolean>(false);
     const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
     const [DataTim, setDataTim] = useState<TimGetResponse | null>(null);
 
@@ -76,10 +75,10 @@ const Table: React.FC<Table> = ({ data }) => {
                     <thead>
                         <tr className="text-white bg-blue-500">
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[50px] text-center">No</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nama Program Unggulan</th>
-                            <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[200px] text-center">Pohon Kinerja</th>
-                            <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[200px] text-center">Indikator Kinerja</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[150px] text-center">Target Tahun</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Nama Program Unggulan</th>
+                            <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[300px] text-center">Pohon Kinerja</th>
+                            <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[300px] text-center">Indikator Kinerja</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
@@ -134,59 +133,98 @@ const Table: React.FC<Table> = ({ data }) => {
                                     </tr>
                                     :
                                     DataTable?.map((item: KinerjaKonkerGetResponse, index: number) => (
-                                        <tr key={index}>
-                                            <td className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
-                                            <td className="border border-blue-500 px-6 py-4">
-                                                <div className="flex flex-col gap-1">
-                                                    {item.program_unggulan || "-"}
-                                                    <ButtonRedBorder
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => {
-                                                            AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    hapusProgram(item.id);
-                                                                }
-                                                            })
-                                                        }}
-                                                    >
-                                                        <TbTrash />
-                                                        Hapus
-                                                    </ButtonRedBorder>
-                                                </div>
-                                            </td>
-                                            {item.pohon_kinerja ? 
-                                                    <td className="border border-blue-500 px-6 py-4">
-                                                        {item.pohon_kinerja.map((p: PohonKinerjaKonker, p_index: number) => (
+                                        <React.Fragment key={index}>
+                                            <tr>
+                                                <td rowSpan={item.pohon_kinerja?.length > 0 ? item.pohon_kinerja.length + 1 : 2} className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
+                                                <td rowSpan={item.pohon_kinerja?.length > 0 ? item.pohon_kinerja.length + 1 : 2} className="border border-blue-500 px-6 py-4">
+                                                    <div className="flex flex-col gap-1">
+                                                        <p className="border-b py-1 mb-1 border-blue-500">{item.program_unggulan || "-"}</p>
+                                                        <ButtonRedBorder
+                                                            className="flex items-center gap-1"
+                                                            onClick={() => {
+                                                                AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        hapusProgram(item.id);
+                                                                    }
+                                                                })
+                                                            }}
+                                                        >
+                                                            <TbTrash />
+                                                            Hapus
+                                                        </ButtonRedBorder>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {item.pohon_kinerja ?
+                                                item.pohon_kinerja.map((p: PohonKinerjaKonker, p_index: number) => (
+                                                    <tr key={p_index}>
+                                                        <td className="border border-blue-500 px-6 py-4">
                                                             <p key={p_index}>{p.nama_pohon || "-"}</p>
-                                                        ))}
-                                                    </td>
-                                            :
-                                                <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        </td>
+                                                        {p.indikator ?
+                                                            <>
+                                                                {/* INDIKATOR */}
+                                                                <td className="border border-blue-500 px-6 py-4">
+                                                                    <div className="flex flex-col gap-1">
+                                                                        {p.indikator.map((i: IndikatorRencanaKinerja, i_index: number) => (
+                                                                            <p className="p-1" key={i_index}>
+                                                                                {i_index + 1}. {i.nama_indikator || "-"}
+                                                                            </p>
+                                                                        ))}
+                                                                    </div>
+                                                                </td>
+                                                                {/* TARGET SATUAN */}
+                                                                <td className="border border-blue-500 px-6 py-4">
+                                                                    <div className="flex flex-col gap-1">
+                                                                        {p.indikator.map((i: IndikatorRencanaKinerja, i_index: number) => (
+                                                                            i.targets.map((t: Target, t_index: number) => (
+                                                                                <p className="p-1" key={t_index}>
+                                                                                    {i_index + 1}. {t.target || "-"} / {t.satuan || "-"}
+                                                                                </p>
+                                                                            ))
+                                                                        ))}
+                                                                    </div>
+                                                                </td>
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <td className="border border-blue-500 px-6 py-4">-</td>
+                                                                <td className="border border-blue-500 px-6 py-4">-</td>
+                                                            </>
+                                                        }
+                                                        <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(0)}</td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} /></td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border-b border-blue-500 px-6 py-4">
+                                                            <div className="flex justify-center">
+                                                                <ButtonSkyBorder
+                                                                    className="flex items-center gap-2"
+                                                                    onClick={() => setModalBuktiOpen(true)}
+                                                                >
+                                                                    <TbUpload />
+                                                                    Upload
+                                                                </ButtonSkyBorder>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                                :
+                                                <tr>
+                                                    {Array.from({ length: 12 }, (_, index) => (
+                                                        <td key={index}
+                                                            className={`border ${index === 11 ? 'border-b' : 'border'} border-blue-500 px-6 py-4`}
+                                                        >
+                                                            -
+                                                        </td>
+                                                    ))}
+                                                </tr>
                                             }
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(2000000)}</td>
-                                            <td className="border border-blue-500 px-6 py-4">
-                                                <Realisasi anggaran={5000000} />
-                                            </td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border border-blue-500 px-6 py-4">-</td>
-                                            <td className="border-b border-blue-500 px-6 py-4">
-                                                <div className="flex justify-center">
-                                                    <ButtonSkyBorder
-                                                        className="flex items-center gap-2"
-                                                        onClick={() => setModalBuktiOpen(true)}
-                                                    >
-                                                        <TbUpload />
-                                                        Upload
-                                                    </ButtonSkyBorder>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        </React.Fragment>
                                     ))
                                 }
                             </tbody>
