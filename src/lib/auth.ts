@@ -15,7 +15,10 @@ export async function login(username: string, password: string): Promise<void> {
 
     if (!res.ok) {
         throw new Error("Login gagal")
+    } else {
+        window.location.href = "/"
     }
+
 
     const data: LoginResponse = await res.json();
     localStorage.setItem("sessionId", data.sessionId);

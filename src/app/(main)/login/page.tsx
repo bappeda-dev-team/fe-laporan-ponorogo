@@ -19,7 +19,6 @@ export default function LoginPage() {
 
     try {
       await login(username, password)
-      window.location.href = "/"
     } catch (err) {
       console.error(err)
       setError(err instanceof Error ? err.message : "Login gagal")

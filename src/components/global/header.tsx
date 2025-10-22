@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { logout } from "@/lib/auth"
+import { ButtonBlackBorder } from "../button/button";
 import { usePathname } from "next/navigation";
-import { TbUsersGroup, TbFileSettings, TbAlertTriangle, TbDeviceAnalytics, TbDeviceImacDollar, TbLogout } from "react-icons/tb";
+import Select from 'react-select';
+import { TbUser } from "react-icons/tb";
 import useToast from "./toast";
 
 interface OptionType {
@@ -25,14 +24,12 @@ export const Header = () => {
 
   const [showManriskKinerjaDropdown, setShowManriskKinerjaDropdown] = useState<boolean>(false);
   const [Tahun, setTahun] = useState<OptionType | null>(null);
+  const [Bulan, setBulan] = useState<OptionType | null>(null);
 
   const [SelectedOpd, setSelectedOpd] = useState<OptionTypeString | null>(null);
 
-  const [Nip, setNip] = useState<string>("");
   const url = usePathname();
-  const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
-
-  const {toastSuccess} = useToast();
+  const {toastInfo} = useToast();
 
   //handle header scroll animation 
   useEffect(() => {
@@ -71,18 +68,34 @@ export const Header = () => {
     };
   }, []);
 
-  const getActiveClass = (isActive: boolean, type = 'default') => {
-    const activeClasses = "text-white bg-sky-500";
-    let defaultClasses = "hover:text-white text-sky-500 hover:bg-sky-700";
-
-    if (type === 'default') {
-      defaultClasses += " border border-sky-500";
-    } else if (type === 'dropdown') {
-      defaultClasses += " border border-sky-300";
-    }
-
-    return isActive ? activeClasses : defaultClasses;
-  };
+  const OptionTahun = [
+    { label: "2019", value: 2019 },
+    { label: "2020", value: 2020 },
+    { label: "2021", value: 2021 },
+    { label: "2022", value: 2022 },
+    { label: "2023", value: 2023 },
+    { label: "2024", value: 2024 },
+    { label: "2025", value: 2025 },
+    { label: "2026", value: 2026 },
+    { label: "2027", value: 2027 },
+    { label: "2028", value: 2028 },
+    { label: "2029", value: 2029 },
+    { label: "2030", value: 2030 },
+  ];
+  const OptionBulan = [
+    { label: "Januari", value: 1 },
+    { label: "Februari", value: 2 },
+    { label: "Maret", value: 3 },
+    { label: "April", value: 4 },
+    { label: "Mei", value: 5 },
+    { label: "Juni", value: 6 },
+    { label: "Juli", value: 7 },
+    { label: "Agustus", value: 8 },
+    { label: "September", value: 9 },
+    { label: "Oktober", value: 10 },
+    { label: "November", value: 11 },
+    { label: "Desember", value: 12 },
+  ]
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -93,74 +106,50 @@ export const Header = () => {
     <nav className={`inset-x-1 m-1 ml-2 bg-white border border-sky-200 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
         <div className="flex flex-wrap justify-start gap-5">
-          <Link href="/">
-            <Image
-              src={logo || "/placeholder-logo.png"}
-              alt="logo"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <ul className="hidden lg:flex space-x-2 items-center">
-            <Link
-              href='/susunantim'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/susunantim'), 'default'
-              )}`}
-            >
-              <TbUsersGroup />
-              Susunan Tim
-            </Link>
-            <Link
-              href='/laporankinerjakonker'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/laporankinerjakonker'), 'default'
-              )}`}
-            >
-              <TbDeviceAnalytics />
-              Laporan Kinerja Konker
-            </Link>
-            <Link
-              href='/laporankinerjasekretariat'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/laporankinerjasekretariat'), 'default'
-              )}`}
-            >
-              <TbDeviceAnalytics />
-              Laporan Kinerja Sekretariat
-            </Link>
-            <Link
-              href='/penilaiankinerjatim'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/penilaiankinerjatim'), 'default'
-              )}`}
-            >
-              <TbFileSettings />
-              Penilaian Kinerja Tim
-            </Link>
-            <Link
-              href='/laporantpp'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                url.startsWith('/laporantpp'), 'default'
-              )}`}
-            >
-              <TbDeviceImacDollar />
-              Laporan TPP Konker
-            </Link>
-          </ul>
+          <ButtonBlackBorder className="flex items-center gap-1">
+            <TbUser />
+            Level User
+          </ButtonBlackBorder>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => {
-              localStorage.removeItem("sessionId");
-              window.location.href = "/login";
-              toastSuccess("Berhasil Logout")
+        <div className="hidden lg:flex items-center gap-2">
+          <Select
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                borderRadius: '10px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '20px'
+              })
             }}
-            className="flex items-center text-white shadow gap-1 font-medium border-1 bg-red-700 rounded-lg cursor-pointer py-1 px-5 hover:bg-gray-100 hover:text-red-700"
+            onChange={(option) => setBulan(option)}
+            placeholder="Pilih Bulan"
+            options={OptionBulan}
+            value={Bulan}
+            isSearchable
+          />
+          <Select
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                borderRadius: '10px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '20px'
+              })
+            }}
+            onChange={(option) => setTahun(option)}
+            placeholder="Pilih Tahun"
+            options={OptionTahun}
+            value={Tahun}
+            isSearchable
+          />
+          <button 
+            className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
+            onClick={() => toastInfo("Dalam Pengembangan Developer")}
           >
-            <TbLogout />
-            Logout
+            Aktifkan
           </button>
         </div>
 
@@ -179,35 +168,44 @@ export const Header = () => {
 
       {/* Mobile Menu Content */}
       <div className={`lg:hidden rounded-lg border border-gray-300 bg-white py-2 mt-1 absolute top-full left-0 w-full shadow-md transition ease-in-out duration-300 ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
-        <ul className="flex flex-col items-center space-y-2 mx-2">
-          <Link
-            href='/susunantim'
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-              url.startsWith('/susunantim')
-            )}`}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Select
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                borderRadius: '8px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '20px'
+              })
+            }}
+            onChange={(option) => setSelectedOpd(option)}
+            placeholder="Pilih Bulan"
+            value={SelectedOpd}
+            isSearchable
+          />
+          <Select
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                borderRadius: '8px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '20px'
+              })
+            }}
+            onChange={(option) => setSelectedOpd(option)}
+            placeholder="Pilih Tahun"
+            value={SelectedOpd}
+            isSearchable
+          />
+          <button 
+            className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
+            onClick={() => toastInfo("Dalam Pengembangan Developer")}
           >
-            <TbAlertTriangle />
-            Susunan Tim
-          </Link>
-          <Link
-            href='/penilaiankinerjatim'
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-              url.startsWith('/penilaiankinerjatim')
-            )}`}
-          >
-            <TbDeviceAnalytics />
-            Penilaian Kinerja Tim
-          </Link>
-          <Link
-            href='/laporankinerja'
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-              url.startsWith('/laporankinerja')
-            )}`}
-          >
-            <TbDeviceAnalytics />
-            Laporan Kinerja Konker
-          </Link>
-        </ul>
+            Aktifkan
+          </button>
+        </div>
       </div>
     </nav>
   );
