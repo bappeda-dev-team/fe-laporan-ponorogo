@@ -23,7 +23,7 @@ interface FormValue {
     level_jabatan: number;
 }
 
-export const ModalJabatan: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
+export const ModalJabatanTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {

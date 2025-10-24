@@ -6,7 +6,7 @@ import { useGet } from "@/app/hooks/useGet";
 import { JabatanGetResponse } from "@/types/tim";
 import { ButtonSky, ButtonRedBorder, ButtonSkyBorder } from "@/components/button/button";
 import { TbCirclePlus, TbPencil, TbTrash } from "react-icons/tb";
-import { ModalJabatan } from "./ModalJabatan";
+import { ModalJabatanTim } from "./ModalJabatanTim";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
 import { apiFetch } from "@/lib/apiFetch";
 
@@ -113,7 +113,7 @@ const TableJabatan = () => {
                 </table>
             </TableComponent>
             {ModalOpen &&
-                <ModalJabatan
+                <ModalJabatanTim
                     isOpen={ModalOpen}
                     onClose={() => handleModal("", null)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}

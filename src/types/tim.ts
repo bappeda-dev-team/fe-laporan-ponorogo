@@ -25,8 +25,18 @@ export interface JabatanGetResponse {
 }
 export interface PegawaiGetResponse {
     id: string;
-    nama_pegawai: string;
+    namaPegawai: string;
     nip: string;
-    kode_opd: string;
-    nama_opd: string
+    kodeOpd: string;
+    namaOpd: string
+    namaJabatan: string;
+    statusJabatan: string;
+    jenisJabatan: string;
+    eselon: string;
+    pangkat: string
+    golongan: string;
+    namaRole: string;
+    isActive: boolean;
+    tanggalMulai: Date;
+    tanggalBerakhir: Date;
 }

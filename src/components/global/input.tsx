@@ -89,6 +89,72 @@ export const FloatingLabelInput: React.FC<Input> = ({
     </div>
   );
 };
+export const FloatingLabelDate: React.FC<Input> = ({
+  id,
+  label,
+  type = 'date', // nilai default untuk type
+  className,
+  disable = false,
+  ...rest
+}) => {
+  return (
+    <div className={`relative my-2 ${className}`}>
+      <input
+        id={id}
+        type={type}
+        className={`
+          peer
+          w-full
+          px-3
+          py-3
+          border
+          ${disable === true ?
+            'border-blue-600 cursor-not-allowed'
+            :
+            'border-gray-500'
+          }
+          rounded-lg
+          text-gray-800
+          bg-white
+          placeholder-transparent
+          focus:outline-none
+          focus:ring-2
+          focus:ring-blue-500
+          focus:border-transparent
+          transition-colors
+          duration-200
+        `}
+        disabled={disable}
+        placeholder={label}
+        {...rest}
+      />
+      <label
+        htmlFor={id}
+        // Logika utama ada di sini dengan `peer-placeholder-shown`
+        className={`
+          absolute
+          left-3
+          -top-2.5
+          px-1
+          text-sm
+          text-gray-500
+          bg-white
+          pointer-events-none
+          transition-all
+          duration-200
+          peer-placeholder-shown:top-3.5
+          peer-placeholder-shown:text-base
+          peer-placeholder-shown:text-gray-500
+          peer-focus:-top-2.5
+          peer-focus:text-sm
+          peer-focus:text-blue-600
+        `}
+      >
+        {label}
+      </label>
+    </div>
+  );
+};
 
 export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3, disable = false, ...rest }) => {
 
