@@ -107,7 +107,7 @@ export interface Target {
   target: string;
   satuan: string;
 }
-interface SubKegiatan {
+export interface SubKegiatanResponse {
   subkegiatanterpilih_id: string;
   id: string;
   rekin_id: string;
@@ -123,7 +123,7 @@ interface TimRencanaKinerja {
   tahun: string;
   kode_opd: string;
   indikators: IndikatorRencanaKinerja[];
-  subkegiatan: SubKegiatan[];
+  subkegiatan: SubKegiatanResponse[];
 }
 export interface IndikatorRencanaKinerja {
   id_indikator: string;
@@ -142,5 +142,5 @@ export interface RencanaKinerjaSekretariatResponse {
   tahun: string;
   kode_opd: string;
   indikators: IndikatorRencanaKinerja[];
-  subkegiatan: SubKegiatan[];
+  subkegiatan: SubKegiatanResponse[];
 }

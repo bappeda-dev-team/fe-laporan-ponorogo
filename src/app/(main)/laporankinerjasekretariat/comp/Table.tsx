@@ -6,7 +6,7 @@ import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
 import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
-import { Target, RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja } from "@/types";
+import { Target, RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja, SubKegiatanResponse } from "@/types";
 import { ModalRekin } from "./ModalRekin";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
@@ -62,7 +62,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Indikator Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Sub Kegiatan</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi/Kegiatan yang Dilaksanakan</th>
@@ -165,7 +165,17 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                         <td className="border border-emerald-500 px-6 py-4">-</td>
                                                     </>
                                                 }
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                {item.subkegiatan ?
+                                                    <td className="border border-emerald-500 px-6 py-4">
+                                                        {item.subkegiatan.map((sk: SubKegiatanResponse, sk_index: number) => (
+                                                            <p className="p-1" key={sk_index}>
+                                                                {sk_index + 1}. ({sk.kode_subkegiatan || "-"}) {sk.nama_sub_kegiatan || "-"}
+                                                            </p>
+                                                        ))}
+                                                    </td>
+                                                    :
+                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                }
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>

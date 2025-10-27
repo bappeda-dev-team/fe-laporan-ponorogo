@@ -5,67 +5,67 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { ButtonRedBorder, ButtonGreenBorder } from "@/components/button/button";
 import { useState, useEffect } from "react";
 import { TbPencil, TbDeviceFloppy, TbX } from "react-icons/tb";
-import { formatRupiah } from "@/app/hooks/formatRupiah";
-import { FloatingLabelInput } from "@/components/global/input";
+import { FloatingLabelTextarea } from "@/components/global/input";
 
-interface Realisasi {
-    anggaran: number;
+interface Rekomendasi {
+    rekomendasi: string;
 }
 
-export const Realisasi: React.FC<Realisasi> = ({ anggaran }) => {
+export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
     if (Editing) {
         return (
-            <FormRealisasi 
-                anggaran={anggaran} 
+            <FormRekomendasi 
+                rekomendasi={rekomendasi} 
                 onClose={() => setEditing(false)}
             />
         )
     } else {
         return (
-            <div className="flex items-center justify-center gap-2">
-                Rp.{formatRupiah(anggaran || 0)}
+            <div className="flex flex-col items-center justify-center gap-2">
+                {rekomendasi || ""}
                 <button
-                    className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
+                    className="p-1 rounded-xl w-full flex justify-center items-center gap-1 border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
                     type="button"
                     onClick={() => {
                         setEditing(true);
                     }}
                 >
                     <TbPencil />
+                    Edit
                 </button>
             </div>
         )
     }
 }
 
-interface FormRealisasi {
-    anggaran: number;
+interface FormRekomendasi {
+    rekomendasi: string;
     onClose: () => void;
 }
 interface FormValue {
-    realisasi_anggaran: number;
+    rekomendasi_tindak_lanjut: string;
 }
 
-export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose }) => {
+export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClose }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            realisasi_anggaran: anggaran,
+            rekomendasi_tindak_lanjut: rekomendasi,
         }
     });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
-    const [HasilEdit, setHasilEdit] = useState<number | null>(null);
+    const [HasilEdit, setHasilEdit] = useState<string | null>(null);
 
     const onSubmit: SubmitHandler<FormValue> = async(data) => {
         const payload = {
-            realisasi_anggaran: Number(data.realisasi_anggaran),
+            rekomendasi_tindak_lanjut: data.rekomendasi_tindak_lanjut,
         }
         // console.log(payload);
-        setHasilEdit(data.realisasi_anggaran);
+        setHasilEdit(data.rekomendasi_tindak_lanjut);
         setEdited(true);
         toastSuccess("data dummy");
     }
@@ -77,26 +77,25 @@ export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose }) =>
 
     if(Edited){
         return(
-            <Realisasi anggaran={HasilEdit || 0}/>
+            <Rekomendasi rekomendasi={HasilEdit || ""}/>
         )
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller 
-                        name="realisasi_anggaran"
+                        name="rekomendasi_tindak_lanjut"
                         rules={{ required: "tidak boleh kosong" }}
                         control={control}
                         render={({ field }) => (
                             <>
-                                <FloatingLabelInput 
+                                <FloatingLabelTextarea 
                                     {...field}
-                                    id="anggaran"
-                                    label="anggaran"
-                                    type="number"
+                                    id="rekomendasi_tindak_lanjut"
+                                    label="Rekomendasi"
                                 />
-                                {errors.realisasi_anggaran &&
-                                    <p className="text-xs italic text-red-500">{errors.realisasi_anggaran?.message}</p>
+                                {errors.rekomendasi_tindak_lanjut &&
+                                    <p className="text-xs italic text-red-500">{errors.rekomendasi_tindak_lanjut?.message}</p>
                                 }
                             </>
                         )}

@@ -13,6 +13,9 @@ import { useGet } from "@/app/hooks/useGet";
 import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, PohonKinerjaKonker, Target } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
+import { RencanaAksi } from "./RencanaAksi";
+import { Rekomendasi } from "./Rekomendasi";
+import { Faktor } from "./Faktor";
 import { ModalUpload } from "./ModalUpload";
 import { apiFetch } from "@/lib/apiFetch";
 
@@ -84,9 +87,9 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Pendorong</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Penghambat</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rekomendasi Tindak Lanjut</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Faktor Pendorong</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Faktor Penghambat</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Rekomendasi Tindak Lanjut</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Bukti Pendukung</th>
                         </tr>
                         <tr className="text-white bg-blue-600">
@@ -196,10 +199,10 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         <td className="border border-blue-500 px-6 py-4">-</td>
                                                         <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(0)}</td>
                                                         <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} /></td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi="" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi="" /></td>
                                                         <td className="border-b border-blue-500 px-6 py-4">
                                                             <div className="flex justify-center">
                                                                 <ButtonSkyBorder
