@@ -2,7 +2,7 @@
 
 import TableComponent from "@/components/page/TableComponent";
 import { ButtonRedBorder, ButtonSkyBorder, ButtonGreenBorder } from "@/components/button/button";
-import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus } from "react-icons/tb";
+import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus, TbPencil } from "react-icons/tb";
 import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import useToast from "@/components/global/toast";
@@ -17,6 +17,7 @@ import { RencanaAksi } from "./RencanaAksi";
 import { Rekomendasi } from "./Rekomendasi";
 import { Faktor } from "./Faktor";
 import { ModalUpload } from "./ModalUpload";
+import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface Table {
@@ -27,7 +28,9 @@ const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
     const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
+    const [ModalPelaksanaOpen, setModalPelaksanaOpen] = useState<boolean>(false);
     const [DataTim, setDataTim] = useState<TimGetResponse | null>(null);
+    const [DataPohon, setDataPohon] = useState<PohonKinerjaKonker | null>(null);
 
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const { toastSuccess } = useToast();
@@ -41,6 +44,15 @@ const Table: React.FC<Table> = ({ data }) => {
         } else {
             setModalProgram(true);
             setDataTim(data);
+        }
+    }
+    const handleModalPelaksana = (data: PohonKinerjaKonker | null) => {
+        if (ModalPelaksanaOpen) {
+            setModalPelaksanaOpen(false);
+            setDataPohon(null);
+        } else {
+            setModalPelaksanaOpen(true);
+            setDataPohon(data);
         }
     }
 
@@ -83,14 +95,17 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[300px] text-center">Indikator Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Pelaksana</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Faktor Pendorong</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Faktor Penghambat</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Risiko Hukum</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Rekomendasi Tindak Lanjut</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Bukti Pendukung</th>
+                            <th className="border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Bukti Pendukung</th>
                         </tr>
                         <tr className="text-white bg-blue-600">
                             <th className="border-r border-b py-1 border-gray-300 text-center">1</th>
@@ -107,6 +122,9 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center">12</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">13</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">14</th>
+                            <th className="border-r border-b py-1 border-gray-300 text-center">15</th>
+                            <th className="border-r border-b py-1 border-gray-300 text-center">16</th>
+                            <th className="border-b py-1 border-gray-300 text-center">17</th>
                         </tr>
                     </thead>
                     {LoadingProgram ?
@@ -158,7 +176,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                     </div>
                                                 </td>
                                             </tr>
-                                            {item.pohon_kinerja ?
+                                            {item.pohon_kinerja.length > 0 ?
                                                 item.pohon_kinerja.map((p: PohonKinerjaKonker, p_index: number) => (
                                                     <tr key={p_index}>
                                                         <td className="border border-blue-500 px-6 py-4">
@@ -196,11 +214,26 @@ const Table: React.FC<Table> = ({ data }) => {
                                                             </>
                                                         }
                                                         <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            {/* PELAKSANA */}
+                                                            <div className="flex flex-col justify-center gap-2">
+                                                                <p className="border-b border-blue-300 italic text-red-400 text-sm">Pelaksana dalam pengembangan</p>
+                                                                <ButtonSkyBorder
+                                                                    className="flex items-center gap-2"
+                                                                    onClick={() => handleModalPelaksana(p)}
+                                                                >
+                                                                    <TbPencil />
+                                                                    Pelaksana
+                                                                </ButtonSkyBorder>
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
                                                         <td className="border border-blue-500 px-6 py-4">-</td>
                                                         <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(0)}</td>
                                                         <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi="" /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi="" /></td>
                                                         <td className="border-b border-blue-500 px-6 py-4">
@@ -218,7 +251,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                 ))
                                                 :
                                                 <tr>
-                                                    {Array.from({ length: 12 }, (_, index) => (
+                                                    {Array.from({ length: 15 }, (_, index) => (
                                                         <td key={index}
                                                             className={`border ${index === 11 ? 'border-b' : 'border'} border-blue-500 px-6 py-4`}
                                                         >
@@ -247,6 +280,15 @@ const Table: React.FC<Table> = ({ data }) => {
                     isOpen={ModalBuktiOpen}
                     onClose={() => setModalBuktiOpen(false)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
+                />
+            }
+            {ModalPelaksanaOpen &&
+                <ModalPelaksana
+                    isOpen={ModalPelaksanaOpen}
+                    onClose={() => handleModalPelaksana(null)}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    kode_tim={data.kode_tim}
+                    Data={DataPohon}
                 />
             }
         </>

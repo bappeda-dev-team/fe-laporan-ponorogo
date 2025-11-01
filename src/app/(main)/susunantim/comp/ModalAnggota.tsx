@@ -6,12 +6,10 @@ import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
-import { OptionTypeString, OpdGetResponse, ApiResp } from "@/types";
+import { OptionTypeString } from "@/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { AnggotaGetResponse } from "@/types/tim";
 import { AlertNotification } from "@/components/global/sweetalert2";
-import useToast from "@/components/global/toast";
-import { useGet } from "@/app/hooks/useGet";
 
 interface Modal {
     isOpen: boolean;

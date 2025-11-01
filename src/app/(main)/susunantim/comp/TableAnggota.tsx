@@ -118,7 +118,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                             <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[200px] text-center">NIP</th>
                             <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[200px] text-center">Jabatan Dalam Tim</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Keterangan</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">Aksi</th>
+                            <th className="border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">Aksi</th>
                         </tr>
                         <tr className={`text-white ${data.is_sekretariat ? "bg-emerald-600" : "bg-blue-600"} `}>
                             <th className="border-r border-b py-1 border-gray-300 text-center">1</th>
@@ -126,7 +126,7 @@ export const TableAnggota: React.FC<Table> = ({ data, onSuccess }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center">3</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">4</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">5</th>
-                            <th className="border-r border-b py-1 border-gray-300 text-center">6</th>
+                            <th className="border-b py-1 border-gray-300 text-center">6</th>
                         </tr>
                     </thead>
                     <tbody>

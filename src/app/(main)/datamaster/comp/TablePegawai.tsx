@@ -1,7 +1,7 @@
 'use client'
 
 import TableComponent from "@/components/page/TableComponent";
-import { useGet } from "@/app/hooks/useGet";
+import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { TbPencil } from "react-icons/tb";
 import { apiFetch } from "@/lib/apiFetch";
 import { PegawaiGetResponse } from "@/types/tim";
@@ -12,7 +12,6 @@ import { ModalJabatanPegawai } from "./ModalJabatanPegawai";
 const TablePegawai = () => {
 
     const kode_opd = process.env.NEXT_PUBLIC_KODE_OPD;
-    // const { data, loading, error, message } = useGet<PegawaiGetResponse[]>(`/api/v1/tpp/pegawai/detail/master/opd/OPD-001`);
 
     const [Data, setData] = useState<any>(null);
     const [Loading, setLoading] = useState<boolean>(true);
@@ -71,8 +70,9 @@ const TablePegawai = () => {
                     <thead>
                         <tr className="text-white bg-yellow-500">
                             <th className="border-r border-b py-3 px-4 border-gray-300 w-[50px] text-center">No</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nama Pegawai</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">NIP</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Nama Pegawai</th>
+                            <th colSpan={2} className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">NIP</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Basic TPP</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Jabatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Status Jabatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Eselon</th>
@@ -87,18 +87,19 @@ const TablePegawai = () => {
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{index + 1}</td>
                                         <td className="border py-3 px-4 border-yellow-500">{item.namaPegawai || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.nip || "-"}</td>
-                                        <td className="border py-3 px-4 border-yellow-500">
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">
                                             <div className="flex items-center justify-between gap-1">
-                                                {item.namaJabatan || "-"}
                                                 <ButtonSky 
                                                     className="flex items-center gap-1"
                                                     onClick={() => handleModalJabatan(item, item?.namaJabatan ? "edit" : "baru")}
-                                                >
+                                                    >
                                                     <TbPencil />
                                                     Edit
                                                 </ButtonSky>
                                             </div>
                                         </td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(0)}</td>
+                                        <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.pangkat || "-"} / {item.golongan || "-"}</td>

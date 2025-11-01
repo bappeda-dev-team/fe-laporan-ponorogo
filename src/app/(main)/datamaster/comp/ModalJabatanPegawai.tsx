@@ -29,6 +29,7 @@ interface FormValue {
     pangkat: string;
     golongan: string;
     namaRole: string;
+    basic_tpp: number | null;
     isActive: boolean;
     tanggalMulai: string;
 }
@@ -59,6 +60,7 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
     })
 
     const [Proses, setProses] = useState<boolean>(false);
+    const [Tpp, setTpp] = useState<number | null>(null)
     const { toastSuccess } = useToast();
 
     useEffect(() => {
@@ -140,6 +142,22 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
         onClose();
         reset();
     }
+
+    const formatNumberWithDots = (value: number | string | null) => {
+        if (value === null || value === undefined || value === '') return '';
+        // Hapus karakter non-digit yang mungkin sudah ada (termasuk titik atau spasi)
+        const numberString = String(value).replace(/\D/g, '');
+        if (numberString === '') return '';
+        // Format dengan TITIK sebagai pemisah ribuan
+        return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Ganti ' ' menjadi '.'
+    };
+    const unformatNumber = (value: number | string) => {
+        if (value === null || value === undefined || value === '') return null;
+        // Hapus spasi, titik, dan karakter non-digit lainnya
+        const numberString = String(value).replace(/\D/g, '');
+        // Kembalikan null jika string kosong, atau angka jika valid
+        return numberString === '' ? null : Number(numberString);
+    };
 
     return (
         <ModalComponent isOpen={isOpen} onClose={handleClose}>
@@ -258,42 +276,39 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                         </>
                     )}
                 />
-                {/* <div className="flex flex-wrap items-center gap-1 justify-evenly">
-                    <Controller
-                        name="tanggalMulai"
-                        control={control}
-                        rules={{ required: "wajib terisi" }}
-                        render={({ field }) => (
+                <Controller
+                    name="basic_tpp"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => {
+                        const handleInputChange = (e: any) => {
+                            const inputValue = e.target.value;
+                            const numericValue = unformatNumber(inputValue);
+                            field.onChange(numericValue);
+                            setTpp(unformatNumber(inputValue));
+                        };
+                        const displayValue = formatNumberWithDots(2000);
+                        return (
                             <>
-                                <FloatingLabelDate
-                                    {...field}
-                                    id="tanggalMulai"
-                                    label="Tanggal Mulai"
+                                <label htmlFor="basic_tpp" className="text-sm text-slate-500">Basic TPP</label>
+                                <input
+                                    ref={field.ref}
+                                    onBlur={field.onBlur}
+                                    className="border px-4 py-2 rounded-lg"
+                                    id="basic_tpp"
+                                    type="text"
+                                    inputMode="numeric"
+                                    placeholder="Masukkan Basic TPP"
+                                    value={displayValue === null ? "" : displayValue}
+                                    onChange={handleInputChange}
                                 />
-                                {errors.tanggalMulai &&
-                                    <p className="text-red-400 italic">{errors.tanggalMulai.message}</p>
+                                {errors.basic_tpp &&
+                                    <p className="text-red-400 italic">{errors.basic_tpp.message}</p>
                                 }
                             </>
-                        )}
-                    />
-                    <Controller
-                        name="tanggalBerakhir"
-                        control={control}
-                        rules={{ required: "wajib terisi" }}
-                        render={({ field }) => (
-                            <>
-                                <FloatingLabelDate
-                                    {...field}
-                                    id="tanggalBerakhir"
-                                    label="Tanggal Berakhir"
-                                />
-                                {errors.tanggalBerakhir &&
-                                    <p className="text-red-400 italic">{errors.tanggalBerakhir.message}</p>
-                                }
-                            </>
-                        )}
-                    />
-                </div> */}
+                        )
+                    }}
+                />
                 <div className="flex flex-col gap-2 mt-3">
                     <ButtonSky
                         className="w-full"

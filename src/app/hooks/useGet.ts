@@ -56,8 +56,6 @@ export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
                 console.log(err);
                 toastError("Error Server")
                 setState({ data: null, loading: false, error: true, message: "Error, cek koneksi internet, terdapat kesalahan server/backend, jika berlanjut hubungi tim developer" });
-            } finally {
-                console.log(S);
             }
         }
 

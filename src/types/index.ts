@@ -15,6 +15,14 @@ export interface SusunanTim {
   nip: string;
 }
 
+export interface PegawaiGetResponse {
+  id: string;
+  nama_pegawai: string;
+  nip: string;
+  kode_opd: string;
+  nama_opd: string;
+}
+
 export interface TimKerja {
   id: number;
   kode_tim: string;

@@ -68,7 +68,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi/Kegiatan yang Dilaksanakan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Pendorong</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Penghambat</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rekomendasi Tindak Lanjut</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Risiko Hukum</th>
+                            <th className="border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rekomendasi Tindak Lanjut</th>
                         </tr>
                         <tr className="text-white bg-emerald-600">
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">1</th>
@@ -82,6 +83,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">9 </th>
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">10</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">11</th>
+                            <th className="border-b py-1 border-gray-300 text-center italic">12</th>
                         </tr>
                     </thead>
                     {LoadingRekin ?
@@ -176,6 +178,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     :
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
+                                                <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
