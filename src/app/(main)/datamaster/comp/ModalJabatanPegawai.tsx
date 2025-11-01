@@ -54,7 +54,7 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             },
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
-            tanggalMulai: "",
+            tanggalMulai: "31-10-2025",
         }
     })
 
@@ -111,8 +111,8 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             eselon: data?.eselon?.value,
             pangkat: data?.pangkat,
             golongan: data?.golongan,
-            tanggalMulai: data?.tanggalMulai,
-            tanggalBerakhir: "01-01-2025"
+            tanggalMulai: data?.tanggalMulai
+            // tanggalBerakhir: "01-01-2025"
         }
         // console.log(payload);
         try {
