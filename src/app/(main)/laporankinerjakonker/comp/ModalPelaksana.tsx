@@ -41,7 +41,7 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
 
     const [OptionPegawai, setOptionPegawai] = useState<PegawaiGetResponse[]>([]);
     const [Proses, setProses] = useState<boolean>(false);
-    const { toastSuccess } = useToast();
+    const { toastSuccess, toastInfo } = useToast();
 
     const { data, error, loading } = useGet<PegawaiGetResponse[]>(`/api/v1/perencanaan/pegawai/findall?kode_opd=${kode_opd}`)
 
@@ -69,25 +69,26 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
             kode_opd: kode_opd
         }
 
-        // console.log(payload);
-        try {
-            setProses(true);
-            await apiFetch(`/api/v1/timkerja/timkerja/program_unggulan`, {
-                method: "POST",
-                body: payload as any
-            }).then(_ => {
-                toastSuccess("data berhasil disimpan");
-                onSuccess();
-                handleClose();
-            }).catch(err => {
-                AlertNotification("Gagal", `${err}`, "error", 3000, true);
-            })
-        } catch (err) {
-            console.log(err);
-            AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        } finally {
-            setProses(false);
-        }
+        console.log(payload);
+        toastInfo("dalam pengembangan developer")
+        // try {
+        //     setProses(true);
+        //     await apiFetch(`/api/v1/timkerja/timkerja/program_unggulan`, {
+        //         method: "POST",
+        //         body: payload as any
+        //     }).then(_ => {
+        //         toastSuccess("data berhasil disimpan");
+        //         onSuccess();
+        //         handleClose();
+        //     }).catch(err => {
+        //         AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        //     })
+        // } catch (err) {
+        //     console.log(err);
+        //     AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        // } finally {
+        //     setProses(false);
+        // }
     }
 
     const handleClose = () => {
