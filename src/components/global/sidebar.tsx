@@ -65,7 +65,7 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                     height={40}
                 />
                 {show &&
-                    <h1 className="font-bold text-sky-600 uppercase border-b border-sky-600">{app}</h1>
+                    <h1 className="font-bold text-sky-600 uppercase border-b border-sky-600 text-center">{app}</h1>
                 }
             </div>
             <ul className="flex flex-col gap-2">
@@ -109,15 +109,16 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                 }
                 <Link
                     href='/laporankinerjakonker'
-                    className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                    className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 overflow-hidden whitespace-nowrap text-ellipsis ${getActiveClass(
                         url.startsWith('/laporankinerjakonker'), 'default'
                     )}`}
                 >
                     <TbDeviceAnalytics />
                     {show &&
-                        <p>
-                            Kinerja Konker
-                        </p>
+                        app !== "Prioritas Pembangunan" ?
+                            <p>Kinerja Konker</p>
+                            :
+                            <p>Prioritas Pembangunan</p>
                     }
                 </Link>
                 <Link
@@ -146,19 +147,21 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                         </p>
                     }
                 </Link>
-                <Link
-                    href='/laporantpp'
-                    className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
-                        url.startsWith('/laporantpp'), 'default'
-                    )}`}
-                >
-                    <TbDeviceImacDollar />
-                    {show &&
-                        <p>
-                            TPP Konker
-                        </p>
-                    }
-                </Link>
+                {app !== "Prioritas Pembangunan" &&
+                    <Link
+                        href='/laporantpp'
+                        className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                            url.startsWith('/laporantpp'), 'default'
+                        )}`}
+                    >
+                        <TbDeviceImacDollar />
+                        {show &&
+                            <p>
+                                TPP Konker
+                            </p>
+                        }
+                    </Link>
+                }
             </ul>
             <div className="flex items-center gap-3 mt-5">
                 <ButtonRedBorder
