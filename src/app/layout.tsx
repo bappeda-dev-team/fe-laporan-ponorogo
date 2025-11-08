@@ -18,8 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>KAK Laporan Ponorogo</title>
-        <meta name="description" content="Aplikasi KAK - Manrisk" />
+        <title>Laporan Kinerja</title>
+        <meta name="description" content="Laporan" />
         <link
           rel="icon"
           href={logo}
