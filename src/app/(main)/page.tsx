@@ -5,6 +5,7 @@ import { TbSettings } from 'react-icons/tb';
 export default function Home() {
 
   const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
+  const pemda = process.env.NEXT_PUBLIC_NAMA_PEMDA || "";
   
   return (
     <>
@@ -20,7 +21,7 @@ export default function Home() {
             height={100}
           />
           <h1 className="text-4xl uppercase font-extrabold">Laporan</h1>
-          <h3 className="text-base font-light">Kabupaten Ponorogo</h3>
+          <h3 className="text-base font-light">{pemda}</h3>
           <ButtonBlackBorder 
             halaman_url='/datamaster'
             className="flex items-center gap-1"

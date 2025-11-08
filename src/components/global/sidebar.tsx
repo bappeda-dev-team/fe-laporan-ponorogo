@@ -19,6 +19,7 @@ interface Sidebar {
 export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
     const url = usePathname();
     const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
+    const app = process.env.NEXT_PUBLIC_NAMA_APLIKASI || "";
     const { toastSuccess } = useToast();
 
     const getActiveClass = (isActive: boolean, type = 'default') => {
@@ -64,7 +65,7 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                     height={40}
                 />
                 {show &&
-                    <h1 className="font-bold text-sky-600 uppercase border-b border-sky-600">Tim Kerja Ponorogo</h1>
+                    <h1 className="font-bold text-sky-600 uppercase border-b border-sky-600">{app}</h1>
                 }
             </div>
             <ul className="flex flex-col gap-2">
