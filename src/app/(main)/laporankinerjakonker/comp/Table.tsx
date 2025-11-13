@@ -95,7 +95,8 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-2 px-3 border-gray-300 min-w-[300px] text-center">Indikator Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Pelaksana</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pelaksana</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Petugas Tim</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
@@ -124,7 +125,8 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center">14</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">15</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center">16</th>
-                            <th className="border-b py-1 border-gray-300 text-center">17</th>
+                            <th className="border-r border-b py-1 border-gray-300 text-center">17</th>
+                            <th className="border-b py-1 border-gray-300 text-center">18</th>
                         </tr>
                     </thead>
                     {LoadingProgram ?
@@ -214,16 +216,17 @@ const Table: React.FC<Table> = ({ data }) => {
                                                             </>
                                                         }
                                                         <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
+                                                        <td className="border border-blue-500 px-6 py-4">-</td>
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {/* PELAKSANA */}
                                                             <div className="flex flex-col justify-center gap-2">
-                                                                <p className="border-b border-blue-300 italic text-red-400 text-sm">Pelaksana dalam pengembangan</p>
+                                                                <p className="border-b border-blue-300 italic text-red-400 text-sm">Petugas dalam pengembangan</p>
                                                                 <ButtonSkyBorder
                                                                     className="flex items-center gap-2"
                                                                     onClick={() => handleModalPelaksana(p)}
                                                                 >
                                                                     <TbPencil />
-                                                                    Pelaksana
+                                                                    Petugas Tim
                                                                 </ButtonSkyBorder>
                                                             </div>
                                                         </td>
