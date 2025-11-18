@@ -159,7 +159,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                 <td rowSpan={item.pohon_kinerja?.length > 0 ? item.pohon_kinerja.length + 1 : 2} className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
                                                 <td rowSpan={item.pohon_kinerja?.length > 0 ? item.pohon_kinerja.length + 1 : 2} className="border border-blue-500 px-6 py-4">
                                                     <div className="flex flex-col gap-1">
-                                                        <p className="border-b py-1 mb-1 border-blue-500">{item.program_unggulan || "-"}</p>
+                                                        <p className="border-b py-1 mb-1 border-blue-500">{item.id_program_unggulan || "-"} - {item.program_unggulan || "-"}</p>
                                                         <ButtonRedBorder
                                                             className="flex items-center gap-1"
                                                             onClick={() => {
