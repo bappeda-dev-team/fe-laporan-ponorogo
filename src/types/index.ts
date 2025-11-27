@@ -93,6 +93,29 @@ export interface PohonKinerjaKonker {
   indikator: IndikatorRencanaKinerja[];
 }
 
+export interface Pelaksanas {
+  nama_pelaksana: string,
+  nip_pelaksana: number,
+  rencana_kinerjas: RencanaKinerjaPelaksanas[];
+}
+
+export interface RencanaKinerjaPelaksanas {
+  id_rekin: string,
+  rencana_kinerja: string,
+  nama_pelaksana: string,
+  nip_pelaksana: string,
+  kode_subkegiatan: string,
+  nama_subkegiatan: string,
+  pagu: number,
+  keterangan: string,
+  tahapan_pelaksanaan: {
+    tw_1: number,
+    tw_2: number,
+    tw_3: number,
+    tw_4: number
+  }
+}
+
 export interface RencanaKinerjaGetResponse {
   id_rencana_kinerja: string;
   id_pohon: number;

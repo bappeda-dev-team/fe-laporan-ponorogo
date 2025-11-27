@@ -10,7 +10,7 @@ import { TimGetResponse } from "@/types/tim";
 import React, { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
-import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, PohonKinerjaKonker, Target } from "@/types";
+import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PohonKinerjaKonker, Target } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
 import { RencanaAksi } from "./RencanaAksi";
@@ -216,7 +216,15 @@ const Table: React.FC<Table> = ({ data }) => {
                                                             </>
                                                         }
                                                         <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            {p.pelaksanas.length > 0 ? 
+                                                                p.pelaksanas.map((pl: Pelaksanas, pelaksanas_index: number) => (
+                                                                    <p key={pelaksanas_index} className="my-2 border p-1 rounded-lg">{pl.nama_pelaksana || "-"} ({pl.nip_pelaksana || "-"})</p>
+                                                                ))
+                                                            :
+                                                                "-"
+                                                            }
+                                                        </td>
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {/* PELAKSANA */}
                                                             <div className="flex flex-col justify-center gap-2">
