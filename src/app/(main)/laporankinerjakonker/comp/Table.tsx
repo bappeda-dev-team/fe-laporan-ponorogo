@@ -240,13 +240,16 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         </td>
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {p.pelaksanas.length > 0 ?
-                                                                p.pelaksanas.map((pl: Pelaksanas) => (
-                                                                    pl.rencana_kinerjas.length > 0 ?
-                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
-                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">{rk.rencana_kinerja || "-"}</p>
-                                                                        ))
-                                                                        :
-                                                                        <p className="italic text-red-400">Rencana Kinerja belum di buat</p>
+                                                                p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
+                                                                    <React.Fragment key={pl_index}>
+                                                                        {pl.rencana_kinerjas.length > 0 ?
+                                                                            pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                                <p key={rk_index} className="my-2 border p-1 rounded-lg">{rk.rencana_kinerja || "-"}</p>
+                                                                            ))
+                                                                            :
+                                                                            <p className="italic text-red-400">Rencana Kinerja belum di buat</p>
+                                                                        }
+                                                                    </React.Fragment>
                                                                 ))
                                                                 :
                                                                 "-"
@@ -254,13 +257,16 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         </td>
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {p.pelaksanas.length > 0 ?
-                                                                p.pelaksanas.map((pl: Pelaksanas) => (
-                                                                    pl.rencana_kinerjas.length > 0 ?
-                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
-                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">({rk.kode_subkegiatan || "-"}) - {rk.nama_subkegiatan || "-"}</p>
-                                                                        ))
-                                                                        :
-                                                                        <p className="italic text-red-400">Sub Kegiatan belum di pilih</p>
+                                                                p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
+                                                                    <React.Fragment key={pl_index}>
+                                                                        {pl.rencana_kinerjas.length > 0 ?
+                                                                            pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                                <p key={rk_index} className="my-2 border p-1 rounded-lg">({rk.kode_subkegiatan || "-"}) - {rk.nama_subkegiatan || "-"}</p>
+                                                                            ))
+                                                                            :
+                                                                            <p className="italic text-red-400">Sub Kegiatan belum di pilih</p>
+                                                                        }
+                                                                    </React.Fragment>
                                                                 ))
                                                                 :
                                                                 "-"
@@ -268,13 +274,16 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         </td>
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {p.pelaksanas.length > 0 ?
-                                                                p.pelaksanas.map((pl: Pelaksanas) => (
-                                                                    pl.rencana_kinerjas.length > 0 ?
-                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
-                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">Rp.{formatRupiah(rk.pagu || 0)}</p>
-                                                                        ))
-                                                                        :
-                                                                        "Rp.0"
+                                                                p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
+                                                                    <React.Fragment key={pl_index}>
+                                                                        {pl.rencana_kinerjas.length > 0 ?
+                                                                            pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                                <p key={rk_index} className="my-2 border p-1 rounded-lg">Rp.{formatRupiah(rk.pagu || 0)}</p>
+                                                                            ))
+                                                                            :
+                                                                            "Rp.0"
+                                                                        }
+                                                                    </React.Fragment>
                                                                 ))
                                                                 :
                                                                 "-"
