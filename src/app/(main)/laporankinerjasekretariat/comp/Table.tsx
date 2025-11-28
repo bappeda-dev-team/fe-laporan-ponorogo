@@ -12,6 +12,10 @@ import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
 import useToast from "@/components/global/toast";
 import { apiFetch } from "@/lib/apiFetch";
+import { Realisasi } from "./Realisasi";
+import { RencanaAksi } from "./RencanaAksi";
+import { Rekomendasi } from "./Rekomendasi";
+import { Faktor } from "./Faktor";
 
 interface Table {
     data: TimGetResponse;
@@ -59,7 +63,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                     <thead>
                         <tr className="text-white bg-emerald-500">
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[50px] text-center">No</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Kinerja</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Rencana Kinerja</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pemilik Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Indikator Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Sub Kegiatan</th>
@@ -83,7 +88,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">9 </th>
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">10</th>
                             <th className="border-r border-b py-1 border-gray-300 text-center italic">11</th>
-                            <th className="border-b py-1 border-gray-300 text-center italic">12</th>
+                            <th className="border-r border-b py-1 border-gray-300 text-center italic">12</th>
+                            <th className="border-b py-1 border-gray-300 text-center italic">13</th>
                         </tr>
                     </thead>
                     {LoadingRekin ?
@@ -134,6 +140,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                         </ButtonRedBorder>
                                                     </div>
                                                 </td>
+                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border border-emerald-500 px-6 py-4">-</td>
                                             </tr>
                                             <tr>
                                                 {item.indikators ?
@@ -179,12 +186,12 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0}/></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><RencanaAksi renaksi=""/></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Rekomendasi rekomendasi="" /></td>
                                             </tr>
                                         </React.Fragment>
                                     ))
