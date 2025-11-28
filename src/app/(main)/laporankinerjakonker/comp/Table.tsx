@@ -10,7 +10,7 @@ import { TimGetResponse } from "@/types/tim";
 import React, { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
-import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PohonKinerjaKonker, Target } from "@/types";
+import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PohonKinerjaKonker, RencanaKinerjaPelaksanas, Target } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { Realisasi } from "./Realisasi";
 import { RencanaAksi } from "./RencanaAksi";
@@ -97,8 +97,8 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pelaksana</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Petugas Tim</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Kinerja</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Sub Kegiatan</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Rencana Kinerja</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi</th>
@@ -217,11 +217,11 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         }
                                                         <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
                                                         <td className="border border-blue-500 px-6 py-4">
-                                                            {p.pelaksanas.length > 0 ? 
+                                                            {p.pelaksanas.length > 0 ?
                                                                 p.pelaksanas.map((pl: Pelaksanas, pelaksanas_index: number) => (
                                                                     <p key={pelaksanas_index} className="my-2 border p-1 rounded-lg">{pl.nama_pelaksana || "-"} ({pl.nip_pelaksana || "-"})</p>
                                                                 ))
-                                                            :
+                                                                :
                                                                 "-"
                                                             }
                                                         </td>
@@ -238,8 +238,48 @@ const Table: React.FC<Table> = ({ data }) => {
                                                                 </ButtonSkyBorder>
                                                             </div>
                                                         </td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
-                                                        <td className="border border-blue-500 px-6 py-4">-</td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            {p.pelaksanas.length > 0 ?
+                                                                p.pelaksanas.map((pl: Pelaksanas) => (
+                                                                    pl.rencana_kinerjas.length > 0 ?
+                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">{rk.rencana_kinerja || "-"}</p>
+                                                                        ))
+                                                                        :
+                                                                        <p className="italic text-red-400">Rencana Kinerja belum di buat</p>
+                                                                ))
+                                                                :
+                                                                "-"
+                                                            }
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            {p.pelaksanas.length > 0 ?
+                                                                p.pelaksanas.map((pl: Pelaksanas) => (
+                                                                    pl.rencana_kinerjas.length > 0 ?
+                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">({rk.kode_subkegiatan || "-"}) - {rk.nama_subkegiatan || "-"}</p>
+                                                                        ))
+                                                                        :
+                                                                        <p className="italic text-red-400">Sub Kegiatan belum di pilih</p>
+                                                                ))
+                                                                :
+                                                                "-"
+                                                            }
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            {p.pelaksanas.length > 0 ?
+                                                                p.pelaksanas.map((pl: Pelaksanas) => (
+                                                                    pl.rencana_kinerjas.length > 0 ?
+                                                                        pl.rencana_kinerjas?.map((rk: RencanaKinerjaPelaksanas, rk_index: number) => (
+                                                                            <p key={rk_index} className="my-2 border p-1 rounded-lg">Rp.{formatRupiah(rk.pagu || 0)}</p>
+                                                                        ))
+                                                                        :
+                                                                        "Rp.0"
+                                                                ))
+                                                                :
+                                                                "-"
+                                                            }
+                                                        </td>
                                                         <td className="border border-blue-500 px-6 py-4">Rp.{formatRupiah(0)}</td>
                                                         <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi="" /></td>
