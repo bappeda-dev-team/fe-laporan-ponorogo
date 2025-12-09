@@ -14,9 +14,11 @@ import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Realisasi {
     anggaran: number;
+    Data?: any;
+    kode_tim: string;
 }
 
-export const Realisasi: React.FC<Realisasi> = ({ anggaran }) => {
+export const Realisasi: React.FC<Realisasi> = ({ anggaran, Data, kode_tim }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -25,6 +27,8 @@ export const Realisasi: React.FC<Realisasi> = ({ anggaran }) => {
             <FormRealisasi
                 anggaran={anggaran}
                 onClose={() => setEditing(false)}
+                Data={Data}
+                kode_tim={kode_tim}
             />
         )
     } else {
@@ -48,46 +52,60 @@ export const Realisasi: React.FC<Realisasi> = ({ anggaran }) => {
 interface FormRealisasi {
     anggaran: number;
     onClose: () => void;
+    Data: any;
+    kode_tim: string;
 }
 
-export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose }) => {
+export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data, kode_tim }) => {
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
-        defaultValues: {
-            realisasi_anggaran: anggaran,
-        }
-    });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<number | null>(null);
     const { branding } = useBrandingContext();
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
+        defaultValues: {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
+            kode_subkegiatan: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: Data?.rencana_aksi || "",
+            tahun: String(branding?.tahun?.value)
+        }
+    });
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bukti_dukung: "",
             bulan: branding?.bulan?.value,
-            faktor_pendorong: "",
-            faktor_penghambat: "",
-            id_rencana_kinerja: "",
-            kode_opd: "",
+            faktor_pendorong: Data?.faktor_pendorong,
+            faktor_penghambat: Data?.faktor_penghambat,
+            id_rencana_kinerja: Data?.id_pohon,
+            kode_opd: branding?.opd,
             kode_subkegiatan: "",
-            kode_tim: "",
+            kode_tim: kode_tim,
             realisasi_anggaran: Number(data.realisasi_anggaran),
-            rekomendasi_tl: "",
-            rencana_aksi: "",
+            rekomendasi_tl: Data?.rekomendasi_tl,
+            rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
-        console.log(payload);
+        // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(`/timkerja/realisasianggaran`, {
+            await apiFetch(`/api/v1/timkerja/realisasianggaran`, {
                 method: "POST",
                 body: payload as any
-            }).then(_ => {
+            }).then((resp: any) => {
                 toastSuccess("data berhasil disimpan");
                 setEdited(true);
-                setHasilEdit(data.realisasi_anggaran);
+                setHasilEdit(resp.data.realisasi_anggaran);
+                // console.log(resp.data.realisasi_anggaran);
                 // AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
                 handleClose();
             }).catch(err => {
@@ -108,7 +126,7 @@ export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose }) =>
 
     if (Edited) {
         return (
-            <Realisasi anggaran={HasilEdit || 0} />
+            <Realisasi anggaran={HasilEdit || 0} kode_tim={kode_tim} />
         )
     } else {
         return (

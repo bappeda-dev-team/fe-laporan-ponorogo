@@ -6,10 +6,11 @@ import { TbCircleCheck } from "react-icons/tb";
 import { TimGetResponse, AnggotaGetResponse } from "@/types/tim";
 
 interface Table {
-    data: TimGetResponse;
+    data: any;
 }
 
 const Table: React.FC<Table> = ({ data }) => {
+    
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
             <div className="flex flex-wrap items-center justify-between mb-2">
@@ -49,30 +50,30 @@ const Table: React.FC<Table> = ({ data }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.susunan_tims ?
-                            data?.susunan_tims
+                        {data?.penilaian_kinerjas ?
+                            data?.penilaian_kinerjas
                                 .slice()
-                                .sort((a, b) => a.level_jabatan - b.level_jabatan)
-                                .map((item: AnggotaGetResponse, index: number) => (
+                                .sort((a: any, b: any) => a.level_jabatan - b.level_jabatan)
+                                .map((item: any, index: number) => (
                                     <tr key={index}>
                                         <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
                                             <div className="flex flex-col">
                                                 <p className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>{item.nama_pegawai || "-"}</p>
-                                                <p className="font-semibold">{item.nip || "-"}</p>
+                                                <p className="font-semibold">{item.id_pegawai || "-"}</p>
                                             </div>
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
                                             <div className="flex flex-col">
-                                                <p className="border-b">Pembina Utama/IV C</p>
+                                                <p className="border-b">*pangkat/golongan</p>
                                                 <p>Kepala</p>
                                             </div>
                                         </td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>Penanggung Jawab</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>5.000.000</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiKinerja nilai={0}/></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiTim nilai={0} /></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiPerson nilai={0} /></td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiKinerja nilai={item.kinerja_bappeda || 0}/></td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiTim nilai={item.kinerja_tim || 0} /></td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiPerson nilai={item.kinerja_person || 0} /></td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>93</td>
                                     </tr>
                                 ))

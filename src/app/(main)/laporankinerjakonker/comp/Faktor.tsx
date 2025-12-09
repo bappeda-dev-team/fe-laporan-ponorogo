@@ -98,7 +98,7 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose }) => 
         // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(`/timkerja/realisasianggaran`, {
+            await apiFetch(`/api/v1/timkerja/realisasianggaran`, {
                 method: "POST",
                 body: jenis === "pendorong" ? payloadPendorong as any : payloadPenghambat
             }).then(_ => {

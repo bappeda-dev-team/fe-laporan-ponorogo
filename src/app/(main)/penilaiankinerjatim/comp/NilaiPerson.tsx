@@ -66,7 +66,7 @@ export const FormNilaiPerson: React.FC<FormNilaiPerson> = ({ nilai, onClose }) =
         const payload = {
             bulan: branding?.bulan?.value,
             id_pegawai: "",
-            jenis_nilai: "KINERJA_TIM",
+            jenis_nilai: "KINERJA_PERSON",
             kode_opd: branding?.opd,
             kode_tim: "",
             nilai_kinerja: data.nilai_kinerja,

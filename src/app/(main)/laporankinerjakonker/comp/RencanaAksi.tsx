@@ -84,7 +84,7 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose })
         console.log(payload);
         try {
             setProses(true);
-            await apiFetch(`/timkerja/realisasianggaran`, {
+            await apiFetch(`/api/v1/timkerja/realisasianggaran`, {
                 method: "POST",
                 body: payload as any
             }).then(_ => {
