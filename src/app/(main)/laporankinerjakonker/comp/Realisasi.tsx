@@ -16,9 +16,10 @@ interface Realisasi {
     anggaran: number;
     Data?: any;
     kode_tim: string;
+    id_program?: number;
 }
 
-export const Realisasi: React.FC<Realisasi> = ({ anggaran, Data, kode_tim }) => {
+export const Realisasi: React.FC<Realisasi> = ({ anggaran, Data, kode_tim, id_program }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -29,6 +30,7 @@ export const Realisasi: React.FC<Realisasi> = ({ anggaran, Data, kode_tim }) => 
                 onClose={() => setEditing(false)}
                 Data={Data}
                 kode_tim={kode_tim}
+                id_program={id_program || 0}
             />
         )
     } else {
@@ -54,9 +56,10 @@ interface FormRealisasi {
     onClose: () => void;
     Data: any;
     kode_tim: string;
+    id_program: number;
 }
 
-export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data, kode_tim }) => {
+export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data, kode_tim, id_program }) => {
 
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
@@ -69,6 +72,7 @@ export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data
             bulan: branding?.bulan?.value,
             faktor_pendorong: Data?.faktor_pendorong || "",
             faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
             id_pohon: Data?.id_pohon,
             id_rencana_kinerja: Data?.id_pohon || "",
             kode_opd: branding?.opd,
@@ -87,6 +91,7 @@ export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data
             bulan: branding?.bulan?.value,
             faktor_pendorong: Data?.faktor_pendorong,
             faktor_penghambat: Data?.faktor_penghambat,
+            id_program_unggulan: id_program,
             id_pohon: Data?.id_pohon,
             id_rencana_kinerja: "",
             kode_opd: branding?.opd,

@@ -91,6 +91,12 @@ export interface PohonKinerjaKonker {
   pelaksanas: any | null; // Use a specific type if structure is known, otherwise 'any' or 'null'
   keterangan: string;
   indikator: IndikatorRencanaKinerja[];
+  realisasi_anggaran: number;
+  rencana_aksi: string;
+  faktor_pendorong: string;
+  faktor_penghambat: string;
+  risiko_hukum: string;
+  rekomendasi_tl: string;
 }
 
 export interface Pelaksanas {

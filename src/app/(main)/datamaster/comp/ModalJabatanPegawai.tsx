@@ -63,10 +63,6 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
     const [Tpp, setTpp] = useState<number | null>(null)
     const { toastSuccess } = useToast();
 
-    useEffect(() => {
-        console.log("DATA", Data);
-    }, [Data]);
-
     const StatusOption = [
         { value: "PLT_UTAMA", label: "PLT_UTAMA" },
         { value: "PLT_SEMENTARA", label: "PLT_SEMENTARA" },
@@ -168,7 +164,9 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-8 gap-2" onSubmit={handleSubmit(onSubmit)}>
-                <h1 className="font-bold text-sky-500">Nama Pegawai : {Data?.namaPegawai || "tanpa nama"}</h1>
+                {jenis === "edit" &&
+                    <h1 className="font-bold text-sky-500">Nama Pegawai : {Data?.namaPegawai || "tanpa nama"}</h1>
+                }
                 <Controller
                     name="namaJabatan"
                     control={control}

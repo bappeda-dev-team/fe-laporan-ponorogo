@@ -5,6 +5,7 @@ export interface FormValue {
     faktor_penghambat: string,
     id_pohon: string;
     id_rencana_kinerja: string,
+    id_program_unggulan: number;
     kode_opd: string,
     kode_subkegiatan: string,
     kode_tim: string,

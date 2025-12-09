@@ -289,12 +289,13 @@ const Table: React.FC<Table> = ({ data }) => {
                                                                 "-"
                                                             }
                                                         </td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} kode_tim={item.kode_tim} Data={p} /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi="" /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi="" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={p.realisasi_anggaran || 0} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0} /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi={p.rencana_aksi || ""} /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_pendorong || ""} jenis="pendorong" /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_penghambat || ""} jenis="penghambat" /></td>
+                                                        {/* <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.} jenis="penghambat" /></td> */}
+                                                        <td className="border border-blue-500 px-6 py-4">pengembangan</td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi={p.rekomendasi_tl || ""} /></td>
                                                         <td className="border-b border-blue-500 px-6 py-4">
                                                             <div className="flex justify-center">
                                                                 <ButtonSkyBorder
