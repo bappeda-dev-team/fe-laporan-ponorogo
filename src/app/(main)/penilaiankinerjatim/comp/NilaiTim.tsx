@@ -13,9 +13,11 @@ import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Modal {
     nilai: number;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const NilaiTim: React.FC<Modal> = ({ nilai }) => {
+export const NilaiTim: React.FC<Modal> = ({ nilai, kode_tim, Data }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -24,6 +26,8 @@ export const NilaiTim: React.FC<Modal> = ({ nilai }) => {
             <FormNilaiTim
                 nilai={nilai}
                 onClose={() => setEditing(false)}
+                kode_tim={kode_tim}
+                Data={Data}
             />
         )
     } else {
@@ -47,9 +51,11 @@ export const NilaiTim: React.FC<Modal> = ({ nilai }) => {
 interface FormNilaiTim {
     nilai: number;
     onClose: () => void;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose }) => {
+export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose, kode_tim, Data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -65,14 +71,14 @@ export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose }) => {
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bulan: branding?.bulan?.value,
-            id_pegawai: "",
+            id_pegawai: Data?.id_pegawai,
             jenis_nilai: "KINERJA_TIM",
             kode_opd: branding?.opd,
-            kode_tim: "",
-            nilai_kinerja: data.nilai_kinerja,
+            kode_tim: kode_tim,
+            nilai_kinerja: Number(data.nilai_kinerja),
             tahun: String(branding?.tahun?.value),
         }
-        console.log(payload);
+        // console.log(payload);
         try {
             setProses(true);
             await apiFetch(`/penilaian_kinerja`, {
@@ -102,7 +108,7 @@ export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose }) => {
 
     if (Edited) {
         return (
-            <NilaiTim nilai={HasilEdit || 0} />
+            <NilaiTim nilai={HasilEdit || 0} kode_tim={kode_tim}/>
         )
     } else {
         return (

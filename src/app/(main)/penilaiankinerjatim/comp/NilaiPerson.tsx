@@ -13,9 +13,11 @@ import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Modal {
     nilai: number;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const NilaiPerson: React.FC<Modal> = ({ nilai }) => {
+export const NilaiPerson: React.FC<Modal> = ({ nilai, kode_tim, Data }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -24,6 +26,8 @@ export const NilaiPerson: React.FC<Modal> = ({ nilai }) => {
             <FormNilaiPerson
                 nilai={nilai}
                 onClose={() => setEditing(false)}
+                kode_tim={kode_tim}
+                Data={Data}
             />
         )
     } else {
@@ -47,9 +51,11 @@ export const NilaiPerson: React.FC<Modal> = ({ nilai }) => {
 interface FormNilaiPerson {
     nilai: number;
     onClose: () => void;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const FormNilaiPerson: React.FC<FormNilaiPerson> = ({ nilai, onClose }) => {
+export const FormNilaiPerson: React.FC<FormNilaiPerson> = ({ nilai, onClose, kode_tim, Data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -65,11 +71,11 @@ export const FormNilaiPerson: React.FC<FormNilaiPerson> = ({ nilai, onClose }) =
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bulan: branding?.bulan?.value,
-            id_pegawai: "",
+            id_pegawai: Data?.id_pegawai,
             jenis_nilai: "KINERJA_PERSON",
             kode_opd: branding?.opd,
-            kode_tim: "",
-            nilai_kinerja: data.nilai_kinerja,
+            kode_tim: kode_tim,
+            nilai_kinerja: Number(data.nilai_kinerja),
             tahun: String(branding?.tahun?.value),
         }
         console.log(payload);
@@ -102,7 +108,7 @@ export const FormNilaiPerson: React.FC<FormNilaiPerson> = ({ nilai, onClose }) =
 
     if (Edited) {
         return (
-            <NilaiPerson nilai={HasilEdit || 0} />
+            <NilaiPerson nilai={HasilEdit || 0} kode_tim={kode_tim}/>
         )
     } else {
         return (

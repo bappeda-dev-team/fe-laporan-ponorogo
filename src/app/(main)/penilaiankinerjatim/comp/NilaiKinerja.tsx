@@ -13,9 +13,11 @@ import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Modal {
     nilai: number;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const NilaiKinerja: React.FC<Modal> = ({ nilai }) => {
+export const NilaiKinerja: React.FC<Modal> = ({ nilai, Data, kode_tim }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -24,6 +26,8 @@ export const NilaiKinerja: React.FC<Modal> = ({ nilai }) => {
             <FormNilaiKinerja
                 nilai={nilai}
                 onClose={() => setEditing(false)}
+                Data={Data}
+                kode_tim={kode_tim}
             />
         )
     } else {
@@ -47,9 +51,11 @@ export const NilaiKinerja: React.FC<Modal> = ({ nilai }) => {
 interface FormNilaiKinerja {
     nilai: number;
     onClose: () => void;
+    kode_tim: string;
+    Data?: any;
 }
 
-export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose }) => {
+export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, kode_tim, Data }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -65,17 +71,17 @@ export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose })
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bulan: branding?.bulan?.value,
-            id_pegawai: "",
+            id_pegawai: Data?.id_pegawai,
             jenis_nilai: "KINERJA_BAPPEDA",
             kode_opd: branding?.opd,
-            kode_tim: "",
-            nilai_kinerja: data.nilai_kinerja,
+            kode_tim: kode_tim,
+            nilai_kinerja: Number(data.nilai_kinerja),
             tahun: String(branding?.tahun?.value),
         }
-        console.log(payload);
+        // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(`/penilaian_kinerja`, {
+            await apiFetch(`/api/v1/timkerja/penilaian_kinerja`, {
                 method: "POST",
                 body: payload as any
             }).then(_ => {
@@ -102,7 +108,7 @@ export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose })
 
     if (Edited) {
         return (
-            <NilaiKinerja nilai={HasilEdit || 0} />
+            <NilaiKinerja nilai={HasilEdit || 0} kode_tim={kode_tim} />
         )
     } else {
         return (
