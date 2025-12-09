@@ -289,7 +289,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                                 "-"
                                                             }
                                                         </td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} kode_tim={item.kode_tim} /></td>
+                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={0} kode_tim={item.kode_tim} Data={p} /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi="" /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
