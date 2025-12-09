@@ -3,6 +3,7 @@ export interface FormValue {
     bulan: number,
     faktor_pendorong: string,
     faktor_penghambat: string,
+    id_pohon: string;
     id_rencana_kinerja: string,
     kode_opd: string,
     kode_subkegiatan: string,
