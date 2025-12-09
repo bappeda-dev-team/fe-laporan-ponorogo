@@ -6,6 +6,10 @@ import { ButtonRedBorder, ButtonGreenBorder } from "@/components/button/button";
 import { useState, useEffect } from "react";
 import { TbPencil, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { FloatingLabelTextarea } from "@/components/global/input";
+import { useBrandingContext } from "@/provider/BrandingProvider";
+import { AlertNotification } from "@/components/global/sweetalert2";
+import { apiFetch } from "@/lib/apiFetch";
+import { FormValue } from "../type";
 
 interface Faktor {
     faktor: string;
@@ -18,8 +22,8 @@ export const Faktor: React.FC<Faktor> = ({ faktor, jenis }) => {
 
     if (Editing) {
         return (
-            <FormFaktor 
-                faktor={faktor} 
+            <FormFaktor
+                faktor={faktor}
                 jenis={jenis}
                 onClose={() => setEditing(false)}
             />
@@ -48,32 +52,70 @@ interface FormFaktor {
     jenis: 'pendorong' | 'penghambat';
     onClose: () => void;
 }
-interface FormValue {
-    faktor: string;
-}
 
 export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            faktor: faktor,
+            faktor_penghambat: faktor,
         }
     });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
+    const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<string | null>(null);
+    const {branding} = useBrandingContext();
 
-    const onSubmit: SubmitHandler<FormValue> = async(data) => {
-        const payload_pendorong = {
-            faktor_pendorong: data.faktor,
+    const onSubmit: SubmitHandler<FormValue> = async (data) => {
+        const payloadPenghambat = {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: "",
+            faktor_penghambat: data.faktor_penghambat,
+            id_rencana_kinerja: "",
+            kode_opd: "",
+            kode_subkegiatan: "",
+            kode_tim: "",
+            realisasi_anggaran: 0,
+            rekomendasi_tl: "",
+            rencana_aksi: "",
+            tahun: String(branding?.tahun?.value)
         }
-        const payload_penghambat = {
-            faktor_penghambat: data.faktor,
+        const payloadPendorong = {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: data.faktor_pendorong,
+            faktor_penghambat: "",
+            id_rencana_kinerja: "",
+            kode_opd: "",
+            kode_subkegiatan: "",
+            kode_tim: "",
+            realisasi_anggaran: 0,
+            rekomendasi_tl: "",
+            rencana_aksi: "",
+            tahun: String(branding?.tahun?.value)
         }
         // console.log(payload);
-        setHasilEdit(data.faktor);
-        setEdited(true);
-        toastSuccess("data dummy");
+        try {
+            setProses(true);
+            await apiFetch(`/timkerja/realisasianggaran`, {
+                method: "POST",
+                body: jenis === "pendorong" ? payloadPendorong as any : payloadPenghambat
+            }).then(_ => {
+                toastSuccess("data berhasil disimpan");
+                setEdited(true);
+                setHasilEdit(jenis == "pendorong" ? data.faktor_pendorong : data.faktor_penghambat);
+                // AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch (err) {
+            console.log(err);
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        } finally {
+            setProses(false);
+        }
     }
 
     const handleClose = () => {
@@ -81,34 +123,31 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose }) => 
         reset();
     }
 
-    if(Edited){
-        return(
-            <Faktor faktor={HasilEdit || ""} jenis={jenis}/>
+    if (Edited) {
+        return (
+            <Faktor faktor={HasilEdit || ""} jenis={jenis} />
         )
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Controller 
-                        name="faktor"
-                        rules={{ required: "tidak boleh kosong" }}
+                    <Controller
+                        name={jenis === "pendorong" ? "faktor_pendorong" : "faktor_penghambat"}
+                        // rules={{ required: "tidak boleh kosong" }}
                         control={control}
                         render={({ field }) => (
                             <>
-                                <FloatingLabelTextarea 
+                                <FloatingLabelTextarea
                                     {...field}
-                                    id="faktor"
+                                    id={jenis === "pendorong" ? "faktor_pendorong" : "faktor_penghambat"}
                                     label={`${jenis === "pendorong" ? "faktor pendorong" : "faktor penghambat"}`}
                                 />
-                                {errors.faktor &&
-                                    <p className="text-xs italic text-red-500">{errors.faktor?.message}</p>
-                                }
                             </>
                         )}
                     />
                     <div className="flex justify-center items-center gap-1 w-full">
-                        <ButtonRedBorder 
-                            type="button" 
+                        <ButtonRedBorder
+                            type="button"
                             onClick={handleClose}
                         >
                             <TbX />

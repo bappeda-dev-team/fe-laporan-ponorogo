@@ -7,6 +7,9 @@ import { useState, useEffect } from "react";
 import { TbPencil, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { FloatingLabelTextarea } from "@/components/global/input";
+import { useBrandingContext } from "@/provider/BrandingProvider";
+import { apiFetch } from "@/lib/apiFetch";
+import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface RencanaAksi {
     renaksi: string;
@@ -18,8 +21,8 @@ export const RencanaAksi: React.FC<RencanaAksi> = ({ renaksi }) => {
 
     if (Editing) {
         return (
-            <FormRencanaAksi 
-                renaksi={renaksi} 
+            <FormRencanaAksi
+                renaksi={renaksi}
                 onClose={() => setEditing(false)}
             />
         )
@@ -59,16 +62,46 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose })
     });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
+    const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<string | null>(null);
+    const {branding} = useBrandingContext();
 
-    const onSubmit: SubmitHandler<FormValue> = async(data) => {
+    const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: "",
+            faktor_penghambat: "",
+            id_rencana_kinerja: "",
+            kode_opd: "",
+            kode_subkegiatan: "",
+            kode_tim: "",
+            realisasi_anggaran: 0,
+            rekomendasi_tl: "",
             rencana_aksi: data.rencana_aksi,
+            tahun: String(branding?.tahun?.value)
         }
-        // console.log(payload);
-        setHasilEdit(data.rencana_aksi);
-        setEdited(true);
-        toastSuccess("data dummy");
+        console.log(payload);
+        try {
+            setProses(true);
+            await apiFetch(`/timkerja/realisasianggaran`, {
+                method: "POST",
+                body: payload as any
+            }).then(_ => {
+                toastSuccess("data berhasil disimpan");
+                setEdited(true);
+                setHasilEdit(data.rencana_aksi);
+                // AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch (err) {
+            console.log(err);
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        } finally {
+            setProses(false);
+        }
     }
 
     const handleClose = () => {
@@ -76,21 +109,21 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose })
         reset();
     }
 
-    if(Edited){
-        return(
-            <RencanaAksi renaksi={HasilEdit || ""}/>
+    if (Edited) {
+        return (
+            <RencanaAksi renaksi={HasilEdit || ""} />
         )
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Controller 
+                    <Controller
                         name="rencana_aksi"
                         rules={{ required: "tidak boleh kosong" }}
                         control={control}
                         render={({ field }) => (
                             <>
-                                <FloatingLabelTextarea 
+                                <FloatingLabelTextarea
                                     {...field}
                                     id="rencana_aksi"
                                     label="rencana aksi"
@@ -102,8 +135,8 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose })
                         )}
                     />
                     <div className="flex justify-center items-center gap-1 w-full">
-                        <ButtonRedBorder 
-                            type="button" 
+                        <ButtonRedBorder
+                            type="button"
                             onClick={handleClose}
                         >
                             <TbX />

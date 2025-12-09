@@ -1,4 +1,7 @@
 import TableComponent from "@/components/page/TableComponent";
+import { NilaiKinerja } from "./NilaiKinerja";
+import { NilaiTim } from "./NilaiTim";
+import { NilaiPerson } from "./NilaiPerson";
 import { TbCircleCheck } from "react-icons/tb";
 import { TimGetResponse, AnggotaGetResponse } from "@/types/tim";
 
@@ -30,7 +33,7 @@ const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[150px] text-center">Basic TPP kondisi kerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kinerja Bappeda</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Tim</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Perso</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Person</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Akhir</th>
                         </tr>
                         <tr className={`text-white ${data.is_sekretariat ? "bg-emerald-600" : "bg-blue-600"}`}>
@@ -67,9 +70,9 @@ const Table: React.FC<Table> = ({ data }) => {
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>Penanggung Jawab</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>5.000.000</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>100</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>90</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>90</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiKinerja nilai={0}/></td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiTim nilai={0} /></td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiPerson nilai={0} /></td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>93</td>
                                     </tr>
                                 ))

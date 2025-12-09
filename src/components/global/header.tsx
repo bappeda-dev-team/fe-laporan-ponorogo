@@ -5,7 +5,10 @@ import { ButtonBlackBorder } from "../button/button";
 import { usePathname } from "next/navigation";
 import Select from 'react-select';
 import { TbUser } from "react-icons/tb";
+import { setCookies } from "@/lib/cookies";
+import { AlertNotification } from "./sweetalert2";
 import useToast from "./toast";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface OptionType {
   label: string;
@@ -29,7 +32,8 @@ export const Header = () => {
   const [SelectedOpd, setSelectedOpd] = useState<OptionTypeString | null>(null);
 
   const url = usePathname();
-  const {toastInfo} = useToast();
+  const { branding } = useBrandingContext();
+  const { toastInfo } = useToast();
 
   //handle header scroll animation 
   useEffect(() => {
@@ -67,6 +71,19 @@ export const Header = () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, []);
+
+  useEffect(() => {
+    if (branding?.tahun) {
+      setTahun(branding?.tahun);
+    }
+    if (branding?.bulan) {
+      if (branding?.bulan.value === null || branding?.bulan.value === undefined) {
+        setBulan(null);
+      } else {
+        setBulan(branding?.bulan);
+      }
+    }
+  }, [branding])
 
   const OptionTahun = [
     { label: "2019", value: 2019 },
@@ -145,9 +162,16 @@ export const Header = () => {
             value={Tahun}
             isSearchable
           />
-          <button 
+          <button
             className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
-            onClick={() => toastInfo("Dalam Pengembangan Developer")}
+            onClick={() => {
+              setCookies("tahun", Tahun);
+              setCookies("bulan", Bulan);
+              AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }}
           >
             Aktifkan
           </button>
@@ -173,35 +197,44 @@ export const Header = () => {
             styles={{
               control: (baseStyles) => ({
                 ...baseStyles,
-                borderRadius: '8px',
+                borderRadius: '10px',
                 minWidth: '157.562px',
                 maxWidth: '160px',
                 minHeight: '20px'
               })
             }}
-            onChange={(option) => setSelectedOpd(option)}
+            onChange={(option) => setBulan(option)}
             placeholder="Pilih Bulan"
-            value={SelectedOpd}
+            options={OptionBulan}
+            value={Bulan}
             isSearchable
           />
           <Select
             styles={{
               control: (baseStyles) => ({
                 ...baseStyles,
-                borderRadius: '8px',
+                borderRadius: '10px',
                 minWidth: '157.562px',
                 maxWidth: '160px',
                 minHeight: '20px'
               })
             }}
-            onChange={(option) => setSelectedOpd(option)}
+            onChange={(option) => setTahun(option)}
             placeholder="Pilih Tahun"
-            value={SelectedOpd}
+            options={OptionTahun}
+            value={Tahun}
             isSearchable
           />
-          <button 
+          <button
             className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
-            onClick={() => toastInfo("Dalam Pengembangan Developer")}
+            onClick={() => {
+              setCookies("tahun", Tahun);
+              setCookies("bulan", Bulan);
+              AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }}
           >
             Aktifkan
           </button>
