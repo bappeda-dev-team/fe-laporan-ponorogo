@@ -13,9 +13,12 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Rekomendasi {
     rekomendasi: string;
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi }) => {
+export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi, Data, kode_tim, id_program }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -24,6 +27,9 @@ export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi }) => {
             <FormRekomendasi
                 rekomendasi={rekomendasi}
                 onClose={() => setEditing(false)}
+                Data={Data}
+                kode_tim={kode_tim}
+                id_program={id_program || 0}
             />
         )
     } else {
@@ -48,34 +54,52 @@ export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi }) => {
 interface FormRekomendasi {
     rekomendasi: string;
     onClose: () => void;
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClose }) => {
+export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClose, Data, kode_tim, id_program }) => {
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
-        defaultValues: {
-            rekomendasi_tl: rekomendasi,
-        }
-    });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<string | null>(null);
-    const {branding} = useBrandingContext();
+    const { branding } = useBrandingContext();
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
+        defaultValues: {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
+            kode_subkegiatan: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: Data?.rencana_aksi,
+            tahun: String(branding?.tahun?.value)
+        }
+    });
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bukti_dukung: "",
             bulan: branding?.bulan?.value,
-            faktor_pendorong: "",
-            faktor_penghambat: "",
-            id_rencana_kinerja: "",
-            kode_opd: "",
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
             kode_subkegiatan: "",
-            kode_tim: "",
-            realisasi_anggaran: Number(data.realisasi_anggaran),
-            rekomendasi_tl: "",
-            rencana_aksi: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: data.rekomendasi_tl || "",
+            rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
         console.log(payload);
@@ -108,7 +132,7 @@ export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClos
 
     if (Edited) {
         return (
-            <Rekomendasi rekomendasi={HasilEdit || ""} />
+            <Rekomendasi rekomendasi={HasilEdit || ""} kode_tim={kode_tim} id_program={id_program}/>
         )
     } else {
         return (

@@ -14,9 +14,12 @@ import { FormValue } from "../type";
 interface Faktor {
     faktor: string;
     jenis: "penghambat" | "pendorong";
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const Faktor: React.FC<Faktor> = ({ faktor, jenis }) => {
+export const Faktor: React.FC<Faktor> = ({ faktor, jenis, Data, kode_tim, id_program }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -26,6 +29,9 @@ export const Faktor: React.FC<Faktor> = ({ faktor, jenis }) => {
                 faktor={faktor}
                 jenis={jenis}
                 onClose={() => setEditing(false)}
+                Data={Data}
+                kode_tim={kode_tim}
+                id_program={id_program || 0}
             />
         )
     } else {
@@ -51,48 +57,68 @@ interface FormFaktor {
     faktor: string;
     jenis: 'pendorong' | 'penghambat';
     onClose: () => void;
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose }) => {
+export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose, Data, kode_tim, id_program }) => {
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
-        defaultValues: {
-            faktor_penghambat: faktor,
-        }
-    });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<string | null>(null);
     const {branding} = useBrandingContext();
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
+        defaultValues: {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
+            kode_subkegiatan: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: Data?.rencana_aksi || "",
+            tahun: String(branding?.tahun?.value)
+        }
+    });
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payloadPenghambat = {
             bukti_dukung: "",
             bulan: branding?.bulan?.value,
-            faktor_pendorong: "",
-            faktor_penghambat: data.faktor_penghambat,
-            id_rencana_kinerja: "",
-            kode_opd: "",
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: data.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
             kode_subkegiatan: "",
-            kode_tim: "",
-            realisasi_anggaran: 0,
-            rekomendasi_tl: "",
-            rencana_aksi: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
         const payloadPendorong = {
             bukti_dukung: "",
             bulan: branding?.bulan?.value,
-            faktor_pendorong: data.faktor_pendorong,
-            faktor_penghambat: "",
-            id_rencana_kinerja: "",
-            kode_opd: "",
+            faktor_pendorong: data.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
             kode_subkegiatan: "",
-            kode_tim: "",
-            realisasi_anggaran: 0,
-            rekomendasi_tl: "",
-            rencana_aksi: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: data.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
         // console.log(payload);
@@ -125,7 +151,9 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose }) => 
 
     if (Edited) {
         return (
-            <Faktor faktor={HasilEdit || ""} jenis={jenis} />
+            <Faktor faktor={HasilEdit || ""} jenis={jenis} Data={Data}
+                kode_tim={kode_tim}
+                id_program={id_program || 0}/>
         )
     } else {
         return (

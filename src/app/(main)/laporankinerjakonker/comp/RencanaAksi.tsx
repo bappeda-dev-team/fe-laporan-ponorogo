@@ -10,12 +10,16 @@ import { FloatingLabelTextarea } from "@/components/global/input";
 import { useBrandingContext } from "@/provider/BrandingProvider";
 import { apiFetch } from "@/lib/apiFetch";
 import { AlertNotification } from "@/components/global/sweetalert2";
+import { FormValue } from "../type";
 
 interface RencanaAksi {
     renaksi: string;
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const RencanaAksi: React.FC<RencanaAksi> = ({ renaksi }) => {
+export const RencanaAksi: React.FC<RencanaAksi> = ({ renaksi, kode_tim, id_program, Data }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
@@ -24,6 +28,9 @@ export const RencanaAksi: React.FC<RencanaAksi> = ({ renaksi }) => {
             <FormRencanaAksi
                 renaksi={renaksi}
                 onClose={() => setEditing(false)}
+                Data={Data}
+                kode_tim={kode_tim}
+                id_program={id_program || 0}
             />
         )
     } else {
@@ -48,36 +55,51 @@ export const RencanaAksi: React.FC<RencanaAksi> = ({ renaksi }) => {
 interface FormRencanaAksi {
     renaksi: string;
     onClose: () => void;
-}
-interface FormValue {
-    rencana_aksi: string;
+    Data?: any;
+    kode_tim: string;
+    id_program?: number;
 }
 
-export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose }) => {
+export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose, Data, kode_tim, id_program }) => {
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
-        defaultValues: {
-            rencana_aksi: renaksi,
-        }
-    });
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [HasilEdit, setHasilEdit] = useState<string | null>(null);
     const {branding} = useBrandingContext();
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
+        defaultValues: {
+            bukti_dukung: "",
+            bulan: branding?.bulan?.value,
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
+            kode_subkegiatan: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            rencana_aksi: renaksi,
+            tahun: String(branding?.tahun?.value)
+        }
+    });
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const payload = {
             bukti_dukung: "",
             bulan: branding?.bulan?.value,
-            faktor_pendorong: "",
-            faktor_penghambat: "",
-            id_rencana_kinerja: "",
-            kode_opd: "",
+            faktor_pendorong: Data?.faktor_pendorong || "",
+            faktor_penghambat: Data?.faktor_penghambat || "",
+            id_program_unggulan: id_program || 0,
+            id_pohon: Data?.id_pohon,
+            id_rencana_kinerja: Data?.id_pohon || "",
+            kode_opd: branding?.opd,
             kode_subkegiatan: "",
-            kode_tim: "",
-            realisasi_anggaran: 0,
-            rekomendasi_tl: "",
+            kode_tim: kode_tim,
+            realisasi_anggaran: Data?.realisasi_anggaran,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
             rencana_aksi: data.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
@@ -111,7 +133,7 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose })
 
     if (Edited) {
         return (
-            <RencanaAksi renaksi={HasilEdit || ""} />
+            <RencanaAksi renaksi={HasilEdit || ""} kode_tim={kode_tim} />
         )
     } else {
         return (

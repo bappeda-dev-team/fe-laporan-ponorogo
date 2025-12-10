@@ -130,7 +130,7 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                     <TbDeviceAnalytics />
                     {show &&
                         <p>
-                            Kinerja Sekretariat
+                            Kinerja Pendukung
                         </p>
                     }
                 </Link>
