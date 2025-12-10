@@ -6,7 +6,7 @@ import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
 import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
-import { Target, RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja, SubKegiatanResponse } from "@/types";
+import { Target, RencanaKinerjaSekretariatResponse, IndikatorRencanaKinerja, SubKegiatanResponse, RencanaAksis } from "@/types";
 import { ModalRekin } from "./ModalRekin";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
@@ -188,7 +188,17 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(item.pagu_anggaran || 0)}</td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0} /></td>
-                                                <td className="border border-emerald-500 px-6 py-4">pengembangan</td>
+                                                {item.rencana_aksis ?
+                                                    <td className="border border-emerald-500 px-6 py-4">
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            {item.rencana_aksis.map((ra: RencanaAksis, ra_index: number) => (
+                                                                <p key={ra_index} className="p-1 border border-emerald-500 rounded-lg w-full">{ra_index + 1}. {ra.nama_rencana_aksi || "-"}</p>
+                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    :
+                                                    <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                }
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>

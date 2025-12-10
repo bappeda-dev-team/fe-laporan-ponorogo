@@ -71,7 +71,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiKinerja nilai={item.kinerja_bappeda || 0} kode_tim={data.kode_tim} Data={item}/></td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiTim nilai={item.kinerja_tim || 0} kode_tim={data.kode_tim} Data={item}/></td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiPerson nilai={item.kinerja_person || 0} kode_tim={data.kode_tim} Data={item} /></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>93</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
                                     </tr>
                                 ))
                             :

@@ -180,6 +180,25 @@ export interface RencanaKinerjaSekretariatResponse {
   rencana_kinerja: string;
   tahun: string;
   kode_opd: string;
+  rencana_aksis: RencanaAksis[];
   indikators: IndikatorRencanaKinerja[];
   subkegiatan: SubKegiatanResponse[];
+}
+
+export interface RencanaAksis {
+  id: string;
+  rekin_id: string;
+  kode_opd: string;
+  urutan: number;
+  nama_rencana_aksi: string;
+  pelaksanaan: PelaksanaanRencanaAksi[];
+  jumlah_bobot: number;
+  total_bobot_rencana_aksi: number;
+}
+
+export interface PelaksanaanRencanaAksi {
+  id: string;
+  rencana_aksi_id: string;
+  bulan: number;
+  bobot: number;
 }
