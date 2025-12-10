@@ -64,9 +64,9 @@ export const Table: React.FC<Table> = ({ data }) => {
                         <tr className="text-white bg-emerald-500">
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[50px] text-center">No</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Rencana Kinerja</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pemilik Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Indikator Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Target Tahun</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pemilik Rencana Kinerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
@@ -140,7 +140,6 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                         </ButtonRedBorder>
                                                     </div>
                                                 </td>
-                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border border-emerald-500 px-6 py-4">-</td>
                                             </tr>
                                             <tr>
                                                 {item.indikators ?
@@ -167,6 +166,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                                 ))}
                                                             </div>
                                                         </td>
+                                                        <td className="border border-emerald-500 px-6 py-4">{item.nama_pegawai || '-'} ({item.id_pegawai || "-"})</td>
                                                     </>
                                                     :
                                                     <>
@@ -186,8 +186,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">-</td>
-                                                <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0}/></td>
-                                                <td className="border border-emerald-500 px-6 py-4"><RencanaAksi renaksi=""/></td>
+                                                <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0} /></td>
+                                                <td className="border border-emerald-500 px-6 py-4">pengembangan</td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>

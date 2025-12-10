@@ -175,6 +175,7 @@ export interface RencanaKinerjaSekretariatResponse {
   kode_tim: string;
   id_rencana_kinerja: string;
   id_pegawai: string;
+  nama_pegawai: string;
   rencana_kinerja: string;
   tahun: string;
   kode_opd: string;
