@@ -16,6 +16,7 @@ import { Realisasi } from "./Realisasi";
 import { RencanaAksi } from "./RencanaAksi";
 import { Rekomendasi } from "./Rekomendasi";
 import { Faktor } from "./Faktor";
+import { formatRupiah } from "@/app/hooks/formatRupiah";
 
 interface Table {
     data: TimGetResponse;
@@ -185,7 +186,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     :
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
-                                                <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(item.pagu_anggaran || 0)}</td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0} /></td>
                                                 <td className="border border-emerald-500 px-6 py-4">pengembangan</td>
                                                 <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
