@@ -81,7 +81,7 @@ export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose, kode_tim,
         // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(`/penilaian_kinerja`, {
+            await apiFetch(`api/v1/timkerja/penilaian_kinerja`, {
                 method: "POST",
                 body: payload as any
             }).then(_ => {
