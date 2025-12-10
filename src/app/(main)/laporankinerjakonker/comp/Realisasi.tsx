@@ -93,7 +93,7 @@ export const FormRealisasi: React.FC<FormRealisasi> = ({ anggaran, onClose, Data
             faktor_penghambat: Data?.faktor_penghambat,
             id_program_unggulan: id_program,
             id_pohon: Data?.id_pohon,
-            id_rencana_kinerja: "",
+            id_rencana_kinerja: String(Data?.id_pohon),
             kode_opd: branding?.opd,
             kode_subkegiatan: "",
             kode_tim: kode_tim,
