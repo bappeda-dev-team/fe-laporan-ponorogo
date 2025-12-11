@@ -38,7 +38,7 @@ const TablePegawai = () => {
         const fetchPegawai = async() => {
             try{
                 setLoading(true);
-                apiFetch(`/api/v1/tpp/pegawai/detail/master/opd/${kode_opd}`)
+                apiFetch(`/api/v1/tpp/jabatan/detail/findall`)
                 .then(resp => {
                     setData(resp);
                 }).catch(err => {
