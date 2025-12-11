@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -29,7 +29,7 @@ interface FormValue {
     pangkat: string;
     golongan: string;
     namaRole: string;
-    basic_tpp: number | null;
+    basicTpp: number | null;
     isActive: boolean;
     tanggalMulai: string;
 }
@@ -55,12 +55,12 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             },
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
+            basicTpp: Data?.basicTpp ?? null,
             tanggalMulai: "31-10-2025",
         }
     })
 
     const [Proses, setProses] = useState<boolean>(false);
-    const [Tpp, setTpp] = useState<number | null>(null)
     const { toastSuccess } = useToast();
 
     const StatusOption = [
@@ -109,6 +109,7 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             eselon: data?.eselon?.value,
             pangkat: data?.pangkat,
             golongan: data?.golongan,
+            basicTpp: data?.basicTpp,
             tanggalMulai: data?.tanggalMulai
             // tanggalBerakhir: "01-01-2025"
         }
@@ -275,33 +276,32 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                     )}
                 />
                 <Controller
-                    name="basic_tpp"
+                    name="basicTpp"
                     control={control}
                     rules={{ required: "wajib terisi" }}
                     render={({ field }) => {
-                        const handleInputChange = (e: any) => {
+                        const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
                             const inputValue = e.target.value;
                             const numericValue = unformatNumber(inputValue);
                             field.onChange(numericValue);
-                            setTpp(unformatNumber(inputValue));
                         };
-                        const displayValue = formatNumberWithDots(2000);
+                        const displayValue = formatNumberWithDots(field.value ?? "");
                         return (
                             <>
-                                <label htmlFor="basic_tpp" className="text-sm text-slate-500">Basic TPP</label>
+                                <label htmlFor="basicTpp" className="text-sm text-slate-500">Basic TPP</label>
                                 <input
                                     ref={field.ref}
                                     onBlur={field.onBlur}
                                     className="border px-4 py-2 rounded-lg"
-                                    id="basic_tpp"
+                                    id="basicTpp"
                                     type="text"
                                     inputMode="numeric"
                                     placeholder="Masukkan Basic TPP"
                                     value={displayValue === null ? "" : displayValue}
                                     onChange={handleInputChange}
                                 />
-                                {errors.basic_tpp &&
-                                    <p className="text-red-400 italic">{errors.basic_tpp.message}</p>
+                                {errors.basicTpp &&
+                                    <p className="text-red-400 italic">{errors.basicTpp.message}</p>
                                 }
                             </>
                         )

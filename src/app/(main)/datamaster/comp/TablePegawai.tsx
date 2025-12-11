@@ -66,9 +66,9 @@ const TablePegawai = () => {
     } else if (!Loading && !Error && Data != null){
         return (
             <>
-                <ButtonSkyBorder 
+                <ButtonSkyBorder
                     className="my-3 flex items-center gap-1"
-                    onClick={() => handleModalJabatan(null, "baru")}    
+                    onClick={() => handleModalJabatan(null, "baru")}
                 >
                     <TbCirclePlus />
                     Tambah Pegawai
@@ -97,7 +97,7 @@ const TablePegawai = () => {
                                             <td className="border py-3 px-4 border-yellow-500 text-center">{item.nip || "-"}</td>
                                             <td className="border py-3 px-4 border-yellow-500 text-center">
                                                 <div className="flex items-center justify-between gap-1">
-                                                    <ButtonSky 
+                                                    <ButtonSky
                                                         className="flex items-center gap-1"
                                                         onClick={() => handleModalJabatan(item, item?.namaJabatan ? "edit" : "baru")}
                                                         >
@@ -106,7 +106,7 @@ const TablePegawai = () => {
                                                     </ButtonSky>
                                                 </div>
                                             </td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(0)}</td>
+                                            <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.basicTpp ?? 0)}</td>
                                             <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
                                             <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
                                             <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>
@@ -122,7 +122,7 @@ const TablePegawai = () => {
                         </tbody>
                     </table>
                     {ModalJabatan &&
-                        <ModalJabatanPegawai 
+                        <ModalJabatanPegawai
                             isOpen={ModalJabatan}
                             onClose={() => handleModalJabatan(null, "")}
                             onSuccess={() => setFetchTrigger((prev) => !prev)}
