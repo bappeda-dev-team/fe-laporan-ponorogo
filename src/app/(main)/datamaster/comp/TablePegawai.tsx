@@ -6,8 +6,11 @@ import { TbCirclePlus, TbPencil } from "react-icons/tb";
 import { apiFetch } from "@/lib/apiFetch";
 import { PegawaiGetResponse } from "@/types/tim";
 import { useEffect, useState } from "react";
-import { ButtonSky, ButtonSkyBorder } from "@/components/button/button";
+import { ButtonSky, ButtonRed, ButtonSkyBorder } from "@/components/button/button";
 import { ModalJabatanPegawai } from "./ModalJabatanPegawai";
+import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
+import useToast from "@/components/global/toast";
+import { GetResponseFindallPegawai } from "../type";
 
 const TablePegawai = () => {
 
@@ -20,10 +23,12 @@ const TablePegawai = () => {
 
     const [ModalJabatan, setModalJabatan] = useState<boolean>(false);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
-    const [DataJabatan, setDataJabatan] = useState<PegawaiGetResponse | null>(null);
+    const [DataJabatan, setDataJabatan] = useState<GetResponseFindallPegawai | null>(null);
 
-    const handleModalJabatan = (data: PegawaiGetResponse | null, jenis: "baru" | "edit" | "") => {
-        if(ModalJabatan){
+    const {toastSuccess} = useToast();
+
+    const handleModalJabatan = (data: GetResponseFindallPegawai | null, jenis: "baru" | "edit" | "") => {
+        if (ModalJabatan) {
             setDataJabatan(null);
             setModalJabatan(false);
             setJenisModal(jenis);
@@ -35,17 +40,17 @@ const TablePegawai = () => {
     }
 
     useEffect(() => {
-        const fetchPegawai = async() => {
-            try{
+        const fetchPegawai = async () => {
+            try {
                 setLoading(true);
                 apiFetch(`/api/v1/tpp/jabatan/detail/findall`)
-                .then(resp => {
-                    setData(resp);
-                }).catch(err => {
-                    console.log(err);
-                    setError(true);
-                })
-            } catch(err){
+                    .then(resp => {
+                        setData(resp);
+                    }).catch(err => {
+                        console.log(err);
+                        setError(true);
+                    })
+            } catch (err) {
                 console.log(err);
                 setError(true);
             } finally {
@@ -55,6 +60,20 @@ const TablePegawai = () => {
         fetchPegawai();
     }, [FetchTrigger]);
 
+    const HapusPegawai = async (id: number) => {
+        await apiFetch(`/api/v1/tpp/jabatan/delete/${id}`, {
+            method: "DELETE",
+        }).then((resp: any) => {
+            if(resp.ok){
+                toastSuccess("anggota berhasil dihapus");
+                // AlertNotification("Berhasil", "Anggota Berhasil Dihapus", "success", 3000, true);
+                setFetchTrigger((prev) => !prev);
+            }
+        }).catch(err => {
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        })
+    }
+
     if (Loading) {
         return (
             <h1>Loading...</h1>
@@ -63,7 +82,7 @@ const TablePegawai = () => {
         return (
             <h1 className="text-red-400">error saat mengambil data master pegawai</h1>
         )
-    } else if (!Loading && !Error && Data != null){
+    } else if (!Loading && !Error && Data != null) {
         return (
             <>
                 <ButtonSkyBorder
@@ -85,35 +104,45 @@ const TablePegawai = () => {
                                 <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Status Jabatan</th>
                                 <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Eselon</th>
                                 <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pangkat / Golongan</th>
-                                <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">Nama Perangkat Daerah</th>
+                                <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[100px] text-center">Kode OPD</th>
                             </tr>
                         </thead>
                         <tbody>
                             {Data != null ?
-                                Data.map((item: PegawaiGetResponse, index: number) => (
-                                        <tr key={index}>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{index + 1}</td>
-                                            <td className="border py-3 px-4 border-yellow-500">{item.namaPegawai || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{item.nip || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">
-                                                <div className="flex items-center justify-between gap-1">
-                                                    <ButtonSky
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => handleModalJabatan(item, item?.namaJabatan ? "edit" : "baru")}
-                                                        >
-                                                        <TbPencil />
-                                                        Edit
-                                                    </ButtonSky>
-                                                </div>
-                                            </td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.basicTpp ?? 0)}</td>
-                                            <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{item.pangkat || "-"} / {item.golongan || "-"}</td>
-                                            <td className="border py-3 px-4 border-yellow-500 text-center">{item.namaOpd || "-"}</td>
-                                        </tr>
-                                    ))
+                                Data.map((item: GetResponseFindallPegawai, index: number) => (
+                                    <tr key={index}>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{index + 1}</td>
+                                        <td className="border py-3 px-4 border-yellow-500">{item.namaPegawai || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{item.nip || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">
+                                            <div className="flex flex-col items-center justify-between gap-1">
+                                                <ButtonSky
+                                                    className="flex items-center gap-1"
+                                                    onClick={() => handleModalJabatan(item, item?.namaJabatan ? "edit" : "baru")}
+                                                >
+                                                    <TbPencil />
+                                                    Edit
+                                                </ButtonSky>
+                                                <ButtonRed
+                                                    className="flex items-center gap-1"
+                                                    onClick={() => AlertQuestion("HAPUS", "Hapus data pegawai yang dipilih?", "question", "Hapus", "Batal").then((resp) => {
+                                                        if(resp.isConfirmed){
+                                                            HapusPegawai(item.id);
+                                                        }
+                                                    })}
+                                                >
+                                                    Hapus
+                                                </ButtonRed>
+                                            </div>
+                                        </td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.bacicTpp ?? 0)}</td>
+                                        <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{item.pangkat || "-"} / {item.golongan || "-"}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">{item.kodeOpd || "-"}</td>
+                                    </tr>
+                                ))
                                 :
                                 <tr>
                                     <td colSpan={5} className="border border-yellow-500 px-6 py-4">Data Pegawai Kosong</td>

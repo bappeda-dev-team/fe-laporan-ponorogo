@@ -125,7 +125,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                 <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
                                                 <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col gap-1">
-                                                        {item.id || "-"} - {item.rencana_kinerja || "-"}
+                                                        {item.rencana_kinerja || "-"}
                                                         <ButtonRedBorder
                                                             className="flex items-center gap-1"
                                                             onClick={() => {

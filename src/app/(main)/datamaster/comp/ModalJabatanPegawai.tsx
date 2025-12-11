@@ -6,21 +6,22 @@ import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
-import { PegawaiGetResponse } from "@/types/tim";
 import { apiFetch } from "@/lib/apiFetch";
 import useToast from "@/components/global/toast";
 import { AlertNotification } from "@/components/global/sweetalert2";
 import { OptionTypeString } from "@/types";
+import { GetResponseFindallPegawai } from "../type";
 
 interface Modal {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
     jenis: "baru" | "edit" | "";
-    Data?: PegawaiGetResponse | null;
+    Data?: GetResponseFindallPegawai | null;
 }
 interface FormValue {
     nip: string;
+    namaPegawai: string;
     namaJabatan: string;
     kodeOpd: string;
     statusJabatan: OptionTypeString | null;
@@ -38,6 +39,7 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
+            namaPegawai: Data?.namaPegawai,
             nip: Data?.nip,
             namaJabatan: Data?.namaJabatan,
             kodeOpd: Data?.kodeOpd,
@@ -55,13 +57,14 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             },
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
-            basicTpp: Data?.basicTpp ?? null,
+            basicTpp: Data?.bacicTpp ?? null,
             tanggalMulai: "31-10-2025",
         }
     })
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastSuccess } = useToast();
+    const opd = process.env.NEXT_PUBLIC_KODE_OPD || "-";
 
     const StatusOption = [
         { value: "PLT_UTAMA", label: "PLT_UTAMA" },
@@ -101,9 +104,10 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         const payload = {
-            nip: Data?.nip,
+            namaPegawai: data.namaPegawai,
+            nip: data?.nip,
             namaJabatan: data?.namaJabatan,
-            kodeOpd: Data?.kodeOpd,
+            kodeOpd: opd,
             statusJabatan: data?.statusJabatan?.value,
             jenisJabatan: data?.jenisJabatan?.value,
             eselon: data?.eselon?.value,
@@ -168,6 +172,40 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                 {jenis === "edit" &&
                     <h1 className="font-bold text-sky-500">Nama Pegawai : {Data?.namaPegawai || "tanpa nama"}</h1>
                 }
+                <Controller
+                    name="namaPegawai"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelInput
+                                {...field}
+                                id="namaPegawai"
+                                label="nama Pegawai"
+                            />
+                            {errors.namaPegawai &&
+                                <p className="text-red-400 italic">{errors.namaPegawai.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                <Controller
+                    name="nip"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelInput
+                                {...field}
+                                id="nip"
+                                label="NIP"
+                            />
+                            {errors.nip &&
+                                <p className="text-red-400 italic">{errors.nip.message}</p>
+                            }
+                        </>
+                    )}
+                />
                 <Controller
                     name="namaJabatan"
                     control={control}
