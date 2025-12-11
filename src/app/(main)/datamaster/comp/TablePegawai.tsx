@@ -135,7 +135,7 @@ const TablePegawai = () => {
                                                 </ButtonRed>
                                             </div>
                                         </td>
-                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.bacicTpp ?? 0)}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.basicTpp ?? 0)}</td>
                                         <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>

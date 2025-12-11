@@ -9,7 +9,7 @@ export interface GetResponseFindallPegawai {
     eselon: string;
     pangkat: string;
     golongan: string;
-    bacicTpp: number;
+    basicTpp: number;
     tanggalMulai: string;
     tanggalAkhir: string | null;
     createdDate: string;
