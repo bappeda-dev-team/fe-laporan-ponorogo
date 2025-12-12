@@ -3,7 +3,7 @@ import { NilaiKinerja } from "./NilaiKinerja";
 import { NilaiTim } from "./NilaiTim";
 import { NilaiPerson } from "./NilaiPerson";
 import { TbCircleCheck } from "react-icons/tb";
-import { TimGetResponse, AnggotaGetResponse } from "@/types/tim";
+import { PenilaianKinerjas, GetResponsePenilaianKinerja } from "../type";
 
 interface Table {
     data: any;
@@ -52,7 +52,7 @@ const Table: React.FC<Table> = ({ data }) => {
                             data?.penilaian_kinerjas
                                 .slice()
                                 .sort((a: any, b: any) => a.level_jabatan - b.level_jabatan)
-                                .map((item: any, index: number) => (
+                                .map((item: PenilaianKinerjas, index: number) => (
                                     <tr key={index}>
                                         <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
@@ -63,8 +63,8 @@ const Table: React.FC<Table> = ({ data }) => {
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
                                             <div className="flex flex-col">
-                                                <p className="border-b">*pangkat/golongan</p>
-                                                <p>Kepala</p>
+                                                <p className="border-b">{item.pangkat || "-"} / {item.golongan || "-"}</p>
+                                                <p>{item.nama_jabatan_tim || "-"}</p>
                                             </div>
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>

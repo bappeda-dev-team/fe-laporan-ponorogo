@@ -6,5 +6,28 @@ export interface FormValue {
     kode_tim: string,
     nilai_kinerja: number,
     tahun: string
+}
 
+export interface GetResponsePenilaianKinerja {
+    nama_tim: string;
+    kode_tim: string;
+    is_sekretariat: boolean;
+    penilaian_kinerjas: PenilaianKinerjas[];
+}
+
+export interface PenilaianKinerjas {
+    id_pegawai: string;
+    nama_pegawai: string;
+    level_jabatan_tim: number;
+    nama_jabatan_tim: string;
+    pangkat: string;
+    golongan: string;
+    jenis_jabatan: string;
+    kode_tim: string;
+    tahun: string;
+    bulan: number;
+    kinerja_bappeda: number;
+    kinerja_tim: number;
+    kinerja_person: number;
+    nilai_akhir: number;
 }
