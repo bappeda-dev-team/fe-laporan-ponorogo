@@ -18,7 +18,7 @@ const TablePegawai = () => {
 
     const [Data, setData] = useState<any>(null);
     const [Loading, setLoading] = useState<boolean>(true);
-    const [Error, setError] = useState<boolean>(false);
+    const [HasError, setHasError] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
     const [ModalJabatan, setModalJabatan] = useState<boolean>(false);
@@ -48,11 +48,11 @@ const TablePegawai = () => {
                         setData(resp);
                     }).catch(err => {
                         console.log(err);
-                        setError(true);
+                        setHasError(true);
                     })
             } catch (err) {
                 console.log(err);
-                setError(true);
+                setHasError(true);
             } finally {
                 setLoading(false);
             }
@@ -61,28 +61,27 @@ const TablePegawai = () => {
     }, [FetchTrigger]);
 
     const HapusPegawai = async (id: number) => {
-        await apiFetch(`/api/v1/tpp/jabatan/delete/${id}`, {
-            method: "DELETE",
-        }).then((resp: any) => {
-            if(resp.ok){
-                toastSuccess("anggota berhasil dihapus");
-                // AlertNotification("Berhasil", "Anggota Berhasil Dihapus", "success", 3000, true);
-                setFetchTrigger((prev) => !prev);
-            }
-        }).catch(err => {
-            AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        })
+        try {
+            await apiFetch(`/api/v1/tpp/jabatan/delete/${id}`, {
+                method: "DELETE",
+            });
+            toastSuccess("anggota berhasil dihapus");
+            setFetchTrigger((prev) => !prev);
+        } catch (err) {
+            const message = err instanceof globalThis.Error ? err.message : `${err}`;
+            AlertNotification("Gagal", message, "error", 3000, true);
+        }
     }
 
     if (Loading) {
         return (
             <h1>Loading...</h1>
         )
-    } else if (Error) {
+    } else if (HasError) {
         return (
             <h1 className="text-red-400">error saat mengambil data master pegawai</h1>
         )
-    } else if (!Loading && !Error && Data != null) {
+    } else if (!Loading && !HasError && Data != null) {
         return (
             <>
                 <ButtonSkyBorder
@@ -135,7 +134,7 @@ const TablePegawai = () => {
                                                 </ButtonRed>
                                             </div>
                                         </td>
-                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.bacicTpp ?? 0)}</td>
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.basicTpp ?? 0)}</td>
                                         <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.eselon || "-"}</td>

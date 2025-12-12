@@ -57,7 +57,7 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             },
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
-            basicTpp: Data?.bacicTpp ?? null,
+            basicTpp: Data?.basicTpp ?? null,
             tanggalMulai: "31-10-2025",
         }
     })

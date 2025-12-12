@@ -27,17 +27,20 @@ export async function apiFetch<T>(
   }
 
   const res = await fetch(input, { ...init, headers })
+  const responseText = await res.text()
 
   if (!res.ok) {
     // coba parse pesan error dari server
     let errorMessage = `API error: ${res.status}`
-    try {
-      const errData = await res.json()
-      if (errData?.message) {
-        errorMessage = errData.message
+    if (responseText) {
+      try {
+        const errData = JSON.parse(responseText)
+        if (errData?.message) {
+          errorMessage = errData.message
+        }
+      } catch {
+        errorMessage = responseText
       }
-    } catch {
-      // fallback ke default errorMessage
     }
 
     if (res.status === 401 || res.status === 403) {
@@ -50,5 +53,14 @@ export async function apiFetch<T>(
     throw new Error(errorMessage)
   }
 
-  return res.json()
+  if (!responseText) {
+    return undefined as T
+  }
+
+  try {
+    return JSON.parse(responseText)
+  } catch {
+    // fallback ke text jika server tidak mengirim JSON
+    return responseText as unknown as T
+  }
 }
