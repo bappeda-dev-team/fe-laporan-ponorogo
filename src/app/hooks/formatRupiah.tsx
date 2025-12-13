@@ -1,4 +1,7 @@
-export function formatRupiah(angka: number) {
+export function formatRupiah(angka: number | undefined) {
+    if (angka === undefined) {
+        return 0;
+    }
     if (typeof angka !== 'number') {
         return String(angka); // Jika bukan angka, kembalikan sebagai string
     }

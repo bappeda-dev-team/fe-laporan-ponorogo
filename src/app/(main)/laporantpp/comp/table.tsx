@@ -78,19 +78,19 @@ export const Table: React.FC<Table> = ({ data }) => {
                                             </div>
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>Rp.{formatRupiah(item.tpp_basic ?? 0)}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>Rp.{formatRupiah(item.tpp_pegawai?.tpp_basic ?? 0)}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.kinerja_bappeda || 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.kinerja_tim || 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.kinerja_person || 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.persentase_penerimaan || "-"}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.jumlah_kotor) ?? 0}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_kotor) ?? 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>
                                             {Number.isFinite(Number(item.pajak ?? 0)) ? `${Number(item.pajak ?? 0)}%` : "-"}
                                         </td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.jumlah_pajak) ?? 0}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(hitungBpjsSementara(item.jumlah_kotor, item.potongan_bpjs))}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.jumlah_bersih) ?? 0}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_pajak) ?? 0}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(hitungBpjsSementara(item.tpp_pegawai?.jumlah_kotor, item.tpp_pegawai?.potongan_bpjs))}</td>
+                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_bersih) ?? 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}></td>
                                     </tr>
                                 ))
@@ -106,7 +106,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     )
 }
 
-function hitungBpjsSementara(jumlahKotor: number, basePotonganBpjs: number): number {
+function hitungBpjsSementara(jumlahKotor: number | undefined, basePotonganBpjs: number | undefined): number {
     if (jumlahKotor === undefined || basePotonganBpjs === undefined) {
         return 0;
     }
