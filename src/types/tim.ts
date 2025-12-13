@@ -37,6 +37,7 @@ export interface PegawaiGetResponse {
     golongan: string;
     namaRole: string;
     basicTpp?: number | null;
+    pajak?: number | null;
     isActive: boolean;
     tanggalMulai: Date;
     tanggalBerakhir: Date;

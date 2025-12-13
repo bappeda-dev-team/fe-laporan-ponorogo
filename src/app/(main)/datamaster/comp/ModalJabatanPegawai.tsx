@@ -9,7 +9,7 @@ import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { apiFetch } from "@/lib/apiFetch";
 import useToast from "@/components/global/toast";
 import { AlertNotification } from "@/components/global/sweetalert2";
-import { OptionTypeString } from "@/types";
+import { OptionType, OptionTypeString } from "@/types";
 import { GetResponseFindallPegawai } from "../type";
 
 interface Modal {
@@ -31,8 +31,10 @@ interface FormValue {
     golongan: string;
     namaRole: string;
     basicTpp: number | null;
+    pajak: OptionType | null;
     isActive: boolean;
     tanggalMulai: string;
+    tanggalAkhir: string;
 }
 
 export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, Data }) => {
@@ -58,7 +60,12 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
             basicTpp: Data?.basicTpp ?? null,
-            tanggalMulai: "31-10-2025",
+            pajak: Data ? {
+                value: Data.pajak,
+                label: `${Data.pajak}%`,
+            } : null,
+            tanggalMulai: Data?.tanggalMulai ?? "",
+            tanggalAkhir: Data?.tanggalAkhir ?? "",
         }
     })
 
@@ -100,6 +107,11 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
         { value: "PELAKSANA", label: "PELAKSANA" },
         { value: "BELUM_DIATUR", label: "BELUM_DIATUR" },
     ];
+    const pajakOption = [
+        { value: 0, label: "0%" },
+        { value: 5, label: "5%" },
+        { value: 15, label: "15%" },
+    ];
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
@@ -114,13 +126,15 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             pangkat: data?.pangkat,
             golongan: data?.golongan,
             basicTpp: data?.basicTpp,
-            tanggalMulai: data?.tanggalMulai
+            pajak: data?.pajak?.value,
+            tanggalMulai: data?.tanggalMulai,
+            tanggalAkhir: data?.tanggalAkhir,
             // tanggalBerakhir: "01-01-2025"
         }
         // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(jenis === "baru" ? "/api/v1/tpp/jabatan" : `/api/v1/tpp/jabatan/update/${Data?.id}`, {
+            await apiFetch(jenis === "baru" ? "/api/v1/tpp/jabatan/with-tpp-pajak" : `/api/v1/tpp/jabatan/update/with-tpp-pajak/${Data?.id}`, {
                 method: jenis === "baru" ? "POST" : "PUT",
                 body: payload as any
             }).then(_ => {
@@ -344,6 +358,24 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                             </>
                         )
                     }}
+                />
+                <Controller
+                    name="pajak"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="pajak"
+                                label="Pajak"
+                                options={pajakOption}
+                            />
+                            {errors.pajak &&
+                                <p className="text-red-400 italic">{errors.pajak.message}</p>
+                            }
+                        </>
+                    )}
                 />
                 <div className="flex flex-col gap-2 mt-3">
                     <ButtonSky
