@@ -89,7 +89,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                             {Number.isFinite(Number(item.pajak ?? 0)) ? `${Number(item.pajak ?? 0)}%` : "-"}
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_pajak) ?? 0}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(hitungBpjsSementara(item.tpp_pegawai?.jumlah_kotor, item.tpp_pegawai?.potongan_bpjs))}</td>
+                                      <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.potongan_bpjs) ?? 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_bersih) ?? 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}></td>
                                     </tr>
@@ -104,15 +104,4 @@ export const Table: React.FC<Table> = ({ data }) => {
             </TableComponent>
         </div>
     )
-}
-
-function hitungBpjsSementara(jumlahKotor: number | undefined, basePotonganBpjs: number | undefined): number {
-    if (jumlahKotor === undefined || basePotonganBpjs === undefined) {
-        return 0;
-    }
-
-    if (jumlahKotor === 0 || basePotonganBpjs === 0) {
-        return 0;
-    }
-    return jumlahKotor * basePotonganBpjs;
 }
