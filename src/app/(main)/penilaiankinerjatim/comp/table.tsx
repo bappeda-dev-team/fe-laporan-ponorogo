@@ -51,7 +51,6 @@ const Table: React.FC<Table> = ({ data }) => {
                         {data?.penilaian_kinerjas ?
                             data?.penilaian_kinerjas
                                 .slice()
-                                .sort((a: any, b: any) => a.level_jabatan - b.level_jabatan)
                                 .map((item: PenilaianKinerjas, index: number) => (
                                     <tr key={index}>
                                         <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>

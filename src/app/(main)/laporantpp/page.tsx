@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Table } from "./comp/table";
 import { useGet } from "@/app/hooks/useGet";
-import { TimGetResponse } from "@/types/tim";
+import { PenilaianTimResponse } from "@/types/penilaian_tpp";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const LaporanTpp = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja', FetchTrigger);
+    const {branding} = useBrandingContext();
+    const { data, loading, error, message } = useGet<PenilaianTimResponse[]>(`/api/v1/timkerja/laporan_tpp?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`, FetchTrigger);
 
     if (loading) {
         return (
@@ -20,7 +22,7 @@ const LaporanTpp = () => {
     } else {
         return (
             <div className="flex flex-col gap-2">
-                {data?.map((item: TimGetResponse, index: number) => (
+                {data?.map((item: PenilaianTimResponse, index: number) => (
                     <div key={index} className="flex flex-col gap-2">
                         <Table data={item}/>
                     </div>
