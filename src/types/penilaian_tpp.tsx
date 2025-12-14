@@ -32,5 +32,6 @@ export interface PenilaianTimResponse {
     nama_tim: string;
     kode_tim: string;
     is_sekretariat: boolean;
+    keterangan: string;
     penilaian_kinerjas: PenilaianGroupedResponse[];
 }

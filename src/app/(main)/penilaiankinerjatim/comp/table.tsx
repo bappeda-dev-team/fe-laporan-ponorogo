@@ -2,8 +2,8 @@ import TableComponent from "@/components/page/TableComponent";
 import { NilaiKinerja } from "./NilaiKinerja";
 import { NilaiTim } from "./NilaiTim";
 import { NilaiPerson } from "./NilaiPerson";
-import { TbCircleCheck } from "react-icons/tb";
-import { PenilaianKinerjas, GetResponsePenilaianKinerja } from "../type";
+//import { TbCircleCheck } from "react-icons/tb";
+import { PenilaianKinerjas } from "../type";
 
 interface Table {
     data: any;
