@@ -85,8 +85,11 @@ export const Table: React.FC<Table> = ({ data }) => {
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.tpp_pegawai?.persentase_penerimaan || "-"}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_kotor) ?? 0}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>
-                                            {Number.isFinite(Number(item.pajak ?? 0)) ? `${Number(item.pajak ?? 0)}%` : "-"}
+                                        <td className="border py-3 px-4 border-yellow-500 text-center">
+                                            {(() => {
+                                                const pajak = Number(item.tpp_pegawai?.pajak);
+                                                return Number.isFinite(pajak) ? `${pajak * 100}%` : "-";
+                                            })()}
                                         </td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.jumlah_pajak) ?? 0}</td>
                                         <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>Rp.{formatRupiah(item.tpp_pegawai?.potongan_bpjs) ?? 0}</td>

@@ -25,7 +25,7 @@ const TablePegawai = () => {
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
     const [DataJabatan, setDataJabatan] = useState<GetResponseFindallPegawai | null>(null);
 
-    const {toastSuccess} = useToast();
+    const { toastSuccess } = useToast();
 
     const handleModalJabatan = (data: GetResponseFindallPegawai | null, jenis: "baru" | "edit" | "") => {
         if (ModalJabatan) {
@@ -126,7 +126,7 @@ const TablePegawai = () => {
                                                 <ButtonRed
                                                     className="flex items-center gap-1"
                                                     onClick={() => AlertQuestion("HAPUS", "Hapus data pegawai yang dipilih?", "question", "Hapus", "Batal").then((resp) => {
-                                                        if(resp.isConfirmed){
+                                                        if (resp.isConfirmed) {
                                                             HapusPegawai(item.id);
                                                         }
                                                     })}
@@ -137,7 +137,10 @@ const TablePegawai = () => {
                                         </td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">Rp.{formatRupiah(item.basicTpp ?? 0)}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">
-                                            {Number.isFinite(Number(item.pajak ?? 0)) ? `${Number(item.pajak ?? 0)}%` : "-"}
+                                            {(() => {
+                                                const pajak = Number(item.pajak);
+                                                return Number.isFinite(pajak) ? `${pajak * 100}%` : "-";
+                                            })()}
                                         </td>
                                         <td className="border py-3 px-4 border-yellow-500">{item.namaJabatan || "-"}</td>
                                         <td className="border py-3 px-4 border-yellow-500 text-center">{item.statusJabatan || "-"}</td>
