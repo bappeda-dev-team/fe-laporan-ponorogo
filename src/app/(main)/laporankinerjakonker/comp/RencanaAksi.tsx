@@ -81,6 +81,7 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose, D
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
             rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: Data?.risiko_hukum,
             rencana_aksi: renaksi,
             tahun: String(branding?.tahun?.value)
         }
@@ -100,6 +101,7 @@ export const FormRencanaAksi: React.FC<FormRencanaAksi> = ({ renaksi, onClose, D
             kode_tim: kode_tim,
             realisasi_anggaran: Number(Data?.realisasi_anggaran),
             rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: Data?.risiko_hukum,
             rencana_aksi: data.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }

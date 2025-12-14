@@ -83,6 +83,7 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose, Data,
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
             rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: Data?.risiko_hukum,
             rencana_aksi: Data?.rencana_aksi || "",
             tahun: String(branding?.tahun?.value)
         }
@@ -102,6 +103,7 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose, Data,
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
             rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: Data?.risiko_hukum,
             rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
@@ -118,6 +120,7 @@ export const FormFaktor: React.FC<FormFaktor> = ({ faktor, jenis, onClose, Data,
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
             rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: Data?.risiko_hukum,
             rencana_aksi: data.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }

@@ -17,6 +17,7 @@ import { RencanaAksi } from "./RencanaAksi";
 import { Rekomendasi } from "./Rekomendasi";
 import { Faktor } from "./Faktor";
 import { ModalUpload } from "./ModalUpload";
+import { RisikoHukum } from "./RisikoHukum";
 import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 
@@ -293,8 +294,7 @@ const Table: React.FC<Table> = ({ data }) => {
                                                         <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi={p.rencana_aksi || ""} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_pendorong || ""} jenis="pendorong" kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_penghambat || ""} jenis="penghambat" kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
-                                                        {/* <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.} jenis="penghambat" /></td> */}
-                                                        <td className="border border-blue-500 px-6 py-4">pengembangan</td>
+                                                        <td className="border border-blue-500 px-6 py-4"><RisikoHukum risiko_hukum={p.risiko_hukum} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0} /></td>
                                                         <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi={p.rekomendasi_tl || ""} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
                                                         <td className="border-b border-blue-500 px-6 py-4">
                                                             <div className="flex justify-center">

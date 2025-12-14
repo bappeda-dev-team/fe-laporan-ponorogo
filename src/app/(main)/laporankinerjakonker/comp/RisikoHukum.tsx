@@ -11,21 +11,21 @@ import { apiFetch } from "@/lib/apiFetch";
 import { AlertNotification } from "@/components/global/sweetalert2";
 import { useBrandingContext } from "@/provider/BrandingProvider";
 
-interface Rekomendasi {
-    rekomendasi: string;
+interface RisikoHukum {
+    risiko_hukum: string;
     Data?: any;
     kode_tim: string;
     id_program?: number;
 }
 
-export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi, Data, kode_tim, id_program }) => {
+export const RisikoHukum: React.FC<RisikoHukum> = ({ risiko_hukum, Data, kode_tim, id_program }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
 
     if (Editing) {
         return (
             <FormRekomendasi
-                rekomendasi={rekomendasi}
+                risiko_hukum={risiko_hukum}
                 onClose={() => setEditing(false)}
                 Data={Data}
                 kode_tim={kode_tim}
@@ -35,7 +35,7 @@ export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi, Data, kode_tim
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
-                {rekomendasi || ""}
+                {risiko_hukum || ""}
                 <button
                     className="p-1 rounded-xl w-full flex justify-center items-center gap-1 border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
                     type="button"
@@ -52,14 +52,14 @@ export const Rekomendasi: React.FC<Rekomendasi> = ({ rekomendasi, Data, kode_tim
 }
 
 interface FormRekomendasi {
-    rekomendasi: string;
+    risiko_hukum: string;
     onClose: () => void;
     Data?: any;
     kode_tim: string;
     id_program?: number;
 }
 
-export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClose, Data, kode_tim, id_program }) => {
+export const FormRekomendasi: React.FC<FormRekomendasi> = ({ risiko_hukum, onClose, Data, kode_tim, id_program }) => {
 
     const { toastSuccess } = useToast();
     const [Edited, setEdited] = useState<boolean>(false);
@@ -80,7 +80,7 @@ export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClos
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
             rekomendasi_tl: Data?.rekomendasi_tl || "",
-            risiko_hukum: Data?.risiko_hukum,
+            risiko_hukum: risiko_hukum,
             rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
@@ -99,8 +99,8 @@ export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClos
             kode_subkegiatan: "",
             kode_tim: kode_tim,
             realisasi_anggaran: Data?.realisasi_anggaran,
-            rekomendasi_tl: data.rekomendasi_tl || "",
-            risiko_hukum: Data?.risiko_hukum,
+            rekomendasi_tl: Data?.rekomendasi_tl || "",
+            risiko_hukum: data.risiko_hukum,
             rencana_aksi: Data?.rencana_aksi,
             tahun: String(branding?.tahun?.value)
         }
@@ -113,7 +113,7 @@ export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClos
             }).then(_ => {
                 toastSuccess("data berhasil disimpan");
                 setEdited(true);
-                setHasilEdit(data.rekomendasi_tl);
+                setHasilEdit(data.risiko_hukum);
                 // AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
                 handleClose();
             }).catch(err => {
@@ -134,24 +134,24 @@ export const FormRekomendasi: React.FC<FormRekomendasi> = ({ rekomendasi, onClos
 
     if (Edited) {
         return (
-            <Rekomendasi rekomendasi={HasilEdit || ""} kode_tim={kode_tim} id_program={id_program}/>
+            <RisikoHukum risiko_hukum={HasilEdit || ""} kode_tim={kode_tim} id_program={id_program}/>
         )
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller
-                        name="rekomendasi_tl"
+                        name="risiko_hukum"
                         rules={{ required: "tidak boleh kosong" }}
                         control={control}
                         render={({ field }) => (
                             <>
                                 <FloatingLabelTextarea
                                     {...field}
-                                    id="rekomendasi_tl"
-                                    label="Rekomendasi"
+                                    id="risiko_hukum"
+                                    label="Risiko Hukum"
                                 />
-                                {errors.rekomendasi_tl &&
+                                {errors.risiko_hukum &&
                                     <p className="text-xs italic text-red-500">{errors.rekomendasi_tl?.message}</p>
                                 }
                             </>

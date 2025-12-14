@@ -11,6 +11,7 @@ export interface FormValue {
     kode_tim: string,
     realisasi_anggaran: number,
     rekomendasi_tl: string,
+    risiko_hukum: string;
     rencana_aksi: string,
     tahun: string
 }
