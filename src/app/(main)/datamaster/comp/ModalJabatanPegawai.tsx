@@ -108,9 +108,9 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
         { value: "BELUM_DIATUR", label: "BELUM_DIATUR" },
     ];
     const pajakOption = [
-        { value: 0, label: "0%" },
-        { value: 5, label: "5%" },
-        { value: 15, label: "15%" },
+      { value: 0.0, label: "0%" },
+      { value: 0.05, label: "5%" },
+      { value: 0.15, label: "15%" },
     ];
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
