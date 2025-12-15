@@ -36,10 +36,6 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             is_active: data?.is_active || true,
             keterangan: data?.keterangan || "",
             kode_tim: kode_tim || "",
-            nama_jabatan_tim: data?.nama_jabatan ? {
-                value: data.nama_jabatan,
-                label: data.nama_jabatan || '',
-            } : null,
             nama_pegawai: data?.nama_pegawai || "",
             nip: data?.nip ? {
                 value: data.nip,
@@ -52,7 +48,6 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
 
     const [OptionPegawai, setOptionPegawai] = useState<OptionTypeString[]>([]);
     const [OptionJabatan, setOptionJabatan] = useState<OptionTypeString[]>([]);
-    const [Loading, setLoading] = useState<boolean>(true);
 
     const handleClose = () => {
         onClose();
@@ -69,7 +64,6 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             id_jabatan_tim: data.nama_jabatan_tim?.value,
             nama_pegawai: data?.nip?.label,
             nip: data?.nip?.value,
-            nama_jabatan_tim: data.nama_jabatan_tim?.value
         }
         // console.log(payload);
 

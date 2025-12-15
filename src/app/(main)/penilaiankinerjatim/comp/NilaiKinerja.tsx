@@ -20,20 +20,30 @@ interface Modal {
 export const NilaiKinerja: React.FC<Modal> = ({ nilai, Data, kode_tim }) => {
 
     const [Editing, setEditing] = useState<boolean>(false);
+    const [nilaiSaatIni, setNilaiSaatIni] = useState<number>(nilai);
+
+    useEffect(() => {
+        setNilaiSaatIni(nilai);
+    }, [nilai]);
+
+    const handleUpdateNilai = (nilaiBaru: number) => {
+        setNilaiSaatIni(nilaiBaru);
+    }
 
     if (Editing) {
         return (
             <FormNilaiKinerja
-                nilai={nilai}
+                nilai={nilaiSaatIni}
                 onClose={() => setEditing(false)}
                 Data={Data}
                 kode_tim={kode_tim}
+                onUpdate={handleUpdateNilai}
             />
         )
     } else {
         return (
             <div className="flex items-center justify-center gap-2">
-                <p>{nilai || 0}</p>
+                <p>{nilaiSaatIni || nilai}</p>
                 <button
                     className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
                     type="button"
@@ -53,9 +63,10 @@ interface FormNilaiKinerja {
     onClose: () => void;
     kode_tim: string;
     Data?: any;
+    onUpdate: (NilaiBaru: number) => void;
 }
 
-export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, kode_tim, Data }) => {
+export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, kode_tim, Data, onUpdate }) => {
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -87,7 +98,7 @@ export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, k
             }).then(_ => {
                 toastSuccess("data berhasil disimpan");
                 setEdited(true);
-                setHasilEdit(data.nilai_kinerja);
+                onUpdate(Number(data.nilai_kinerja));
                 // AlertNotification("Berhasil", "Berhasil Menambahkan Tim", "success", 3000, true);
                 handleClose();
             }).catch(err => {
@@ -106,45 +117,39 @@ export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, k
         reset();
     }
 
-    if (Edited) {
-        return (
-            <NilaiKinerja nilai={HasilEdit || 0} kode_tim={kode_tim} />
-        )
-    } else {
-        return (
-            <div className="flex flex-col items-center justify-center gap-2">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Controller
-                        name="nilai_kinerja"
-                        rules={{ required: "tidak boleh kosong" }}
-                        control={control}
-                        render={({ field }) => (
-                            <>
-                                <FloatingLabelInput
-                                    {...field}
-                                    id="nilai_kinerja"
-                                    label="nilai kinerja"
-                                    type="number"
-                                />
-                                {errors.nilai_kinerja &&
-                                    <p className="text-xs italic text-red-500">{errors.nilai_kinerja?.message}</p>
-                                }
-                            </>
-                        )}
-                    />
-                    <div className="flex justify-center items-center gap-1 w-full">
-                        <ButtonRedBorder
-                            type="button"
-                            onClick={handleClose}
-                        >
-                            <TbX />
-                        </ButtonRedBorder>
-                        <ButtonGreenBorder type="submit">
-                            <TbDeviceFloppy />
-                        </ButtonGreenBorder>
-                    </div>
-                </form>
-            </div>
-        )
-    }
+    return (
+        <div className="flex flex-col items-center justify-center gap-2">
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                    name="nilai_kinerja"
+                    rules={{ required: "tidak boleh kosong" }}
+                    control={control}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelInput
+                                {...field}
+                                id="nilai_kinerja"
+                                label="nilai kinerja"
+                                type="number"
+                            />
+                            {errors.nilai_kinerja &&
+                                <p className="text-xs italic text-red-500">{errors.nilai_kinerja?.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                <div className="flex justify-center items-center gap-1 w-full">
+                    <ButtonRedBorder
+                        type="button"
+                        onClick={handleClose}
+                    >
+                        <TbX />
+                    </ButtonRedBorder>
+                    <ButtonGreenBorder type="submit" disabled={Proses}>
+                        <TbDeviceFloppy />
+                    </ButtonGreenBorder>
+                </div>
+            </form>
+        </div>
+    )
 }
