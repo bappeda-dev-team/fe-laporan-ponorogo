@@ -1,6 +1,6 @@
 'use client'
 
-import Table from "./comp/Table";
+import { Table } from "./comp/Table";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
 

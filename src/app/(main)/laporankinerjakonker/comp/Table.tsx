@@ -20,18 +20,24 @@ import { ModalUpload } from "./ModalUpload";
 import { RisikoHukum } from "./RisikoHukum";
 import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
+import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
 
 interface Table {
     data: TimGetResponse;
 }
 
-const Table: React.FC<Table> = ({ data }) => {
+export const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
     const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
     const [ModalPelaksanaOpen, setModalPelaksanaOpen] = useState<boolean>(false);
     const [DataTim, setDataTim] = useState<TimGetResponse | null>(null);
     const [DataPohon, setDataPohon] = useState<PohonKinerjaKonker | null>(null);
+
+    const [ModalKonkerOpen, setModalKonkerOpen] = useState<boolean>(false);
+    const [DataModal, setDataModal] = useState<any>(null);
+    const [KodeTim, setKodeTim] = useState<string>("");
+    const [IdProgram, setIdProgram] = useState<number>(0);
 
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const { toastSuccess } = useToast();
@@ -54,6 +60,19 @@ const Table: React.FC<Table> = ({ data }) => {
         } else {
             setModalPelaksanaOpen(true);
             setDataPohon(data);
+        }
+    }
+    const handleModalKonker = (data: any, kode_tim: string, id_program: number) => {
+        if (ModalKonkerOpen) {
+            setModalKonkerOpen(false);
+            setDataModal(null);
+            setKodeTim(kode_tim);
+            setIdProgram(id_program);
+        } else {
+            setModalKonkerOpen(true);
+            setDataModal(data);
+            setKodeTim(kode_tim);
+            setIdProgram(id_program);
         }
     }
 
@@ -290,12 +309,42 @@ const Table: React.FC<Table> = ({ data }) => {
                                                                 "-"
                                                             }
                                                         </td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Realisasi anggaran={p.realisasi_anggaran || 0} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0} /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><RencanaAksi renaksi={p.rencana_aksi || ""} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_pendorong || ""} jenis="pendorong" kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Faktor faktor={p.faktor_penghambat || ""} jenis="penghambat" kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><RisikoHukum risiko_hukum={p.risiko_hukum} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0} /></td>
-                                                        <td className="border border-blue-500 px-6 py-4"><Rekomendasi rekomendasi={p.rekomendasi_tl || ""} kode_tim={item.kode_tim} Data={p} id_program={item.id_program_unggulan || 0}/></td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                Rp.{formatRupiah(p.realisasi_anggaran || 0)}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                {p.rencana_aksi || ""}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                {p.faktor_pendorong || ""}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                {p.faktor_penghambat || ""}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                {p.risiko_hukum || ""}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
+                                                        <td className="border border-blue-500 px-6 py-4">
+                                                            <div className="flex flex-col items-center justify-center gap-1">
+                                                                {p.rekomendasi_tl || ""}
+                                                                <EditButton onClick={() => handleModalKonker(p, item.kode_tim, item.id_program_unggulan)} />
+                                                            </div>
+                                                        </td>
                                                         <td className="border-b border-blue-500 px-6 py-4">
                                                             <div className="flex justify-center">
                                                                 <ButtonSkyBorder
@@ -351,8 +400,31 @@ const Table: React.FC<Table> = ({ data }) => {
                     Data={DataPohon}
                 />
             }
+            {ModalKonkerOpen &&
+                <ModalKinerjaKonker
+                    isOpen={ModalKonkerOpen}
+                    onClose={() => handleModalKonker(null, "", 0)}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    kode_tim={KodeTim}
+                    Data={DataModal}
+                    id_program={IdProgram}
+                />
+            }
         </>
     )
 }
 
-export default Table;
+interface EditButton {
+    onClick: () => void;
+}
+export const EditButton: React.FC<EditButton> = ({ onClick }) => {
+    return (
+        <button
+            className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
+            type="button"
+            onClick={onClick}
+        >
+            <TbPencil />
+        </button>
+    )
+}

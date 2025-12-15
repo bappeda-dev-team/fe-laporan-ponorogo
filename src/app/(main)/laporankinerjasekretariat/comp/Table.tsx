@@ -2,7 +2,7 @@
 
 import TableComponent from "@/components/page/TableComponent";
 import { ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
-import { TbCirclePlus, TbX, TbTrash } from "react-icons/tb";
+import { TbCirclePlus, TbX, TbTrash, TbPencil } from "react-icons/tb";
 import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
@@ -12,11 +12,8 @@ import { LoadingButtonClip2 } from "@/components/global/Loading";
 import { AlertQuestion, AlertNotification } from "@/components/global/sweetalert2";
 import useToast from "@/components/global/toast";
 import { apiFetch } from "@/lib/apiFetch";
-import { Realisasi } from "./Realisasi";
-import { RencanaAksi } from "./RencanaAksi";
-import { Rekomendasi } from "./Rekomendasi";
-import { Faktor } from "./Faktor";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
+import { ModalKinerjaSekretariat } from "./ModalKinerjaSekretariat";
 
 interface Table {
     data: TimGetResponse;
@@ -25,11 +22,29 @@ interface Table {
 export const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalRekinOpen, setModalRekinOpen] = useState<boolean>(false);
+    const [ModalEditOpen, setModalEditOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [DataModalEdit, setDataModalEdit] = useState<any>(null);
+    const [KodeTim, setKodeTim] = useState<string>("");
+    const [IdProgram, setIdProgram] = useState<number>(0);
 
     const { toastSuccess } = useToast();
 
     const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja`, FetchTrigger)
+
+    const handleModalEdit = (kode_tim: string, id_program: number, data: any) => {
+        if(ModalEditOpen){
+            setModalEditOpen(false);
+            setKodeTim("");
+            setIdProgram(0);
+            setDataModalEdit(data);
+        } else {
+            setModalEditOpen(true);
+            setKodeTim(kode_tim);
+            setIdProgram(id_program);
+            setDataModalEdit(data);
+        }
+    }
 
     const hapusRekin = async (id: number) => {
         await apiFetch(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja/${id}`, {
@@ -187,7 +202,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(item.pagu_anggaran || 0)}</td>
-                                                <td className="border border-emerald-500 px-6 py-4"><Realisasi anggaran={0} /></td>
+                                                <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(0)} <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/></td>
                                                 {item.rencana_aksis ?
                                                     <td className="border border-emerald-500 px-6 py-4">
                                                         <div className="flex flex-col items-center gap-1">
@@ -199,10 +214,26 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     :
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
-                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="pendorong" /></td>
-                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
-                                                <td className="border border-emerald-500 px-6 py-4"><Faktor faktor="" jenis="penghambat" /></td>
-                                                <td className="border border-emerald-500 px-6 py-4"><Rekomendasi rekomendasi="" /></td>
+                                                <td className="border border-emerald-500 px-6 py-4">
+                                                    <div className="flex flex-col items-center justify-center gap-2">
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                    </div>
+                                                </td>
+                                                <td className="border border-emerald-500 px-6 py-4">
+                                                    <div className="flex flex-col items-center justify-center gap-2">
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                    </div>
+                                                </td>
+                                                <td className="border border-emerald-500 px-6 py-4">
+                                                    <div className="flex flex-col items-center justify-center gap-2">
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                    </div>
+                                                </td>
+                                                <td className="border border-emerald-500 px-6 py-4">
+                                                    <div className="flex flex-col items-center justify-center gap-2">
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </React.Fragment>
                                     ))
@@ -219,6 +250,32 @@ export const Table: React.FC<Table> = ({ data }) => {
                     kode_tim={data.kode_tim}
                 />
             }
-        </>
+            {ModalEditOpen &&
+                <ModalKinerjaSekretariat 
+                    isOpen={ModalEditOpen}
+                    onClose={() => setModalEditOpen((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    kode_tim={KodeTim}
+                    id_program={IdProgram}
+                    Data={DataModalEdit}
+
+                />
+            }
+        </> 
+    )
+}
+
+interface EditButton {
+    onClick: () => void;
+}
+export const EditButton: React.FC<EditButton> = ({ onClick }) => {
+    return (
+        <button
+            className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
+            type="button"
+            onClick={onClick}
+        >
+            <TbPencil />
+        </button>
     )
 }

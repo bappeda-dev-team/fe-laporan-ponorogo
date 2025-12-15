@@ -174,6 +174,7 @@ export interface RencanaKinerjaSekretariatResponse {
   id: number;
   kode_tim: string;
   id_rencana_kinerja: string;
+  id_rencana_kinerja_sekretariat: number;
   id_pegawai: string;
   pagu_anggaran: number;
   nama_pegawai: string;
