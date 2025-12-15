@@ -66,7 +66,7 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             is_active: true,
             keterangan: data.keterangan,
             kode_tim: kode_tim,
-            id_jabatan: data.nama_jabatan_tim?.value,
+            id_jabatan_tim: data.nama_jabatan_tim?.value,
             nama_pegawai: data?.nip?.label,
             nip: data?.nip?.value,
             nama_jabatan_tim: data.nama_jabatan_tim?.value
