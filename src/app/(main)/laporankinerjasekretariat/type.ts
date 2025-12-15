@@ -4,6 +4,7 @@ export interface FormValue {
     faktor_pendorong: string;
     faktor_penghambat: string;
     id_pohon: string;
+    id_program_unggulan: number;
     id_rencana_kinerja: string;
     id_rencana_kinerja_sekretatiat: number;
     kode_opd: string;
