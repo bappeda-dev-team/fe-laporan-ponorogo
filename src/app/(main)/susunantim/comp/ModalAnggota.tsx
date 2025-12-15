@@ -20,13 +20,13 @@ interface Modal {
     data?: AnggotaGetResponse | null;
 }
 interface FormValue {
+    kode_tim: string;
+    nip: OptionTypeString | null;
+    nama_pegawai: string;
     kode_opd: OptionTypeString | null;
     is_active: boolean;
     keterangan: string;
-    kode_tim: string;
     nama_jabatan_tim: OptionTypeString | null;
-    nama_pegawai: string;
-    nip: OptionTypeString | null;
 }
 
 export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, kode_tim, data }) => {
@@ -66,6 +66,7 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             is_active: true,
             keterangan: data.keterangan,
             kode_tim: kode_tim,
+            id_jabatan: data.nama_jabatan_tim?.value,
             nama_pegawai: data?.nip?.label,
             nip: data?.nip?.value,
             nama_jabatan_tim: data.nama_jabatan_tim?.value
@@ -126,7 +127,7 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                 .then((resp: any) => {
                     if (resp.code === 200) {
                         const J = resp.data.map((p: any) => ({
-                            value: p.nama_jabatan,
+                            value: p.id,
                             label: p.nama_jabatan,
                         }))
                         setOptionJabatan(J);
