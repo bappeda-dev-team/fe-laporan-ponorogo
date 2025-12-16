@@ -33,7 +33,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja`, FetchTrigger)
 
     const handleModalEdit = (kode_tim: string, id_program: number, data: any) => {
-        if(ModalEditOpen){
+        if (ModalEditOpen) {
             setModalEditOpen(false);
             setKodeTim("");
             setIdProgram(0);
@@ -202,7 +202,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     <td className="border border-emerald-500 px-6 py-4">-</td>
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(item.pagu_anggaran || 0)}</td>
-                                                <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(0)} <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/></td>
+                                                <td className="border border-emerald-500 px-6 py-4">Rp.{formatRupiah(item.realisasi_anggaran || 0)} <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)} /></td>
                                                 {item.rencana_aksis ?
                                                     <td className="border border-emerald-500 px-6 py-4">
                                                         <div className="flex flex-col items-center gap-1">
@@ -216,22 +216,26 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                 }
                                                 <td className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col items-center justify-center gap-2">
-                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                        {item.faktor_pendorong || ""}
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)} />
                                                     </div>
                                                 </td>
                                                 <td className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col items-center justify-center gap-2">
-                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                        {item.faktor_penghambat || ""}
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)} />
                                                     </div>
                                                 </td>
                                                 <td className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col items-center justify-center gap-2">
-                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                        {item.risiko_hukum || ""}
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)} />
                                                     </div>
                                                 </td>
                                                 <td className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col items-center justify-center gap-2">
-                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)}/>
+                                                        {item.rekomendasi_tl || ""}
+                                                        <EditButton onClick={() => handleModalEdit(item.kode_tim, item.id, item)} />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -251,7 +255,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 />
             }
             {ModalEditOpen &&
-                <ModalKinerjaSekretariat 
+                <ModalKinerjaSekretariat
                     isOpen={ModalEditOpen}
                     onClose={() => setModalEditOpen((prev) => !prev)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
@@ -261,7 +265,7 @@ export const Table: React.FC<Table> = ({ data }) => {
 
                 />
             }
-        </> 
+        </>
     )
 }
 

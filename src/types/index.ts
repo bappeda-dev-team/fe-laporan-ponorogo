@@ -184,6 +184,11 @@ export interface RencanaKinerjaSekretariatResponse {
   rencana_aksis: RencanaAksis[];
   indikators: IndikatorRencanaKinerja[];
   subkegiatan: SubKegiatanResponse[];
+  realisasi_anggaran: number;
+  faktor_pendorong: string;
+  faktor_penghambat: string;
+  risiko_hukum: string;
+  rekomendasi_tl: string;
 }
 
 export interface RencanaAksis {

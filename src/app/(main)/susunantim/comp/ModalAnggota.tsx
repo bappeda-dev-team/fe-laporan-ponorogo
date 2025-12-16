@@ -62,12 +62,13 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             keterangan: data.keterangan,
             kode_tim: kode_tim,
             id_jabatan_tim: data.nama_jabatan_tim?.value,
+            nama_jabatan_tim: data.nama_jabatan_tim?.label,
             nama_pegawai: data?.nip?.label,
             nip: data?.nip?.value,
         }
         // console.log(payload);
 
-        try{
+        try {
             setProses(true);
             await apiFetch("/api/v1/timkerja/susunantim", {
                 method: "POST",
@@ -88,10 +89,10 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                 AlertNotification("GAGAL", `${err}`, "error", 3000, true);
                 setProses(false);
             })
-        } catch(err){
+        } catch (err) {
             console.log(err);
             AlertNotification("GAGAL", `${err}`, "error", 3000, true);
-        } finally{
+        } finally {
             setProses(false);
         }
     }
