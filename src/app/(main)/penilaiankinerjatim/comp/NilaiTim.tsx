@@ -43,7 +43,7 @@ export const NilaiTim: React.FC<Modal> = ({ nilai, kode_tim, Data }) => {
     } else {
         return (
             <div className="flex items-center justify-center gap-2">
-                <p>{nilai || 0}</p>
+                <p>{nilaiSaatIni || nilai}</p>
                 <button
                     className="p-1 rounded-full border border-emerald-500 text-emerald-500 hover:bg-emerald-300 hover:text-white cursor-pointer"
                     type="button"
