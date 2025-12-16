@@ -15,3 +15,14 @@ export interface FormValue {
     rencana_aksi: string,
     tahun: string
 }
+
+export interface GetResponseAnggotaTimDropdown {
+    id: number,
+    id_jabatan_tim: number,
+    is_active: true,
+    keterangan: string,
+    kode_tim: string,
+    nama_jabatan_tim: string,
+    nama_pegawai: string,
+    nip: string,
+}

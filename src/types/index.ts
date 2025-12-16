@@ -73,6 +73,7 @@ export interface KinerjaKonkerGetResponse {
   tahun: string;
   kode_opd: string;
   pohon_kinerja: PohonKinerjaKonker[];
+  petugas_tims: PetugasTims[];
 }
 
 export interface PohonKinerjaKonker {
@@ -103,6 +104,11 @@ export interface Pelaksanas {
   nama_pelaksana: string,
   nip_pelaksana: number,
   rencana_kinerjas: RencanaKinerjaPelaksanas[];
+}
+export interface PetugasTims {
+  id: number;
+  pegawai_id: string;
+  nama_pegawai: string;
 }
 
 export interface RencanaKinerjaPelaksanas {

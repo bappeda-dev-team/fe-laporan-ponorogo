@@ -11,6 +11,8 @@ import useToast from "@/components/global/toast";
 import { AlertNotification } from "@/components/global/sweetalert2";
 import { useGet } from "@/app/hooks/useGet";
 import { ProgramUnggulanGetResponse, PohonKinerjaKonker, PegawaiGetResponse, IndikatorRencanaKinerja, Target } from "@/types";
+import { GetResponseAnggotaTimDropdown } from "../type";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Modal {
     isOpen: boolean;
@@ -18,43 +20,50 @@ interface Modal {
     onSuccess: () => void;
     kode_tim: string;
     Data: PohonKinerjaKonker | null;
+    id_program: number;
 }
 interface FormValue {
-    id_program_unggulan: ProgramUnggulanGetResponse | null;
-    kode_program_unggulan: string;
-    tahun: string;
-    kode_opd: string;
+    bulan: number,
+    id_program_unggulan: number,
+    kode_tim: string,
+    pegawai_id: GetResponseAnggotaTimDropdown | null,
+    tahun: number
 }
 
-export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_tim, Data }) => {
+export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_tim, id_program, Data }) => {
 
     const kode_opd = process.env.NEXT_PUBLIC_KODE_OPD;
+    const { branding } = useBrandingContext();
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            id_program_unggulan: null,
-            kode_program_unggulan: "",
-            tahun: "2025",
-            kode_opd: kode_opd,
+            bulan: branding?.bulan?.value,
+            id_program_unggulan: 0,
+            kode_tim: kode_tim,
+            pegawai_id: null,
+            tahun: branding?.tahun?.value
         }
     });
 
-    const [OptionPegawai, setOptionPegawai] = useState<PegawaiGetResponse[]>([]);
+    const [OptionPegawai, setOptionPegawai] = useState<GetResponseAnggotaTimDropdown[]>([]);
     const [Proses, setProses] = useState<boolean>(false);
     const { toastSuccess, toastInfo } = useToast();
 
-    const { data, error, loading } = useGet<PegawaiGetResponse[]>(`/api/v1/perencanaan/pegawai/findall?kode_opd=${kode_opd}`)
+    const { data, error, loading } = useGet<GetResponseAnggotaTimDropdown[]>(`/api/v1/timkerja/susunantim/${kode_tim}/pelaksana`)
 
     useEffect(() => {
         if (data) {
-            const pegawai = data.map((p: PegawaiGetResponse) => ({
+            const pegawai = data.map((p: GetResponseAnggotaTimDropdown) => ({
                 value: p.id,
                 label: p.nama_pegawai,
                 id: p.id,
-                nip: p.nip,
+                id_jabatan_tim: p.id_jabatan_tim,
+                is_active: p.is_active,
+                keterangan: p.keterangan,
+                kode_tim: p.kode_tim,
+                nama_jabatan_tim: p.nama_jabatan_tim,
                 nama_pegawai: p.nama_pegawai,
-                kode_opd: p.kode_opd,
-                nama_opd: p.nama_opd,
+                nip: p.nip,
             }));
             setOptionPegawai(pegawai);
         }
@@ -63,32 +72,32 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         const payload = {
-            id_program_unggulan: data.id_program_unggulan?.id,
-            kode_program_unggulan: data?.id_program_unggulan?.kode_program_unggulan,
-            tahun: "2025",
-            kode_opd: kode_opd
+            bulan: branding?.bulan?.value,
+            id_program_unggulan: id_program,
+            kode_tim: kode_tim,
+            pegawai_id: data.pegawai_id?.nip,
+            tahun: branding?.tahun?.value
         }
 
-        console.log(payload);
-        toastInfo("dalam pengembangan developer")
-        // try {
-        //     setProses(true);
-        //     await apiFetch(`/api/v1/timkerja/timkerja/program_unggulan`, {
-        //         method: "POST",
-        //         body: payload as any
-        //     }).then(_ => {
-        //         toastSuccess("data berhasil disimpan");
-        //         onSuccess();
-        //         handleClose();
-        //     }).catch(err => {
-        //         AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        //     })
-        // } catch (err) {
-        //     console.log(err);
-        //     AlertNotification("Gagal", `${err}`, "error", 3000, true);
-        // } finally {
-        //     setProses(false);
-        // }
+        // console.log(payload);
+        try {
+            setProses(true);
+            await apiFetch(`/api/v1/timkerja/petugas_tim`, {
+                method: "POST",
+                body: payload as any
+            }).then(_ => {
+                toastSuccess("pelaksana berhasil disimpan");
+                onSuccess();
+                handleClose();
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch (err) {
+            console.log(err);
+            AlertNotification("Gagal", `${err}`, "error", 3000, true);
+        } finally {
+            setProses(false);
+        }
     }
 
     const handleClose = () => {
@@ -110,21 +119,21 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
             <div className="min-h-[420px] flex flex-col">
                 <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
                     <Controller
-                        name="id_program_unggulan"
+                        name="pegawai_id"
                         control={control}
                         rules={{ required: "wajib di pilih" }}
                         render={({ field }) => (
                             <>
                                 <FloatingLabelSelect
                                     {...field}
-                                    id="id_program_unggulan"
+                                    id="pegawai_id"
                                     label="Pilih Pelaksana"
                                     options={OptionPegawai}
                                     isLoading={loading}
                                     isClearable
                                 />
-                                {errors.id_program_unggulan &&
-                                    <p className="text-red-400 italic">{errors.id_program_unggulan.message}</p>
+                                {errors.pegawai_id &&
+                                    <p className="text-red-400 italic">{errors.pegawai_id.message}</p>
                                 }
                             </>
                         )}

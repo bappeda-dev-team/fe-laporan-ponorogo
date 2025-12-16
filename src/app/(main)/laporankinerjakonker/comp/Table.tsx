@@ -1,32 +1,50 @@
 'use client'
 
 import TableComponent from "@/components/page/TableComponent";
-import { ButtonRedBorder, ButtonSkyBorder, ButtonGreenBorder } from "@/components/button/button";
-import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus, TbPencil } from "react-icons/tb";
+import { ButtonRedBorder, ButtonRed, ButtonSkyBorder, ButtonGreenBorder, ButtonBlackBorder } from "@/components/button/button";
+import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus, TbPencil, TbPrinter } from "react-icons/tb";
 import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import useToast from "@/components/global/toast";
 import { TimGetResponse } from "@/types/tim";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
-import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PohonKinerjaKonker, RencanaKinerjaPelaksanas, Target } from "@/types";
+import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PetugasTims, PohonKinerjaKonker, RencanaKinerjaPelaksanas, Target } from "@/types";
 import { LoadingButtonClip2 } from "@/components/global/Loading";
-import { Realisasi } from "./Realisasi";
-import { RencanaAksi } from "./RencanaAksi";
-import { Rekomendasi } from "./Rekomendasi";
-import { Faktor } from "./Faktor";
 import { ModalUpload } from "./ModalUpload";
-import { RisikoHukum } from "./RisikoHukum";
 import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
+import { useCetakKonker } from "../lib/useCetakKonker";
 
 interface Table {
     data: TimGetResponse;
 }
 
 export const Table: React.FC<Table> = ({ data }) => {
+
+    const Dummy = [
+        {
+            nama: "Miko",
+            nim: "V3920040",
+            kemampuan: [
+                { kemampuan: "menulis", level: "ahli" },
+                { kemampuan: "membaca", level: "sedang" },
+                { kemampuan: "berenang", level: "amatir" },
+            ],
+            alamat: "jalan imam bonjol"
+        },
+        {
+            nama: "Akbar",
+            nim: "V3920041",
+            kemampuan: [
+                { kemampuan: "menulis", level: "sedang" },
+                { kemampuan: "membaca", level: "ahli" },
+            ],
+            alamat: "jalan sudirman"
+        },
+    ];
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
     const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
@@ -40,6 +58,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     const [IdProgram, setIdProgram] = useState<number>(0);
 
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [LoadingHapus, setLoadingHapus] = useState<boolean>(false);
     const { toastSuccess } = useToast();
 
     const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
@@ -53,13 +72,15 @@ export const Table: React.FC<Table> = ({ data }) => {
             setDataTim(data);
         }
     }
-    const handleModalPelaksana = (data: PohonKinerjaKonker | null) => {
+    const handleModalPelaksana = (data: PohonKinerjaKonker | null, id_program: number) => {
         if (ModalPelaksanaOpen) {
             setModalPelaksanaOpen(false);
             setDataPohon(null);
+            setIdProgram(0);
         } else {
             setModalPelaksanaOpen(true);
             setDataPohon(data);
+            setIdProgram(id_program);
         }
     }
     const handleModalKonker = (data: any, kode_tim: string, id_program: number) => {
@@ -86,10 +107,28 @@ export const Table: React.FC<Table> = ({ data }) => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
     }
+    const hapusPetugasTim = async (id: number) => {
+        try{
+            setLoadingHapus(true);
+            await apiFetch(`/api/v1/timkerja/petugas_tim/${id}`, {
+                method: "DELETE",
+            }).then(resp => {
+                toastSuccess("petugas dihapus");
+                setFetchTrigger((prev) => !prev);
+            }).catch(err => {
+                AlertNotification("Gagal", `${err}`, "error", 3000, true);
+            })
+        } catch (err) {
+            console.log(err);
+            AlertNotification("GAGAL", `${err}`, "error", 3000, true);
+        } finally {
+            setLoadingHapus(false);
+        }
+    }
 
     return (
         <>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between mb-1">
                 <div className="flex items-start gap-1 mb-1">
                     <TbCircleFilled className="mt-2 text-blue-500" />
                     <div className="flex flex-col">
@@ -97,13 +136,24 @@ export const Table: React.FC<Table> = ({ data }) => {
                         <h1 className="font-medium">{data.keterangan || "-"}</h1>
                     </div>
                 </div>
-                <ButtonGreenBorder
-                    className="flex items-center gap-1"
-                    onClick={() => handleModalProgram(data)}
-                >
-                    <TbCirclePlus />
-                    Tambah Program Unggulan
-                </ButtonGreenBorder>
+                <div className="flex flex-wrap flex-col justify-center gap-1">
+                    <ButtonGreenBorder
+                        className="flex items-center gap-1"
+                        onClick={() => handleModalProgram(data)}
+                    >
+                        <TbCirclePlus />
+                        Tambah Program Unggulan
+                    </ButtonGreenBorder>
+                    {/* <ButtonBlackBorder
+                        className="flex items-center gap-1"
+                        onClick={() =>
+                            cetakPdf()
+                        }
+                    >
+                        <TbPrinter />
+                        Cetak
+                    </ButtonBlackBorder> */}
+                </div>
             </div>
             <TableComponent className="border-blue-500">
                 <table className="w-full">
@@ -248,10 +298,28 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                         <td className="border border-blue-500 px-6 py-4">
                                                             {/* PELAKSANA */}
                                                             <div className="flex flex-col justify-center gap-2">
-                                                                <p className="border-b border-blue-300 italic text-red-400 text-sm">Petugas dalam pengembangan</p>
+                                                                {item.petugas_tims ?
+                                                                    item.petugas_tims.map((pt: PetugasTims, pt_index) => (
+                                                                        <div key={pt_index} className="px-1 flex items-center gap-1 border rounded-lg">
+                                                                            <p>{pt.nama_pegawai || "-"}</p>
+                                                                            <ButtonRedBorder 
+                                                                                className="p-1"
+                                                                                onClick={() => AlertQuestion("Hapus Petugas", `hapus ${pt.nama_pegawai || "petugas"} dari program unggulan`, "question", "Hapus", "Batal").then((resp) => {
+                                                                                    if(resp.isConfirmed){
+                                                                                        hapusPetugasTim(pt.id);
+                                                                                    }
+                                                                                })}
+                                                                            >
+                                                                                <TbTrash />
+                                                                            </ButtonRedBorder>
+                                                                        </div>
+                                                                    ))
+                                                                    :
+                                                                    <p>-</p>
+                                                                }
                                                                 <ButtonSkyBorder
                                                                     className="flex items-center gap-2"
-                                                                    onClick={() => handleModalPelaksana(p)}
+                                                                    onClick={() => handleModalPelaksana(p, item.id_program_unggulan)}
                                                                 >
                                                                     <TbPencil />
                                                                     Petugas Tim
@@ -394,9 +462,10 @@ export const Table: React.FC<Table> = ({ data }) => {
             {ModalPelaksanaOpen &&
                 <ModalPelaksana
                     isOpen={ModalPelaksanaOpen}
-                    onClose={() => handleModalPelaksana(null)}
+                    onClose={() => handleModalPelaksana(null, 0)}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
                     kode_tim={data.kode_tim}
+                    id_program={IdProgram}
                     Data={DataPohon}
                 />
             }
