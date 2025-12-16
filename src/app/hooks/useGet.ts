@@ -2,69 +2,101 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getSessionId } from "@/lib/auth";
 import useToast from "@/components/global/toast";
 
-interface FetchState<T> {
-    data: T | null;
-    loading: boolean;
-    error: boolean;
-    message: string;
+type FetchState<T> = {
+    data: T | null
+    loading: boolean
+    error: boolean
+    message: string
 }
 
 export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
+    const { toastError } = useToast()
+    const router = useRouter()
 
-    const { toastError } = useToast();
-    
-    const router = useRouter();
-    const S = getSessionId();
     const [state, setState] = useState<FetchState<T>>({
         data: null,
         loading: true,
         error: false,
         message: "",
-    });
+    })
 
     useEffect(() => {
-        const controller = new AbortController();
+        const controller = new AbortController()
 
         async function fetchData() {
             try {
-                const response = await fetch(`${url}`, {
+                const response = await fetch(url, {
+                    method: "GET",
+                    credentials: "include",
                     headers: {
-                        "Content-Type": 'application/json',
-                        "X-Session-Id": `${S}`,
+                        "Content-Type": "application/json",
                     },
-                });
+                    signal: controller.signal,
+                })
+
                 if (response.status === 200) {
-                    const result = await response.json();
-                    setState({ data: result.data, loading: false, error: false, message: 'success fetch data' });
-                    // console.log(result)
-                    return;
-                } else if(response.status === 401) {
-                    setState({ data: null, loading: false, error: true, message: "Login Ulang" });
-                    toastError("Silakan Login Ulang")
-                    router.push('/login');
-                    return;
-                } else {
-                    const result = await response.json();
-                    toastError("Error Server")
-                    setState({ data: null, loading: false, error: true, message: result.data });
-                    return;
+                    const result = await response.json()
+                    setState({
+                        data: result.data,
+                        loading: false,
+                        error: false,
+                        message: "success fetch data",
+                    })
+                    return
                 }
-            } catch (err) {
-                console.log(err);
+
+                if (response.status === 401) {
+                    // 🔑 INVALID SESSION → LOGOUT
+                    await fetch("/auth/logout", {
+                        method: "POST",
+                        credentials: "include",
+                    })
+
+                    toastError("Sesi berakhir, silakan login ulang")
+
+                    setState({
+                        data: null,
+                        loading: false,
+                        error: true,
+                        message: "Unauthorized",
+                    })
+
+                    router.replace("/login")
+                    return
+                }
+
+                // other errors
+                const text = await response.text()
                 toastError("Error Server")
-                setState({ data: null, loading: false, error: true, message: "Error, cek koneksi internet, terdapat kesalahan server/backend, jika berlanjut hubungi tim developer" });
+
+                setState({
+                    data: null,
+                    loading: false,
+                    error: true,
+                    message: text,
+                })
+            } catch (err: any) {
+                if (err.name === "AbortError") return
+
+                console.error(err)
+                toastError("Terjadi kesalahan server")
+
+                setState({
+                    data: null,
+                    loading: false,
+                    error: true,
+                    message:
+                        "Error, cek koneksi internet atau hubungi tim developer jika berlanjut",
+                })
             }
         }
 
-        fetchData();
+        fetchData()
 
-        return () => {
-            controller.abort();
-        };
-    }, [url, fetchTrigger]);
+        return () => controller.abort()
+    }, [url, fetchTrigger, router, toastError])
 
-    return state;
+    return state
 }

@@ -44,6 +44,8 @@ export const ModalJabatanTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, j
         console.log(payload);
         try{
             setProses(true);
+          // kenapa misah misah hooknya
+          // pakai satu aja, useGet
             await apiFetch("/api/v1/timkerja/jabatantim", {
                 method: jenis === "baru" ? "POST" : "PUT",
                 body: payload as any

@@ -6,26 +6,19 @@ type LoginResponse = {
 
 export async function login(username: string, password: string): Promise<void> {
 
-    const API_LOGIN = process.env.NEXT_PUBLIC_API_URL;
-    const res = await fetch(`${API_LOGIN}/auth/login`, {
+    const res = await fetch(`/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({ username, password })
     })
 
     if (!res.ok) {
         throw new Error("Login gagal")
-    } else {
-        window.location.href = "/"
     }
-
-
-    const data: LoginResponse = await res.json();
-    localStorage.setItem("sessionId", data.sessionId);
-
-
-    // cookie buat middleware
-    document.cookie = `sessionId=${data.sessionId}; path=/; secure; samesite=strict`
+    // SET COOKIE DARI BACKEND SAJA
 }
 
 export function getSessionId(): string | null {
@@ -39,6 +32,7 @@ export async function logout() {
 
         const res = await fetch("/auth/logout", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "X-Session-Id": sessionId
@@ -59,6 +53,7 @@ export async function logout() {
 export async function refresh(sessionId: string): Promise<void> {
     const res = await fetch("/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
             "X-Session-Id": sessionId
