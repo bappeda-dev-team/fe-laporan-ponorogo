@@ -16,7 +16,7 @@ import { ModalUpload } from "./ModalUpload";
 import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
-import { useCetakKonker } from "../lib/useCetakKonker";
+// import { useCetakKonker } from "../lib/useCetakKonker";
 
 interface Table {
     data: TimGetResponse;
