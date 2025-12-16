@@ -38,7 +38,7 @@ export const ModalKinerjaSekretariat: React.FC<Modal> = ({ isOpen, onClose, onSu
             kode_opd: branding?.opd,
             kode_subkegiatan: "",
             kode_tim: kode_tim,
-            realisasi_anggaran: Number(Data?.realisasi_anggran || 0),
+            realisasi_anggaran: Number(Data?.realisasi_anggaran || 0),
             rekomendasi_tl: Data?.rekomendasi_tl || "",
             risiko_hukum: Data?.risiko_hukum,
             tahun: String(branding?.tahun?.value)
