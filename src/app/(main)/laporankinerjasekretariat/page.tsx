@@ -3,10 +3,12 @@
 import { Table } from "./comp/Table";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const LaporanKinerjaSekretariat = () => {
 
-    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja-sekretariat');
+    const { branding } = useBrandingContext();
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja-sekretariat?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`);
 
     if (loading) {
         return (
