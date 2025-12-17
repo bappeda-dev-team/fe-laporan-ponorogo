@@ -8,7 +8,7 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const LaporanTpp = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const {branding} = useBrandingContext();
+    const { branding } = useBrandingContext();
     const { data, loading, error, message } = useGet<PenilaianTimResponse[]>(`/api/v1/timkerja/laporan_tpp?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`, FetchTrigger);
 
     if (loading) {
@@ -22,11 +22,15 @@ const LaporanTpp = () => {
     } else {
         return (
             <div className="flex flex-col gap-2">
-                {data?.map((item: PenilaianTimResponse, index: number) => (
-                    <div key={index} className="flex flex-col gap-2">
-                        <Table data={item}/>
-                    </div>
-                ))}
+                {data && data?.length > 0 ?
+                    data?.map((item: PenilaianTimResponse, index: number) => (
+                        <div key={index} className="flex flex-col gap-2">
+                            <Table data={item} />
+                        </div>
+                    ))
+                    :
+                    <p>Laporan Bulan {branding?.bulan?.label || ""} {branding?.tahun?.label || ""} masih kosong</p>
+                }
             </div>
         )
     }

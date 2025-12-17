@@ -10,11 +10,11 @@ import { Sidebar } from "@/components/global/sidebar";
 import { usePathname } from "next/navigation";
 import { BrandingProvider } from "@/provider/BrandingProvider";
 
-const font = Poppins({
-    subsets: ['latin'],
-    weight: ['200', '300', '400', '500', '600', '700', '800'],
-    display: 'swap', // Mengatur tampilan swap agar tidak ada flash saat font dimuat
-});
+// const font = Poppins({
+//     subsets: ['latin'],
+//     weight: ['200', '300', '400', '500', '600', '700', '800'],
+//     display: 'swap', // Mengatur tampilan swap agar tidak ada flash saat font dimuat
+// });
 
 
 export default function MainLayout({

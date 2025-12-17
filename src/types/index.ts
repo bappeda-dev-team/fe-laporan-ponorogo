@@ -157,17 +157,6 @@ export interface SubKegiatanResponse {
   kode_subkegiatan: string;
   nama_sub_kegiatan: string;
 }
-interface TimRencanaKinerja {
-  id: number;
-  kode_tim: string;
-  id_rencana_kinerja: string;
-  id_pegawai: string;
-  rencana_kinerja: string;
-  tahun: string;
-  kode_opd: string;
-  indikators: IndikatorRencanaKinerja[];
-  subkegiatan: SubKegiatanResponse[];
-}
 export interface IndikatorRencanaKinerja {
   id_indikator: string;
   rencana_kinerja_id: string;
