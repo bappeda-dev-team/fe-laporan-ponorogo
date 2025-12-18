@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "framer-motion": "^12.23.22",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "next": "15.5.3",
     "nextjs-toploader": "^3.9.17",
     "react": "19.1.0",
