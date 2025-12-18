@@ -7,13 +7,15 @@ import { TbUsersGroup } from "react-icons/tb";
 import { TimGetResponse } from "@/types/tim";
 import { useGet } from "@/app/hooks/useGet";
 import { ModalTim } from "./comp/ModalTim";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 export const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
-    const { data, loading, error, message } = useGet<TimGetResponse[]>('/api/v1/timkerja/timkerja', FetchTrigger);
+    const { branding } = useBrandingContext();
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`, FetchTrigger);
 
     if (loading) {
         return (
@@ -33,7 +35,7 @@ export const Table = () => {
                     </ButtonSky>
                     {data?.map((item: TimGetResponse, index: number) => (
                         <div key={index} className="flex flex-col gap-2">
-                            <TableAnggota data={item} onSuccess={() => setFetchTrigger((prev) => !prev)}/>
+                            <TableAnggota data={item} onSuccess={() => setFetchTrigger((prev) => !prev)} />
                         </div>
                     ))}
                 </div>
