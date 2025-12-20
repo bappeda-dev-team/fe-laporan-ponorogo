@@ -16,7 +16,7 @@ import { ModalUpload } from "./ModalUpload";
 import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
-// import { useCetakKonker } from "../lib/useCetakKonker";
+import { useCetakKonker } from "../lib/useCetakKonker";
 
 interface Table {
     data: TimGetResponse;
@@ -62,7 +62,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     const { toastSuccess } = useToast();
 
     const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
-    // const {cetakPdf} = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
+    const {cetakPdf} = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalProgram = (data: TimGetResponse | null) => {
         if (ModalProgram) {
@@ -145,7 +145,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                         <TbCirclePlus />
                         Tambah Program Unggulan
                     </ButtonGreenBorder>
-                    {/* <ButtonBlackBorder
+                    <ButtonBlackBorder
                         className="flex items-center gap-1"
                         onClick={() =>
                             cetakPdf()
@@ -153,7 +153,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                     >
                         <TbPrinter />
                         Cetak
-                    </ButtonBlackBorder> */}
+                    </ButtonBlackBorder>
                 </div>
             </div>
             <TableComponent className="border-blue-500">

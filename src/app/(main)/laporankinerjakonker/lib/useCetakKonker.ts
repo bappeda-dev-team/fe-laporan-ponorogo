@@ -98,11 +98,41 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                     // Petugas Tim
                     pohonIndex === 0
                         ? { content: PetugasText, rowSpan: 0 }
-                        : { content: "", rowSpan: 0 },
+                        : { content: pohon.realisasi_anggaran ?? "-", rowSpan: 0 },
 
                     // Rencana Kinerja
                     pohonIndex === 0
                         ? { content: RekinText, rowSpan: 0 }
+                        : { content: pohon.rencana_aksi ?? "-", rowSpan: 0 },
+
+                    // Realisasi Anggaran
+                    pohonIndex === 0
+                        ? { content: pohon.realisasi_anggaran, rowSpan: 0 }
+                        : { content: pohon.faktor_pendorong, rowSpan: 0 },
+
+                    // Rencana Aksi
+                    pohonIndex === 0
+                        ? { content: pohon.rencana_aksi ?? "-", rowSpan: 0 }
+                        : { content: pohon.faktor_penghambat, rowSpan: 0 },
+
+                    // Faktor Pendorong
+                    pohonIndex === 0
+                        ? { content: pohon.faktor_pendorong, rowSpan: 0 }
+                        : { content: pohon.risiko_hukum, rowSpan: 0 },
+
+                    // Faktor Penghambat
+                    pohonIndex === 0
+                        ? { content: pohon.faktor_penghambat, rowSpan: 0 }
+                        : { content: pohon.rekomendasi_tl, rowSpan: 0 },
+
+                    // Risiko Hukum
+                    pohonIndex === 0
+                        ? { content: pohon.risiko_hukum, rowSpan: 0 }
+                        : { content: "", rowSpan: 0 },
+
+                    // Rekomendasi Tindak Lanjut
+                    pohonIndex === 0
+                        ? { content: pohon.rekomendasi_tl, rowSpan: 0 }
                         : { content: "", rowSpan: 0 },
                 ]);
             });
@@ -120,6 +150,12 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                 "Pelaksana",
                 "Petugas Tim",
                 "Rencana Kinerja",
+                "Realisasi Anggaran",
+                "Rencana Aksi",
+                "Faktor Pendorong",
+                "Faktor Penghambat",
+                "Risiko Hukum",
+                "Rekomendasi Tindak Lanjut",
                 // "Target",
                 // "Satuan",
             ]],
@@ -134,7 +170,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
             },
         });
 
-        doc.save(`cetak-konker-${branding?.tahun?.value || 0}.pdf`);
+        doc.save(`Kinerja-Konker-${nama_tim}-${branding?.tahun?.value || 0}-${keterangan_tim}.pdf`);
     };
 
     return { cetakPdf };
