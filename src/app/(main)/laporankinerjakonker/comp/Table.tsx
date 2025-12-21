@@ -17,7 +17,7 @@ import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
 import { useCetakKonker } from "../lib/useCetakKonker";
-import { getCookies } from "@/lib/cookies";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Table {
     data: TimGetResponse;
@@ -40,8 +40,10 @@ export const Table: React.FC<Table> = ({ data }) => {
     const [LoadingHapus, setLoadingHapus] = useState<boolean>(false);
     const { toastSuccess } = useToast();
 
-    const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
-    const { cetakPdf } = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
+    const {branding} = useBrandingContext();
+    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
+    const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan?${queryParams}`, FetchTrigger)
+    const {cetakPdf} = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalProgram = (data: TimGetResponse | null) => {
         if (ModalProgram) {

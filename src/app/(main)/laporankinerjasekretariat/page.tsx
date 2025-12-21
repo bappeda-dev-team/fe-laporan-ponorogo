@@ -8,7 +8,8 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 const LaporanKinerjaSekretariat = () => {
 
     const { branding } = useBrandingContext();
-    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja-sekretariat?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`);
+    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja-sekretariat?${queryParams}`);
 
     if (loading) {
         return (
