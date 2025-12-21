@@ -9,7 +9,8 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 const PenilaianKinerjaTim = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const {branding} = useBrandingContext();
-    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/penilaian_kinerja?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`, FetchTrigger);
+    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/penilaian_kinerja?${queryParams}`, FetchTrigger);
 
     if (loading) {
         return (

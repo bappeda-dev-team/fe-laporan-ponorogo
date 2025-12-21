@@ -14,6 +14,7 @@ import useToast from "@/components/global/toast";
 import { apiFetch } from "@/lib/apiFetch";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { ModalKinerjaSekretariat } from "./ModalKinerjaSekretariat";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Table {
     data: TimGetResponse;
@@ -30,7 +31,9 @@ export const Table: React.FC<Table> = ({ data }) => {
 
     const { toastSuccess } = useToast();
 
-    const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja`, FetchTrigger)
+    const {branding} = useBrandingContext();
+    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
+    const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja?${queryParams}`, FetchTrigger)
 
     const handleModalEdit = (kode_tim: string, id_program: number, data: any) => {
         if (ModalEditOpen) {

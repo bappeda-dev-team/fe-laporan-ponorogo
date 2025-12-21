@@ -15,7 +15,8 @@ export const Table = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
     const { branding } = useBrandingContext();
-    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja?tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`, FetchTrigger);
+    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja?${queryParams}`, FetchTrigger);
 
     if (loading) {
         return (
