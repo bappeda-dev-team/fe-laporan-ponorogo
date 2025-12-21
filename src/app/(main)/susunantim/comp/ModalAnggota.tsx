@@ -6,10 +6,11 @@ import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
-import { OptionTypeString } from "@/types";
+import { OptionTypeString, OptionType } from "@/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { AnggotaGetResponse } from "@/types/tim";
 import { AlertNotification } from "@/components/global/sweetalert2";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Modal {
     isOpen: boolean;
@@ -27,16 +28,27 @@ interface FormValue {
     is_active: boolean;
     keterangan: string;
     nama_jabatan_tim: OptionTypeString | null;
+    bulan: OptionType,
+    tahun: OptionType
 }
 
 export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, kode_tim, data }) => {
 
+    const { branding } = useBrandingContext();
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
             is_active: data?.is_active || true,
             keterangan: data?.keterangan || "",
             kode_tim: kode_tim || "",
             nama_pegawai: data?.nama_pegawai || "",
+            bulan: {
+                value: branding?.bulan?.value,
+                label: branding?.bulan?.label,
+            },
+            tahun: {
+                value: branding?.tahun?.value,
+                label: branding?.tahun?.label,
+            },
             nip: data?.nip ? {
                 value: data.nip,
                 label: data.nama_pegawai || '',
@@ -54,6 +66,35 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
         reset();
     }
 
+    const OptionTahun = [
+        { label: "2019", value: 2019 },
+        { label: "2020", value: 2020 },
+        { label: "2021", value: 2021 },
+        { label: "2022", value: 2022 },
+        { label: "2023", value: 2023 },
+        { label: "2024", value: 2024 },
+        { label: "2025", value: 2025 },
+        { label: "2026", value: 2026 },
+        { label: "2027", value: 2027 },
+        { label: "2028", value: 2028 },
+        { label: "2029", value: 2029 },
+        { label: "2030", value: 2030 },
+    ];
+    const OptionBulan = [
+        { label: "Januari", value: 1 },
+        { label: "Februari", value: 2 },
+        { label: "Maret", value: 3 },
+        { label: "April", value: 4 },
+        { label: "Mei", value: 5 },
+        { label: "Juni", value: 6 },
+        { label: "Juli", value: 7 },
+        { label: "Agustus", value: 8 },
+        { label: "September", value: 9 },
+        { label: "Oktober", value: 10 },
+        { label: "November", value: 11 },
+        { label: "Desember", value: 12 },
+    ]
+
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         setProses(true);
@@ -65,6 +106,8 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
             nama_jabatan_tim: data.nama_jabatan_tim?.label,
             nama_pegawai: data?.nip?.label,
             nip: data?.nip?.value,
+            bulan: data.bulan.value,
+            tahun: data.tahun.value,
         }
         // console.log(payload);
 
@@ -148,19 +191,6 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                 </h1>
             </div>
             <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
-                {/* <FloatingLabelSelect
-                    id="kode_opd"
-                    label="Pilih OPD untuk Pilih Pegawai"
-                    options={OpdOption}
-                    isClearable
-                    value={Opd}
-                    isSearchable
-                    onChange={(option) => {
-                        setOpd(option as OptionTypeString);
-                        console.log(option);
-                    }}
-                    isLoading={Loading}
-                /> */}
                 <Controller
                     name="nip"
                     control={control}
@@ -193,6 +223,42 @@ export const ModalAnggota: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jeni
                             />
                             {errors.nama_jabatan_tim &&
                                 <p className="text-red-400 italic">{errors.nama_jabatan_tim.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                <Controller
+                    name="bulan"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="bulan"
+                                options={OptionBulan}
+                                label="Bulan"
+                            />
+                            {errors.bulan &&
+                                <p className="text-red-400 italic">{errors.bulan.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                <Controller
+                    name="tahun"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="tahun"
+                                options={OptionTahun}
+                                label="Tahun"
+                            />
+                            {errors.tahun &&
+                                <p className="text-red-400 italic">{errors.tahun.message}</p>
                             }
                         </>
                     )}

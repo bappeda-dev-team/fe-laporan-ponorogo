@@ -17,34 +17,13 @@ import { ModalPelaksana } from "./ModalPelaksana";
 import { apiFetch } from "@/lib/apiFetch";
 import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
 import { useCetakKonker } from "../lib/useCetakKonker";
+import { getCookies } from "@/lib/cookies";
 
 interface Table {
     data: TimGetResponse;
 }
 
 export const Table: React.FC<Table> = ({ data }) => {
-
-    const Dummy = [
-        {
-            nama: "Miko",
-            nim: "V3920040",
-            kemampuan: [
-                { kemampuan: "menulis", level: "ahli" },
-                { kemampuan: "membaca", level: "sedang" },
-                { kemampuan: "berenang", level: "amatir" },
-            ],
-            alamat: "jalan imam bonjol"
-        },
-        {
-            nama: "Akbar",
-            nim: "V3920041",
-            kemampuan: [
-                { kemampuan: "menulis", level: "sedang" },
-                { kemampuan: "membaca", level: "ahli" },
-            ],
-            alamat: "jalan sudirman"
-        },
-    ];
 
     const [ModalProgram, setModalProgram] = useState<boolean>(false);
     const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
@@ -62,7 +41,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     const { toastSuccess } = useToast();
 
     const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan`, FetchTrigger)
-    const {cetakPdf} = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
+    const { cetakPdf } = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalProgram = (data: TimGetResponse | null) => {
         if (ModalProgram) {
@@ -109,7 +88,7 @@ export const Table: React.FC<Table> = ({ data }) => {
         })
     }
     const hapusPetugasTim = async (id: number) => {
-        try{
+        try {
             setLoadingHapus(true);
             await apiFetch(`/api/v1/timkerja/petugas_tim/${id}`, {
                 method: "DELETE",
@@ -303,10 +282,10 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                                     item.petugas_tims.map((pt: PetugasTims, pt_index) => (
                                                                         <div key={pt_index} className="px-1 flex items-center gap-1 border rounded-lg">
                                                                             <p>{pt.nama_pegawai || "-"}</p>
-                                                                            <ButtonRedBorder 
+                                                                            <ButtonRedBorder
                                                                                 className="p-1"
                                                                                 onClick={() => AlertQuestion("Hapus Petugas", `hapus ${pt.nama_pegawai || "petugas"} dari program unggulan`, "question", "Hapus", "Batal").then((resp) => {
-                                                                                    if(resp.isConfirmed){
+                                                                                    if (resp.isConfirmed) {
                                                                                         hapusPetugasTim(pt.id);
                                                                                     }
                                                                                 })}

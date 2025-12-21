@@ -2,11 +2,17 @@ import TableComponent from "@/components/page/TableComponent";
 //import { TbCircleCheck } from "react-icons/tb";
 import { PenilaianTimResponse, PenilaianGroupedResponse } from "@/types/penilaian_tpp"
 import { formatRupiah } from "@/app/hooks/formatRupiah";
+import { ButtonBlackBorder } from "@/components/button/button";
+import { TbPrinter } from "react-icons/tb";
+import { useCetakTpp } from "../lib/useCetakTpp";
 
 interface Table {
     data: PenilaianTimResponse;
 }
 export const Table: React.FC<Table> = ({ data }) => {
+
+    const { cetakPdf } = useCetakTpp(data ?? [], data.nama_tim, data.keterangan);
+    
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
             <div className="flex flex-wrap items-center justify-between mb-2">
@@ -17,6 +23,17 @@ export const Table: React.FC<Table> = ({ data }) => {
                         :
                         <h1 className="font-medium">{data.keterangan || ""}</h1>
                     }
+                </div>
+                <div className="flex flex-wrap flex-col justify-center gap-1">
+                    <ButtonBlackBorder
+                        className="flex items-center gap-1"
+                        onClick={() =>
+                            cetakPdf()
+                        }
+                    >
+                        <TbPrinter />
+                        Cetak
+                    </ButtonBlackBorder>
                 </div>
             </div>
             <TableComponent className={`${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
@@ -30,7 +47,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[150px] text-center">Basic TPP kondisi kerja</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kinerja Bappeda</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Tim</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Perso</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Kerja Person</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nilai Akhir</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Persentase penerimaan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Jumlah Kotor</th>
