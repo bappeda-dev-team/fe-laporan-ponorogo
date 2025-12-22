@@ -16,8 +16,12 @@ const Table: React.FC<Table> = ({ data }) => {
     const roleAccessMap: Record<string, string[]> = {
         // yang dinilai : penilai
         "Penanggung Jawab": ["super_admin"],
+        "Sekretaris Tim Monev Pembangunan": ["penanggung_jawab", "super_admin"],
         "Koordinator": ["penanggung_jawab", "super_admin"],
         "Ketua Tim": ["koordinator", "super_admin"],
+        "Ketua Tim 1": ["koordinator", "super_admin"],
+        "Ketua Tim 2": ["koordinator", "super_admin"],
+        "Ketua Tim 3": ["koordinator", "super_admin"],
         "Anggota": ["ketua_tim", "super_admin"],
     };
 
