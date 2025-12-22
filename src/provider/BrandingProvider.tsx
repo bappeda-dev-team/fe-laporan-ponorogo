@@ -62,7 +62,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
                 // console.log("User Info: ", result);
                 setUser(result);
             } else {
-                AlertNotification("User Failed", "tidak bisa mengambil data user, cek koneksi internet, jika berlanjut hubungi tim developer", "error", 3000, true);
+                AlertNotification("User Failed", "tidak bisa mengambil data user, login ulang, cek koneksi internet, jika berlanjut hubungi tim developer", "error", 3000, true);
                 setUser(null);
             }
         }

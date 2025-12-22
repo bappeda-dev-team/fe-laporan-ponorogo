@@ -2,15 +2,32 @@ import TableComponent from "@/components/page/TableComponent";
 import { NilaiKinerja } from "./NilaiKinerja";
 import { NilaiTim } from "./NilaiTim";
 import { NilaiPerson } from "./NilaiPerson";
-//import { TbCircleCheck } from "react-icons/tb";
 import { PenilaianKinerjas } from "../type";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Table {
     data: any;
 }
 
 const Table: React.FC<Table> = ({ data }) => {
-    
+
+    const { branding } = useBrandingContext();
+
+    const roleAccessMap: Record<string, string[]> = {
+        // yang dinilai : penilai
+        "Penanggung Jawab": ["super_admin"],
+        "Koordinator": ["penanggung_jawab", "super_admin"],
+        "Ketua Tim": ["koordinator"],
+        "Anggota": ["ketua_tim"],
+    };
+
+    const userRoles: string[] = branding?.user?.roles || [];
+
+    const isAllowed = (jabatan: string) =>
+        roleAccessMap[jabatan]?.some(role => userRoles.includes(role));
+
+    const tdClass = `border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`;
+
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
             <div className="flex flex-wrap items-center justify-between mb-2">
@@ -51,28 +68,65 @@ const Table: React.FC<Table> = ({ data }) => {
                         {data?.penilaian_kinerjas ?
                             data?.penilaian_kinerjas
                                 .slice()
-                                .map((item: PenilaianKinerjas, index: number) => (
-                                    <tr key={index}>
-                                        <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
-                                            <div className="flex flex-col">
-                                                <p className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>{item.nama_pegawai || "-"}</p>
-                                                <p className="font-semibold">{item.id_pegawai || "-"}</p>
-                                            </div>
-                                        </td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
-                                            <div className="flex flex-col">
-                                                <p className="border-b">{item.pangkat || "-"} / {item.golongan || "-"}</p>
-                                                <p>{item.nama_jabatan_tim || "-"}</p>
-                                            </div>
-                                        </td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiKinerja nilai={item.kinerja_bappeda || 0} kode_tim={data.kode_tim} Data={item}/></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiTim nilai={item.kinerja_tim || 0} kode_tim={data.kode_tim} Data={item}/></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}><NilaiPerson nilai={item.kinerja_person || 0} kode_tim={data.kode_tim} Data={item} /></td>
-                                        <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
-                                    </tr>
-                                ))
+                                .map((item: PenilaianKinerjas, index: number) => {
+                                    const editable = isAllowed(item.nama_jabatan_tim);
+                                    return (
+                                        <tr key={index}>
+                                            <td className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{index + 1}</td>
+                                            <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
+                                                <div className="flex flex-col">
+                                                    <p className={`border-b ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>{item.nama_pegawai || "-"}</p>
+                                                    <p className="font-semibold">{item.id_pegawai || "-"}</p>
+                                                </div>
+                                            </td>
+                                            <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>
+                                                <div className="flex flex-col">
+                                                    <p className="border-b">{item.pangkat || "-"} / {item.golongan || "-"}</p>
+                                                    <p>{item.nama_jabatan_tim || "-"}</p>
+                                                </div>
+                                            </td>
+                                            <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
+                                            <>
+                                                <td className={tdClass}>
+                                                    {editable ? (
+                                                        <NilaiKinerja
+                                                            nilai={item.kinerja_bappeda || 0}
+                                                            kode_tim={data.kode_tim}
+                                                            Data={item}
+                                                        />
+                                                    ) : (
+                                                        item.kinerja_bappeda || 0
+                                                    )}
+                                                </td>
+
+                                                <td className={tdClass}>
+                                                    {editable ? (
+                                                        <NilaiTim
+                                                            nilai={item.kinerja_tim || 0}
+                                                            kode_tim={data.kode_tim}
+                                                            Data={item}
+                                                        />
+                                                    ) : (
+                                                        item.kinerja_tim || 0
+                                                    )}
+                                                </td>
+
+                                                <td className={tdClass}>
+                                                    {editable ? (
+                                                        <NilaiPerson
+                                                            nilai={item.kinerja_person || 0}
+                                                            kode_tim={data.kode_tim}
+                                                            Data={item}
+                                                        />
+                                                    ) : (
+                                                        item.kinerja_person || 0
+                                                    )}
+                                                </td>
+                                            </>
+                                            <td className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
+                                        </tr>
+                                    )
+                                })
                             :
                             <tr>
                                 <td colSpan={9} className={`border ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"} px-6 py-4`}>Data Anggota Kosong</td>

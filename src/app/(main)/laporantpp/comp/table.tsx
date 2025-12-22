@@ -1,17 +1,31 @@
+import { useState } from "react";
 import TableComponent from "@/components/page/TableComponent";
-//import { TbCircleCheck } from "react-icons/tb";
 import { PenilaianTimResponse, PenilaianGroupedResponse } from "@/types/penilaian_tpp"
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { ButtonBlackBorder } from "@/components/button/button";
 import { TbPrinter } from "react-icons/tb";
 import { useCetakTpp } from "../lib/useCetakTpp";
+import { ModalCetakTpp } from "./ModalCetak";
 
 interface Table {
     data: PenilaianTimResponse;
 }
 export const Table: React.FC<Table> = ({ data }) => {
 
-    const { cetakPdf } = useCetakTpp(data ?? [], data.nama_tim, data.keterangan);
+    const [ModalCetak, setModalCetak] = useState<boolean>(false);
+    const [DataCetak, setDataCetak] = useState<PenilaianTimResponse | null>(null);
+    
+    // const { cetakPdf } = useCetakTpp(data ?? [], data.nama_tim, data.keterangan, data.is_sekretariat);
+
+    const handleModalCetak = (data: PenilaianTimResponse | null) => {
+        if(ModalCetak){
+            setModalCetak(false);
+            setDataCetak(null);
+        } else {
+            setModalCetak(true);
+            setDataCetak(data);
+        }
+    }
     
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
@@ -28,7 +42,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                     <ButtonBlackBorder
                         className="flex items-center gap-1"
                         onClick={() =>
-                            cetakPdf()
+                            handleModalCetak(data)
                         }
                     >
                         <TbPrinter />
@@ -122,6 +136,13 @@ export const Table: React.FC<Table> = ({ data }) => {
                     </tbody>
                 </table>
             </TableComponent>
+            {ModalCetak &&
+                <ModalCetakTpp 
+                    isOpen={ModalCetak}
+                    onClose={() => handleModalCetak(null)}
+                    data={DataCetak ?? null}
+                />
+            }
         </div>
     )
 }
