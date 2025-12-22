@@ -70,7 +70,7 @@ export const FormNilaiKinerja: React.FC<FormNilaiKinerja> = ({ nilai, onClose, k
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            nilai_kinerja: nilai,
+            nilai_kinerja: nilai === 0 ? 100 : nilai,
         }
     });
     const { toastSuccess } = useToast();

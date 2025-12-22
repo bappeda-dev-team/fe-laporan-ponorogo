@@ -9,6 +9,7 @@ import { setCookies } from "@/lib/cookies";
 import { AlertNotification } from "./sweetalert2";
 import useToast from "./toast";
 import { useBrandingContext } from "@/provider/BrandingProvider";
+import { ModalUserInfo } from "./ModalUserInfo";
 
 interface OptionType {
   label: string;
@@ -23,7 +24,7 @@ export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState<number>(0);
   const [visible, setVisible] = useState<boolean>(true);
-  const [KinerjaMobileMenu, setKinerjaMobileMenu] = useState<boolean>(false);
+  const [ModalUser, setModalUser] = useState<boolean>(false);
 
   const [showManriskKinerjaDropdown, setShowManriskKinerjaDropdown] = useState<boolean>(false);
   const [Tahun, setTahun] = useState<OptionType | null>(null);
@@ -32,7 +33,7 @@ export const Header = () => {
   const [SelectedOpd, setSelectedOpd] = useState<OptionTypeString | null>(null);
 
   const url = usePathname();
-  const { branding } = useBrandingContext();
+  const { loadingBranding, branding } = useBrandingContext();
   const { toastInfo } = useToast();
 
   //handle header scroll animation 
@@ -120,126 +121,148 @@ export const Header = () => {
   };
 
   return (
-    <nav className={`inset-x-1 m-1 ml-2 bg-white border border-sky-200 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
-      <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
-        <div className="flex flex-wrap justify-start gap-5">
-          <ButtonBlackBorder className="flex items-center gap-1">
-            <TbUser />
-            Level User
-          </ButtonBlackBorder>
+    <>
+      <nav className={`inset-x-1 m-1 ml-2 bg-white border border-sky-200 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
+          <div className="flex flex-wrap justify-start gap-5">
+            <ButtonBlackBorder
+              disabled={loadingBranding}
+              className="flex items-center gap-1"
+              onClick={() => {
+                setModalUser(true);
+              }}
+            >
+              {loadingBranding ? 
+                <>
+                  Loading...
+                </>
+                :
+                <>
+                  <TbUser />
+                  Info User
+                </>
+              }
+            </ButtonBlackBorder>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2">
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  borderRadius: '10px',
+                  minWidth: '157.562px',
+                  maxWidth: '160px',
+                  minHeight: '20px'
+                })
+              }}
+              onChange={(option) => setBulan(option)}
+              placeholder="Pilih Bulan"
+              options={OptionBulan}
+              value={Bulan}
+              isSearchable
+            />
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  borderRadius: '10px',
+                  minWidth: '157.562px',
+                  maxWidth: '160px',
+                  minHeight: '20px'
+                })
+              }}
+              onChange={(option) => setTahun(option)}
+              placeholder="Pilih Tahun"
+              options={OptionTahun}
+              value={Tahun}
+              isSearchable
+            />
+            <button
+              className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
+              onClick={() => {
+                setCookies("tahun", Tahun);
+                setCookies("bulan", Bulan);
+                AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+              }}
+            >
+              Aktifkan
+            </button>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="lg:hidden">
+            <button
+              onClick={toggleMobileMenu}
+              className={`focus:outline-none cursor-pointer rounded-lg p-1 border border-sky-500 text-sky-500 hover:text-sky-500 hover:bg-white`}
+            >
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path fillRule="evenodd" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <div className="hidden lg:flex items-center gap-2">
-          <Select
-            styles={{
-              control: (baseStyles) => ({
-                ...baseStyles,
-                borderRadius: '10px',
-                minWidth: '157.562px',
-                maxWidth: '160px',
-                minHeight: '20px'
-              })
-            }}
-            onChange={(option) => setBulan(option)}
-            placeholder="Pilih Bulan"
-            options={OptionBulan}
-            value={Bulan}
-            isSearchable
-          />
-          <Select
-            styles={{
-              control: (baseStyles) => ({
-                ...baseStyles,
-                borderRadius: '10px',
-                minWidth: '157.562px',
-                maxWidth: '160px',
-                minHeight: '20px'
-              })
-            }}
-            onChange={(option) => setTahun(option)}
-            placeholder="Pilih Tahun"
-            options={OptionTahun}
-            value={Tahun}
-            isSearchable
-          />
-          <button
-            className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
-            onClick={() => {
-              setCookies("tahun", Tahun);
-              setCookies("bulan", Bulan);
-              AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
-              setTimeout(() => {
-                window.location.reload();
-              }, 1000);
-            }}
-          >
-            Aktifkan
-          </button>
+        {/* Mobile Menu Content */}
+        <div className={`lg:hidden rounded-lg border border-gray-300 bg-white py-2 mt-1 absolute top-full left-0 w-full shadow-md transition ease-in-out duration-300 ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  borderRadius: '10px',
+                  minWidth: '157.562px',
+                  maxWidth: '160px',
+                  minHeight: '20px'
+                })
+              }}
+              onChange={(option) => setBulan(option)}
+              placeholder="Pilih Bulan"
+              options={OptionBulan}
+              value={Bulan}
+              isSearchable
+            />
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  borderRadius: '10px',
+                  minWidth: '157.562px',
+                  maxWidth: '160px',
+                  minHeight: '20px'
+                })
+              }}
+              onChange={(option) => setTahun(option)}
+              placeholder="Pilih Tahun"
+              options={OptionTahun}
+              value={Tahun}
+              isSearchable
+            />
+            <button
+              className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
+              onClick={() => {
+                setCookies("tahun", Tahun);
+                setCookies("bulan", Bulan);
+                AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+              }}
+            >
+              Aktifkan
+            </button>
+          </div>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <div className="lg:hidden">
-          <button
-            onClick={toggleMobileMenu}
-            className={`focus:outline-none cursor-pointer rounded-lg p-1 border border-sky-500 text-sky-500 hover:text-sky-500 hover:bg-white`}
-          >
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-              <path fillRule="evenodd" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu Content */}
-      <div className={`lg:hidden rounded-lg border border-gray-300 bg-white py-2 mt-1 absolute top-full left-0 w-full shadow-md transition ease-in-out duration-300 ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <Select
-            styles={{
-              control: (baseStyles) => ({
-                ...baseStyles,
-                borderRadius: '10px',
-                minWidth: '157.562px',
-                maxWidth: '160px',
-                minHeight: '20px'
-              })
-            }}
-            onChange={(option) => setBulan(option)}
-            placeholder="Pilih Bulan"
-            options={OptionBulan}
-            value={Bulan}
-            isSearchable
-          />
-          <Select
-            styles={{
-              control: (baseStyles) => ({
-                ...baseStyles,
-                borderRadius: '10px',
-                minWidth: '157.562px',
-                maxWidth: '160px',
-                minHeight: '20px'
-              })
-            }}
-            onChange={(option) => setTahun(option)}
-            placeholder="Pilih Tahun"
-            options={OptionTahun}
-            value={Tahun}
-            isSearchable
-          />
-          <button
-            className="border py-1 px-3 rounded-lg border-sky-500 text-sky-600 hover:bg-sky-600 hover:text-white cursor-pointer"
-            onClick={() => {
-              setCookies("tahun", Tahun);
-              setCookies("bulan", Bulan);
-              AlertNotification("Tahun & Bulan", "Berhasil mengubah Tahun & Bulan", "success", 2000, true);
-              setTimeout(() => {
-                window.location.reload();
-              }, 1000);
-            }}
-          >
-            Aktifkan
-          </button>
-        </div>
-      </div>
-    </nav>
+      </nav>
+      {ModalUser &&
+        <ModalUserInfo
+          isOpen={ModalUser}
+          onClose={() => setModalUser(false)}
+        />
+      }
+    </>
   );
 };
