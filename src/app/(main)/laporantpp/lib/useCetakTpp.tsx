@@ -7,9 +7,9 @@ import { PenilaianGroupedResponse, PenilaianTimResponse } from "@/types/penilaia
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 
 export function useCetakTpp(
-    data: PenilaianTimResponse | null, 
-    nama_tim: string, 
-    keterangan_tim: string, 
+    data: PenilaianTimResponse | null,
+    nama_tim: string,
+    keterangan_tim: string,
     sekretariat: boolean,
     tanggal: string,
 ) {
@@ -57,6 +57,8 @@ export function useCetakTpp(
 
         data.penilaian_kinerjas.map((item: PenilaianGroupedResponse, index: number) => {
             const pajak = Number(item.tpp_pegawai?.pajak);
+            const nomer = index + 1;
+            const penomeran = nomer % 2 === 0 ? "right" : "left"
             body.push([
                 // Nomer
                 index + 1,
@@ -69,6 +71,9 @@ export function useCetakTpp(
 
                 // Jabatan Dalam Tim
                 item.nama_jabatan_tim,
+
+                // Jabatan Dalam Tim
+                data.nama_tim,
 
                 // Basic TPP Konker
                 { content: `Rp.${formatRupiah(item.tpp_pegawai?.tpp_basic) || 0}` },
@@ -100,7 +105,9 @@ export function useCetakTpp(
                 // Persentase Penerimaan
                 {
                     content: `${item.tpp_pegawai?.persentase_penerimaan || "-"}`,
-                    styles: { halign: "center" }
+                    styles: {
+                        halign: "center"
+                    }
                 },
 
                 // Jumlah Kotor
@@ -120,6 +127,14 @@ export function useCetakTpp(
 
                 // Jumlah Bersih
                 { content: `Rp.${formatRupiah(item.tpp_pegawai?.jumlah_bersih) || 0}` },
+
+                // TTD
+                {
+                    content: `${nomer}..........`, styles: {
+                        halign: penomeran,
+                        minCellWidth: 20,
+                    }
+                },
             ]);
         });
 
@@ -128,6 +143,7 @@ export function useCetakTpp(
             "Nama/NIP",
             "Pangkat/Golongan/Jabatan",
             "Jabatan Dalam Tim",
+            "Nama Tim",
             "Basic TPP Konker",
             "Nilai Kinerja Bappeda",
             "Nilai Kinerja Tim",

@@ -70,7 +70,7 @@ export const FormNilaiTim: React.FC<FormNilaiTim> = ({ nilai, onClose, kode_tim,
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
-            nilai_kinerja: nilai,
+            nilai_kinerja: nilai === 0 ? 100 : 0,
         }
     });
     const { toastSuccess } = useToast();

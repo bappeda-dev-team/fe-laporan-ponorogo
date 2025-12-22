@@ -4,13 +4,13 @@ import TableComponent from "@/components/page/TableComponent";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { TbCirclePlus, TbPencil } from "react-icons/tb";
 import { apiFetch } from "@/lib/apiFetch";
-import { PegawaiGetResponse } from "@/types/tim";
 import { useEffect, useState } from "react";
 import { ButtonSky, ButtonRed, ButtonSkyBorder } from "@/components/button/button";
 import { ModalJabatanPegawai } from "./ModalJabatanPegawai";
 import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
 import useToast from "@/components/global/toast";
 import { GetResponseFindallPegawai } from "../type";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const TablePegawai = () => {
 
@@ -25,6 +25,7 @@ const TablePegawai = () => {
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
     const [DataJabatan, setDataJabatan] = useState<GetResponseFindallPegawai | null>(null);
 
+    const {branding} = useBrandingContext();
     const { toastSuccess } = useToast();
 
     const handleModalJabatan = (data: GetResponseFindallPegawai | null, jenis: "baru" | "edit" | "") => {
