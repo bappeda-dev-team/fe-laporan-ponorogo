@@ -6,8 +6,15 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 import { PenilaianGroupedResponse, PenilaianTimResponse } from "@/types/penilaian_tpp";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 
-export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, keterangan_tim: string, sekretariat: boolean) {
+export function useCetakTpp(
+    data: PenilaianTimResponse | null, 
+    nama_tim: string, 
+    keterangan_tim: string, 
+    sekretariat: boolean,
+    tanggal: string,
+) {
     const { branding } = useBrandingContext();
+    console.log("tanggal :", tanggal);
     const cetakPdf = () => {
         if (!data) return;
 
@@ -162,25 +169,27 @@ export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, ketera
 
         // Ukuran kotak tanda tangan
         const boxWidth = 60;
-        const boxX = pageWidth - boxWidth - 30; // kanan kertas
+        const boxX = pageWidth - boxWidth - 50; // kanan kertas
         const centerX = boxX + boxWidth / 2;
 
         const startY = finalY + 10;
 
+        doc.setFontSize(8);
+        doc.text(`Ponorogo, ${tanggal} ${branding?.bulan?.label} ${branding.tahun?.value}`, centerX, startY);
         doc.setFontSize(10);
 
         // Semua teks pakai centerX
-        doc.text("Ponorogo, 20 Desember 2025", centerX, startY, { align: "center" });
-        doc.text("KEPALA,", centerX, startY + 8, { align: "center" });
-        doc.text("BADAN PERENCANAAN, RISET DAN INOVASI DAERAH ", centerX, startY + 12, { align: "center" });
+        doc.text(`KEPALA BADAN PERENCANAAN,`, centerX, startY + 5);
+        doc.text("RISET DAN INOVASI ", centerX, startY + 9);
+        doc.text("DAERAH ", centerX, startY + 13);
 
         // Spasi tanda tangan
-        doc.text("NAMA KEPALA", centerX, startY + 40, { align: "center" });
-        doc.text("NIP", centerX, startY + 44, { align: "center" });
-        doc.text("PANGKAT GOLONGAN", centerX, startY + 48, { align: "center" });
+        doc.text("PENANGGUNG JAWAB", centerX, startY + 29);
+        doc.text("NIP", centerX, startY + 33);
+        doc.text("PANGKAT GOLONGAN", centerX, startY + 37);
 
 
-        doc.save(`TPP-Konker-${nama_tim}-${branding?.tahun?.value || 0}-${keterangan_tim}.pdf`);
+        doc.save(`TPP-Konker-${nama_tim}-${branding?.bulan?.label}-${branding?.tahun?.value || 0}-${keterangan_tim}.pdf`);
     };
 
     return { cetakPdf };
