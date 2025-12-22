@@ -17,8 +17,8 @@ const Table: React.FC<Table> = ({ data }) => {
         // yang dinilai : penilai
         "Penanggung Jawab": ["super_admin"],
         "Koordinator": ["penanggung_jawab", "super_admin"],
-        "Ketua Tim": ["koordinator"],
-        "Anggota": ["ketua_tim"],
+        "Ketua Tim": ["koordinator", "super_admin"],
+        "Anggota": ["ketua_tim", "super_admin"],
     };
 
     const userRoles: string[] = branding?.user?.roles || [];

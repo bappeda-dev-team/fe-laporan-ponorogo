@@ -14,7 +14,7 @@ export function useCetakTpp(
     tanggal: string,
 ) {
     const { branding } = useBrandingContext();
-    console.log("tanggal :", tanggal);
+    // console.log("tanggal :", tanggal);
     const cetakPdf = () => {
         if (!data) return;
 
@@ -169,14 +169,14 @@ export function useCetakTpp(
 
         // Ukuran kotak tanda tangan
         const boxWidth = 60;
-        const boxX = pageWidth - boxWidth - 50; // kanan kertas
+        const boxX = pageWidth - boxWidth - 60; // kanan kertas
         const centerX = boxX + boxWidth / 2;
 
         const startY = finalY + 10;
 
-        doc.setFontSize(8);
+        doc.setFontSize(12);
         doc.text(`Ponorogo, ${tanggal} ${branding?.bulan?.label} ${branding.tahun?.value}`, centerX, startY);
-        doc.setFontSize(10);
+        doc.setFontSize(12);
 
         // Semua teks pakai centerX
         doc.text(`KEPALA BADAN PERENCANAAN,`, centerX, startY + 5);
@@ -184,9 +184,9 @@ export function useCetakTpp(
         doc.text("DAERAH ", centerX, startY + 13);
 
         // Spasi tanda tangan
-        doc.text("PENANGGUNG JAWAB", centerX, startY + 29);
-        doc.text("NIP", centerX, startY + 33);
-        doc.text("PANGKAT GOLONGAN", centerX, startY + 37);
+        doc.text(`${data.penilaian_kinerjas[0].nama_pegawai ?? "Penanggung Jawab"}`, centerX, startY + 33);
+        doc.text(`NIP ${data.penilaian_kinerjas[0].id_pegawai ?? "-"}`, centerX, startY + 37);
+        doc.text(`${data.penilaian_kinerjas[0].pangkat ?? "N/A"} ${data.penilaian_kinerjas[0].golongan ?? "N/A"}`, centerX, startY + 41);
 
 
         doc.save(`TPP-Konker-${nama_tim}-${branding?.bulan?.label}-${branding?.tahun?.value || 0}-${keterangan_tim}.pdf`);
