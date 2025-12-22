@@ -4,10 +4,10 @@ import { useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbX, TbPrinter } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { FloatingLabelInput } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { PenilaianTimResponse } from "@/types/penilaian_tpp";
 import { useCetakTpp } from "../lib/useCetakTpp";
+import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface Modal {
     isOpen: boolean;
@@ -20,9 +20,14 @@ interface FormValue {
 
 export const ModalCetakTpp: React.FC<Modal> = ({ isOpen, onClose, data }) => {
 
-    const [Sekretariat, setSekretariat] = useState<boolean>(false);
     const [Tanggal, setTanggal] = useState<string>("");
-        const { cetakPdf } = useCetakTpp(data ?? null, data?.nama_tim ?? "", data?.keterangan ?? "", data?.is_sekretariat ?? false, Tanggal);
+    const { cetakPdf } = useCetakTpp(
+        data ?? null,
+        data?.nama_tim ?? "",
+        data?.keterangan ?? "",
+        data?.is_sekretariat ?? false,
+        Tanggal
+    );
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -30,11 +35,12 @@ export const ModalCetakTpp: React.FC<Modal> = ({ isOpen, onClose, data }) => {
         }
     });
 
-    const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        // console.log(payload);
-        setTanggal(data.tanggal);
-        if(data.tanggal){
+    const onSubmit: SubmitHandler<FormValue> = (data) => {
+        if (data.tanggal) {
+            // console.log(Tanggal);
             cetakPdf();
+        } else {
+            AlertNotification("Tanggal Masih Kosong", "", "warning", 2000, true);
         }
     }
 
@@ -58,11 +64,16 @@ export const ModalCetakTpp: React.FC<Modal> = ({ isOpen, onClose, data }) => {
                     rules={{ required: "wajib terisi" }}
                     render={({ field }) => (
                         <>
-                            <FloatingLabelInput
+                            <input
                                 {...field}
                                 id="tanggal"
-                                label="tanggal tertanda"
+                                className="border py-2 px-3 rounded-lg"
+                                placeholder="masukkan tanggal tertanda"
                                 type="number"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    setTanggal(e.target.value);
+                                }}
                             />
                             {errors.tanggal &&
                                 <p className="text-red-400 italic">{errors.tanggal.message}</p>
