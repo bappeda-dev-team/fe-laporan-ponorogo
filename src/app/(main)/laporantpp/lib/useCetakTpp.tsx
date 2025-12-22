@@ -6,7 +6,7 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 import { PenilaianGroupedResponse, PenilaianTimResponse } from "@/types/penilaian_tpp";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 
-export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, keterangan_tim: string) {
+export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, keterangan_tim: string, sekretariat: boolean) {
     const { branding } = useBrandingContext();
     const cetakPdf = () => {
         if (!data) return;
@@ -17,10 +17,37 @@ export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, ketera
             format: "a3",
         });
 
-        doc.text(`TPP Konker: ${nama_tim || ""} (${branding?.tahun?.value}) - ${keterangan_tim || ""}`, 14, 12);
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+
+        doc.text(
+            "LAPORAN PENERIMAAN TPP KONDISI KERJA",
+            pageWidth / 2,
+            12,
+            { align: "center" }
+        );
+
+        doc.setFontSize(12);
+        doc.text(
+            "BADAN PERENCANAAN PEMBANGUNAN, RISET DAN INOVASI DAERAH",
+            pageWidth / 2,
+            20,
+            { align: "center" }
+        );
+
+        doc.setFontSize(12);
+        doc.text(
+            `BULAN ${(branding?.bulan?.label)?.toUpperCase() || ""}`,
+            pageWidth / 2,
+            28,
+            { align: "center" }
+        );
+
 
         const body: any[] = [];
-        
+
         data.penilaian_kinerjas.map((item: PenilaianGroupedResponse, index: number) => {
             const pajak = Number(item.tpp_pegawai?.pajak);
             body.push([
@@ -31,34 +58,52 @@ export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, ketera
                 { content: `${item.nama_pegawai} (${item.id_pegawai})` },
 
                 // Pangkat Golongan Jabatan
-                { content: `${item.pangkat || "no pangkat"} -  ${item.golongan || "no golongan"} - ${item.nama_jabatan_tim || "no jabatan tim"}` },
+                { content: `${item.pangkat || "N/A"} -  ${item.golongan || "N/A"} - ${item.nama_jabatan_tim || "N/A"}` },
 
                 // Jabatan Dalam Tim
                 item.nama_jabatan_tim,
 
                 // Basic TPP Konker
-                { content: `Rp.${item.tpp_basic || 0}` },
+                { content: `Rp.${formatRupiah(item.tpp_pegawai?.tpp_basic) || 0}` },
 
                 // Nilai Kinerja Bappeda
-                { content: `${item.kinerja_bappeda || 0}` },
+                {
+                    content: `${item.kinerja_bappeda || 0}`,
+                    styles: { halign: "center" }
+                },
 
                 // Nilai Kinerja Tim
-                { content: `${item.kinerja_tim || 0}` },
+                {
+                    content: `${item.kinerja_tim || 0}`,
+                    styles: { halign: "center" }
+                },
 
                 // Nilai Kinerja Person
-                { content: `${item.kinerja_person || 0}` },
+                {
+                    content: `${item.kinerja_person || 0}`,
+                    styles: { halign: "center" }
+                },
 
                 // Nilai Akhir
-                { content: `${item.nilai_akhir || 0}` },
+                {
+                    content: `${item.nilai_akhir || 0}`,
+                    styles: { halign: "center" }
+                },
 
                 // Persentase Penerimaan
-                { content: `${item.persentase_penerimaan || "-"}` },
+                {
+                    content: `${item.tpp_pegawai?.persentase_penerimaan || "-"}`,
+                    styles: { halign: "center" }
+                },
 
                 // Jumlah Kotor
                 { content: `Rp.${formatRupiah(item.tpp_pegawai?.jumlah_kotor) || 0}` },
 
                 // Pajak
-                { content: `${Number.isFinite(pajak) ? `${pajak * 100}%` : "-"}` },
+                {
+                    content: `${Number.isFinite(pajak) ? `${pajak * 100}%` : "-"}`,
+                    styles: { halign: "center" }
+                },
 
                 // Jumlah Pajak
                 { content: `Rp.${formatRupiah(item.tpp_pegawai?.jumlah_pajak) || 0}` },
@@ -87,23 +132,53 @@ export function useCetakTpp(data: PenilaianTimResponse, nama_tim: string, ketera
             "Jumlah Pajak",
             "POT BPJS(1%)",
             "Jumlah Bersih",
+            "Tanda Tangan",
         ]
         const Head2 = Head1.map((_, idx) => `${idx + 1}`);
 
         autoTable(doc, {
-            startY: 16,
+            startY: 32,
             theme: "grid",
             head: [Head1, Head2],
             body,
             styles: {
                 fontSize: 9,
                 valign: "middle",
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0],
             },
             headStyles: {
-                fillColor: [220, 220, 220],
+                fillColor: sekretariat ? "#33A477" : [41, 128, 185], // biru
+                textColor: [255, 255, 255], // putih
                 fontStyle: "bold",
+                halign: "center",
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0],
             },
         });
+
+        // Ambil posisi akhir tabel
+        const finalY = (doc as any).lastAutoTable.finalY;
+
+        // Ukuran kotak tanda tangan
+        const boxWidth = 60;
+        const boxX = pageWidth - boxWidth - 30; // kanan kertas
+        const centerX = boxX + boxWidth / 2;
+
+        const startY = finalY + 10;
+
+        doc.setFontSize(10);
+
+        // Semua teks pakai centerX
+        doc.text("Ponorogo, 20 Desember 2025", centerX, startY, { align: "center" });
+        doc.text("KEPALA,", centerX, startY + 8, { align: "center" });
+        doc.text("BADAN PERENCANAAN, RISET DAN INOVASI DAERAH ", centerX, startY + 12, { align: "center" });
+
+        // Spasi tanda tangan
+        doc.text("NAMA KEPALA", centerX, startY + 40, { align: "center" });
+        doc.text("NIP", centerX, startY + 44, { align: "center" });
+        doc.text("PANGKAT GOLONGAN", centerX, startY + 48, { align: "center" });
+
 
         doc.save(`TPP-Konker-${nama_tim}-${branding?.tahun?.value || 0}-${keterangan_tim}.pdf`);
     };

@@ -1,5 +1,4 @@
 import TableComponent from "@/components/page/TableComponent";
-//import { TbCircleCheck } from "react-icons/tb";
 import { PenilaianTimResponse, PenilaianGroupedResponse } from "@/types/penilaian_tpp"
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { ButtonBlackBorder } from "@/components/button/button";
@@ -11,7 +10,7 @@ interface Table {
 }
 export const Table: React.FC<Table> = ({ data }) => {
 
-    const { cetakPdf } = useCetakTpp(data ?? [], data.nama_tim, data.keterangan);
+    const { cetakPdf } = useCetakTpp(data ?? [], data.nama_tim, data.keterangan, data.is_sekretariat);
     
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
