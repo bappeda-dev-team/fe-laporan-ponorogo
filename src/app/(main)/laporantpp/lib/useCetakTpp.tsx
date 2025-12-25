@@ -130,7 +130,7 @@ export function useCetakTpp(
 
                 // TTD
                 {
-                    content: `${nomer}..........`, styles: {
+                    content: `${nomer}. .........`, styles: {
                         halign: penomeran,
                         minCellWidth: 20,
                     }
@@ -185,17 +185,17 @@ export function useCetakTpp(
 
         // Ukuran kotak tanda tangan
         const boxWidth = 60;
-        const boxX = pageWidth - boxWidth - 60; // kanan kertas
+        const boxX = pageWidth - boxWidth - 40; // kanan kertas
         const centerX = boxX + boxWidth / 2;
 
         const startY = finalY + 10;
 
-        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
         doc.text(`Ponorogo, ${tanggal} ${branding?.bulan?.label} ${branding.tahun?.value}`, centerX, startY);
-        doc.setFontSize(12);
 
         // Semua teks pakai centerX
-        doc.text(`KEPALA BADAN PERENCANAAN,`, centerX, startY + 5);
+        doc.text(`Plt. KEPALA BADAN PERENCANAAN,`, centerX, startY + 5);
         doc.text("RISET DAN INOVASI ", centerX, startY + 9);
         doc.text("DAERAH ", centerX, startY + 13);
 
