@@ -2,8 +2,9 @@
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { KinerjaKonkerGetResponse, PohonKinerjaKonker, IndikatorRencanaKinerja, Pelaksanas, PetugasTims, RencanaKinerjaPelaksanas } from "@/types";
+import { KinerjaKonkerGetResponse, PohonKinerjaKonker, IndikatorRencanaKinerja, Pelaksanas, PetugasTims, RencanaKinerjaPelaksanas, Target } from "@/types";
 import { useBrandingContext } from "@/provider/BrandingProvider";
+import { formatRupiah } from "@/app/hooks/formatRupiah";
 
 export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: string, keterangan_tim: string) {
     const { branding } = useBrandingContext();
@@ -16,8 +17,33 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
             format: "a3",
         });
 
-        doc.text(`Susunan Tim: ${nama_tim || ""} (${branding?.tahun?.value}) - ${keterangan_tim || ""}`, 14, 12);
+        const pageWidth = doc.internal.pageSize.getWidth();
 
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+
+        doc.text(
+            "Laporan Kinerja Kondisi Kerja",
+            pageWidth / 2,
+            12,
+            { align: "center" }
+        );
+
+        doc.setFontSize(12);
+        doc.text(
+            `${nama_tim}`,
+            pageWidth / 2,
+            20,
+            { align: "center" }
+        );
+
+        doc.setFontSize(12);
+        doc.text(
+            `BULAN ${(branding?.bulan?.label)?.toUpperCase() || ""}`,
+            pageWidth / 2,
+            28,
+            { align: "center" }
+        );
         const body: any[] = [];
 
         data.map((item: KinerjaKonkerGetResponse, index: number) => {
@@ -29,7 +55,21 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((i: IndikatorRencanaKinerja, idx: number) =>
                                 `${idx + 1}. ${i.nama_indikator}`
                             )
-                            .join("\n")
+                            .join(",\n \n")
+                        : "-";
+
+                const TargetText =
+                    pohon.indikator
+                        ? pohon.indikator
+                            .map((i: IndikatorRencanaKinerja, idx: number) =>
+                                i.targets ?
+                                    i.targets.map((t: Target, t_index: number) => (
+                                        `${idx + 1}. ${t.target || "-"} / ${t.satuan || "-"}`
+                                    ))
+                                        .join(",\n \n")
+                                    : "-"
+                            )
+                            .join(",\n \n")
                         : "-";
 
                 const PelaksanaText =
@@ -38,7 +78,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((p: Pelaksanas, idx: number) =>
                                 `${idx + 1}. ${p.nama_pelaksana} (${p.nip_pelaksana})`
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
                 const PetugasText =
@@ -47,7 +87,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((p: PetugasTims, idx: number) =>
                                 `${idx + 1}. ${p.nama_pegawai} (${p.pegawai_id})`
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
 
@@ -55,12 +95,12 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                     pohon.pelaksanas && pohon.pelaksanas.length > 0
                         ? pohon.pelaksanas
                             .map((p: Pelaksanas, idx: number) =>
-                                p.rencana_kinerjas && p.rencana_kinerjas.length > 0 ? 
-                                    p.rencana_kinerjas.map((r: RencanaKinerjaPelaksanas, p_index) => 
+                                p.rencana_kinerjas && p.rencana_kinerjas.length > 0 ?
+                                    p.rencana_kinerjas.map((r: RencanaKinerjaPelaksanas, p_index) =>
                                         `${idx + 1}. ${r.rencana_kinerja}`
                                     )
-                                    .join("\n")
-                            : "-"
+                                        .join(",\n \n")
+                                    : "-"
                             )
                         : "-";
 
@@ -88,6 +128,11 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                     // Indikator
                     pohonIndex === 0
                         ? { content: indikatorText, rowSpan: 0 }
+                        : { content: TargetText, rowSpan: 0 },
+
+                    // Target Tahun
+                    pohonIndex === 0
+                        ? { content: TargetText, rowSpan: 0 }
                         : { content: PetugasText, rowSpan: 0 },
 
                     // Pelaksana
@@ -98,7 +143,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                     // Petugas Tim
                     pohonIndex === 0
                         ? { content: PetugasText, rowSpan: 0 }
-                        : { content: pohon.realisasi_anggaran ?? "-", rowSpan: 0 },
+                        : { content: `Rp.${formatRupiah(pohon.realisasi_anggaran || 0)}`, rowSpan: 0 },
 
                     // Rencana Kinerja
                     pohonIndex === 0
@@ -107,7 +152,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
 
                     // Realisasi Anggaran
                     pohonIndex === 0
-                        ? { content: pohon.realisasi_anggaran, rowSpan: 0 }
+                        ? { content: `Rp.${formatRupiah(pohon.realisasi_anggaran || 0)}`, rowSpan: 0 }
                         : { content: pohon.faktor_pendorong, rowSpan: 0 },
 
                     // Rencana Aksi
@@ -139,7 +184,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
         });
 
         autoTable(doc, {
-            startY: 16,
+            startY: 32,
             theme: "grid",
             head: [[
                 "No",
@@ -147,6 +192,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                 "OPD",
                 "Nama Pohon",
                 "Indikator",
+                "Target Tahun",
                 "Pelaksana",
                 "Petugas Tim",
                 "Rencana Kinerja",
@@ -163,10 +209,16 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
             styles: {
                 fontSize: 9,
                 valign: "middle",
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0],
             },
             headStyles: {
-                fillColor: [220, 220, 220],
+                fillColor: [41, 128, 185],
+                textColor: [255, 255, 255], // putih
                 fontStyle: "bold",
+                halign: "center",
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0],
             },
         });
 
