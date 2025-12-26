@@ -1,8 +1,8 @@
 'use client'
 
 import TableComponent from "@/components/page/TableComponent";
-import { ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
-import { TbCirclePlus, TbX, TbTrash, TbPencil } from "react-icons/tb";
+import { ButtonBlackBorder, ButtonSkyBorder, ButtonRedBorder } from "@/components/button/button";
+import { TbPrinter, TbCirclePlus, TbX, TbTrash, TbPencil } from "react-icons/tb";
 import React, { useState } from "react";
 import { useGet } from "@/app/hooks/useGet";
 import { TimGetResponse } from "@/types/tim";
@@ -15,6 +15,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { ModalKinerjaSekretariat } from "./ModalKinerjaSekretariat";
 import { useBrandingContext } from "@/provider/BrandingProvider";
+import { useCetakSekretariat } from "../lib/useCetakSekretariat";
 
 interface Table {
     data: TimGetResponse;
@@ -31,9 +32,10 @@ export const Table: React.FC<Table> = ({ data }) => {
 
     const { toastSuccess } = useToast();
 
-    const {branding} = useBrandingContext();
+    const { branding } = useBrandingContext();
     const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
     const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja?${queryParams}`, FetchTrigger)
+    const {cetakPdf} = useCetakSekretariat(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalEdit = (kode_tim: string, id_program: number, data: any) => {
         if (ModalEditOpen) {
@@ -67,7 +69,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                     <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
                     <h1 className="font-medium">{data.keterangan || ""}</h1>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap flex-col justify-center gap-1">
                     <ButtonSkyBorder
                         className="flex items-center gap-1"
                         onClick={() => setModalRekinOpen(true)}
@@ -75,6 +77,15 @@ export const Table: React.FC<Table> = ({ data }) => {
                         <TbCirclePlus />
                         Tambah Rencana Kinerja
                     </ButtonSkyBorder>
+                    <ButtonBlackBorder
+                        className="flex items-center gap-1"
+                        onClick={() =>
+                            cetakPdf()
+                        }
+                    >
+                        <TbPrinter />
+                        Cetak
+                    </ButtonBlackBorder>
                 </div>
             </div>
             <TableComponent className="border-emerald-500">
@@ -140,8 +151,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                                     DataTable?.map((item: RencanaKinerjaSekretariatResponse, index: number) => (
                                         <React.Fragment key={index}>
                                             <tr>
-                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
-                                                <td rowSpan={item.indikators?.length > 0 ? item.indikators.length + 1 : 2} className="border border-emerald-500 px-6 py-4">
+                                                <td rowSpan={2} className="border-b border-emerald-500 px-6 py-4 text-center">{index + 1}</td>
+                                                <td rowSpan={2} className="border border-emerald-500 px-6 py-4">
                                                     <div className="flex flex-col gap-1">
                                                         {item.rencana_kinerja || "-"}
                                                         <ButtonRedBorder
