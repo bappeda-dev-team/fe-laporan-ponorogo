@@ -3,7 +3,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useBrandingContext } from "@/provider/BrandingProvider";
-import { PenilaianGroupedResponse, PenilaianTimResponse } from "@/types/penilaian_tpp";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import { GetResponsePenilaianKinerja, PenilaianKinerjas } from "../type";
 

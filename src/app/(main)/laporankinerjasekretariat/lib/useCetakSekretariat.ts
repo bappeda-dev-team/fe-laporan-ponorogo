@@ -61,7 +61,7 @@ export function useCetakSekretariat(
                         .map((i: IndikatorRencanaKinerja, idx: number) =>
                             `${idx + 1}. ${i.nama_indikator || "-"}`
                         )
-                        .join("\n")
+                        .join(",\n \n")
                     : "-";
 
             const TargetText =
@@ -72,10 +72,10 @@ export function useCetakSekretariat(
                                 i.targets.map((t: Target, t_index: number) => (
                                     `${idx + 1}. ${t.target || "-"} / ${t.satuan || "-"}`
                                 ))
-                                    .join("\n")
+                                    .join(",\n \n")
                                 : "-"
                         )
-                        .join("\n")
+                        .join(",\n \n")
                     : "-";
 
             const SubKegiatanText =
@@ -84,7 +84,7 @@ export function useCetakSekretariat(
                         .map((i: SubKegiatanResponse, idx: number) =>
                             `${idx + 1}. (${i.kode_subkegiatan || "X"}) ${i.nama_sub_kegiatan || "-"}`
                         )
-                        .join("\n")
+                        .join(",\n \n")
                     : "-";
 
             const RenaksiText =
@@ -93,7 +93,7 @@ export function useCetakSekretariat(
                         .map((i: RencanaAksis, idx: number) =>
                             `${idx + 1}. ${i.nama_rencana_aksi || "-"}`
                         )
-                        .join("\n")
+                        .join(",\n \n")
                     : "-";
 
             body.push([
@@ -146,6 +146,7 @@ export function useCetakSekretariat(
             "Pemikik Rencana Kinerja",
             "Sub Kegiatan",
             "Pagu Anggaran",
+            "Realisasi Anggaran",
             "Rencana Aksi",
             "Faktor Pendorong",
             "Faktor Penghambat",

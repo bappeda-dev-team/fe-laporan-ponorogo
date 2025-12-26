@@ -100,7 +100,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[250px] text-center">Sub Kegiatan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Realisasi Anggaran</th>
-                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Rencana Aksi/Kegiatan yang Dilaksanakan</th>
+                            <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Rencana Aksi/Kegiatan yang Dilaksanakan</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Pendorong</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Faktor Penghambat</th>
                             <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Risiko Hukum</th>

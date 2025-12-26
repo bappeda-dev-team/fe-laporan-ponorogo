@@ -55,7 +55,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((i: IndikatorRencanaKinerja, idx: number) =>
                                 `${idx + 1}. ${i.nama_indikator}`
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
                 const TargetText =
@@ -66,10 +66,10 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                                     i.targets.map((t: Target, t_index: number) => (
                                         `${idx + 1}. ${t.target || "-"} / ${t.satuan || "-"}`
                                     ))
-                                        .join("\n")
+                                        .join(",\n \n")
                                     : "-"
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
                 const PelaksanaText =
@@ -78,7 +78,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((p: Pelaksanas, idx: number) =>
                                 `${idx + 1}. ${p.nama_pelaksana} (${p.nip_pelaksana})`
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
                 const PetugasText =
@@ -87,7 +87,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                             .map((p: PetugasTims, idx: number) =>
                                 `${idx + 1}. ${p.nama_pegawai} (${p.pegawai_id})`
                             )
-                            .join("\n")
+                            .join(",\n \n")
                         : "-";
 
 
@@ -99,7 +99,7 @@ export function useCetakKonker(data: KinerjaKonkerGetResponse[], nama_tim: strin
                                     p.rencana_kinerjas.map((r: RencanaKinerjaPelaksanas, p_index) =>
                                         `${idx + 1}. ${r.rencana_kinerja}`
                                     )
-                                        .join("\n")
+                                        .join(",\n \n")
                                     : "-"
                             )
                         : "-";
