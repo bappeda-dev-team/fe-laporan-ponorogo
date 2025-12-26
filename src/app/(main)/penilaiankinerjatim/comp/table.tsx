@@ -2,18 +2,20 @@ import TableComponent from "@/components/page/TableComponent";
 import { NilaiKinerja } from "./NilaiKinerja";
 import { NilaiTim } from "./NilaiTim";
 import { NilaiPerson } from "./NilaiPerson";
-import { PenilaianKinerjas } from "../type";
+import { GetResponsePenilaianKinerja, PenilaianKinerjas } from "../type";
 import { useBrandingContext } from "@/provider/BrandingProvider";
 import { ButtonBlackBorder } from "@/components/button/button";
 import { TbPrinter } from "react-icons/tb";
+import { useCetakPenilaianTim } from "../lib/useCetakPenilaianTim";
 
 interface Table {
-    data: any;
+    data: GetResponsePenilaianKinerja;
 }
 
 const Table: React.FC<Table> = ({ data }) => {
 
     const { branding } = useBrandingContext();
+    const {cetakPdf} = useCetakPenilaianTim(data ?? [], data.nama_tim, data.keterangan, data.is_sekretariat);
 
     const roleAccessMap: Record<string, string[]> = {
         // yang dinilai : penilai
@@ -50,9 +52,9 @@ const Table: React.FC<Table> = ({ data }) => {
                 <div className="flex flex-wrap flex-col justify-center gap-1">
                     <ButtonBlackBorder
                         className="flex items-center gap-1"
-                        // onClick={() =>
-                        //     cetakPdf()
-                        // }
+                        onClick={() =>
+                            cetakPdf()
+                        }
                     >
                         <TbPrinter />
                         Cetak

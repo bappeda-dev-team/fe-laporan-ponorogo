@@ -12,6 +12,7 @@ export interface GetResponsePenilaianKinerja {
     nama_tim: string;
     kode_tim: string;
     is_sekretariat: boolean;
+    keterangan: string;
     penilaian_kinerjas: PenilaianKinerjas[];
 }
 
@@ -30,4 +31,15 @@ export interface PenilaianKinerjas {
     kinerja_tim: number;
     kinerja_person: number;
     nilai_akhir: number;
+    tpp_pegawai?: TppPegawaiResponse;
+}
+
+export interface TppPegawaiResponse {
+    tpp_basic: number;
+    persentase_penerimaan: string;
+    jumlah_kotor: number;
+    pajak: number;
+    jumlah_pajak: number;
+    potongan_bpjs: number;
+    jumlah_bersih: number;
 }
