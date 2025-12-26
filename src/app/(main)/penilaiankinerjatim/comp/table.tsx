@@ -4,6 +4,8 @@ import { NilaiTim } from "./NilaiTim";
 import { NilaiPerson } from "./NilaiPerson";
 import { PenilaianKinerjas } from "../type";
 import { useBrandingContext } from "@/provider/BrandingProvider";
+import { ButtonBlackBorder } from "@/components/button/button";
+import { TbPrinter } from "react-icons/tb";
 
 interface Table {
     data: any;
@@ -34,14 +36,27 @@ const Table: React.FC<Table> = ({ data }) => {
 
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg ${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>
-            <div className="flex flex-wrap items-center justify-between mb-2">
-                <div className="flex flex-col">
-                    <h1 className="uppercase font-bold text-2xl">Penilaian Tim: {data.nama_tim || "-"}</h1>
-                    {data.is_sekretariat ?
-                        <h1 className="font-medium">Penilaian Tim Sekretariat - {data.keterangan || ""}</h1>
-                        :
-                        <h1 className="font-medium">{data.keterangan || ""}</h1>
-                    }
+            <div className="flex flex-wrap items-center justify-between mb-1">
+                <div className="flex flex-wrap items-center justify-between mb-2">
+                    <div className="flex flex-col">
+                        <h1 className="uppercase font-bold text-2xl">Penilaian Tim: {data.nama_tim || "-"}</h1>
+                        {data.is_sekretariat ?
+                            <h1 className="font-medium">Penilaian Tim Sekretariat - {data.keterangan || ""}</h1>
+                            :
+                            <h1 className="font-medium">{data.keterangan || ""}</h1>
+                        }
+                    </div>
+                </div>
+                <div className="flex flex-wrap flex-col justify-center gap-1">
+                    <ButtonBlackBorder
+                        className="flex items-center gap-1"
+                        // onClick={() =>
+                        //     cetakPdf()
+                        // }
+                    >
+                        <TbPrinter />
+                        Cetak
+                    </ButtonBlackBorder>
                 </div>
             </div>
             <TableComponent className={`${data.is_sekretariat ? "border-emerald-500" : "border-blue-500"}`}>

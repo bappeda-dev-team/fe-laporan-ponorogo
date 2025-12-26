@@ -68,13 +68,14 @@ export function useCetakSekretariat(
                 item.indikators
                     ? item.indikators
                         .map((i: IndikatorRencanaKinerja, idx: number) =>
-                            i.targets ? 
+                            i.targets ?
                                 i.targets.map((t: Target, t_index: number) => (
                                     `${idx + 1}. ${t.target || "-"} / ${t.satuan || "-"}`
                                 ))
-                                .join("\n")
-                        : "-"
+                                    .join("\n")
+                                : "-"
                         )
+                        .join("\n")
                     : "-";
 
             const SubKegiatanText =
@@ -110,7 +111,7 @@ export function useCetakSekretariat(
 
                 // Pemilik Rencana Kinerja
                 item.nama_pegawai || "-",
-                
+
                 // SubKegiatan
                 SubKegiatanText || "-",
 
