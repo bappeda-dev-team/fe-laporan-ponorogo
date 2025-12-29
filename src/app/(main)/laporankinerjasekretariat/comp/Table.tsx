@@ -202,6 +202,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                                                     <>
                                                         <td className="border border-emerald-500 px-6 py-4">-</td>
                                                         <td className="border border-emerald-500 px-6 py-4">-</td>
+                                                        <td className="border border-emerald-500 px-6 py-4">-</td>
                                                     </>
                                                 }
                                                 {item.subkegiatan ?
