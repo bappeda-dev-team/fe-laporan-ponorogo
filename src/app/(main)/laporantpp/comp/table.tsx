@@ -140,7 +140,8 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalCetakTpp 
                     isOpen={ModalCetak}
                     onClose={() => handleModalCetak(null)}
-                    data={DataCetak ?? null}
+                    DataPerTim={DataCetak ?? null}
+                    jenis="tim"
                 />
             }
         </div>
