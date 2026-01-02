@@ -112,12 +112,14 @@ export const TableAnggota: React.FC<Props> = ({ data, onSuccess }) => {
                         {data.keterangan || ""}
                     </p>
 
-                    <ButtonBlackBorder
-                        className="mt-2 flex items-center gap-1"
-                        onClick={() => setCloneOpen(true)}
-                    >
-                        Clone Susunan Tim
-                    </ButtonBlackBorder>
+                    {data.susunan_tims?.length > 0 &&
+                        <ButtonBlackBorder
+                            className="mt-2 flex items-center gap-1"
+                            onClick={() => setCloneOpen(true)}
+                        >
+                            Clone Susunan Tim
+                        </ButtonBlackBorder>
+                    }
                 </div>
 
                 <div className="flex flex-wrap gap-2">
