@@ -5,67 +5,57 @@ type LoginResponse = {
 }
 
 export async function login(username: string, password: string): Promise<void> {
-
     const API_LOGIN = process.env.NEXT_PUBLIC_API_URL;
+
     const res = await fetch(`${API_LOGIN}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    })
+        body: JSON.stringify({ username, password }),
+        credentials: "include", // penting kalau backend set cookie
+    });
 
     if (!res.ok) {
-        throw new Error("Login gagal")
-    } else {
-        window.location.href = "/"
+        throw new Error("Login gagal");
     }
 
-
     const data: LoginResponse = await res.json();
-    localStorage.setItem("sessionId", data.sessionId);
 
+    // optional (frontend only)
+    localStorage.setItem("timkerja-sessionId", data.sessionId);
 
-    // cookie buat middleware
-    document.cookie = `sessionId=${data.sessionId}; path=/; secure; samesite=strict`
+    // cookie untuk middleware
+    document.cookie =
+        `timkerja-sessionId=${data.sessionId}; path=/; SameSite=Lax`;
+
+    // redirect SETELAH session tersimpan
+    window.location.href = "/";
 }
 
 export function getSessionId(): string | null {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem("sessionId")
+    return localStorage.getItem("timkerja-sessionId")
 }
 
-export async function logout() {
-    const sessionId = getSessionId();
-    if (sessionId) {
+export async function logout(): Promise<void> {
+    const sessionId = localStorage.getItem("timkerja-sessionId");
 
-        const res = await fetch("/auth/logout", {
+    if (sessionId) {
+        await fetch("/auth/logout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-Session-Id": sessionId
             },
-        })
-
-        if (res.ok) {
-            if (typeof window === "undefined") return null;
-            localStorage.removeItem("sessionId")
-            document.cookie = `sessionId=; path=/; max-age=0; secure; samesite=strict`
-            window.location.href = "/login"
-        }
+        });
     }
+
+    // bersihkan client state
+    localStorage.removeItem("timkerja-sessionId");
+
+    // HAPUS COOKIE YANG BENAR
+    document.cookie =
+        `timkerja-sessionId=; path=/; max-age=0; SameSite=Lax`;
+
+    window.location.href = "/login";
 }
 
-// refresh session
-// sessionId tetap
-export async function refresh(sessionId: string): Promise<void> {
-    const res = await fetch("/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-Session-Id": sessionId
-        },
-    })
-
-    if (!res.ok) {
-        throw new Error("harap login lagi")
-    }
-}

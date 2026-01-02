@@ -116,9 +116,9 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
                     <TbDeviceAnalytics />
                     {show &&
                         app !== "Prioritas Pembangunan" ?
-                            <p>Kinerja Konker</p>
-                            :
-                            <p>Prioritas Pembangunan</p>
+                        <p>Kinerja Konker</p>
+                        :
+                        <p>Prioritas Pembangunan</p>
                     }
                 </Link>
                 <Link
@@ -166,7 +166,7 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
             <div className="flex items-center gap-3 mt-5">
                 <ButtonRedBorder
                     onClick={() => {
-                        localStorage.removeItem("sessionId");
+                        localStorage.removeItem("timkerja-sessionId");
                         window.location.href = "/login";
                         toastSuccess("Berhasil Logout")
                     }}
@@ -180,4 +180,4 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
             </div>
         </div>
     )
-} 
+}

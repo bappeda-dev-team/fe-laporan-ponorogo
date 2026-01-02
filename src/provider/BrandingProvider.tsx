@@ -48,7 +48,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
     useEffect(() => {
         const get_tahun = getCookies("tahun");
         const get_bulan = getCookies("bulan");
-        const SessionId = localStorage.getItem("sessionId");
+        const SessionId = localStorage.getItem("timkerja-sessionId");
         const FetchUser = async () => {
             const response = await fetch(`${api_url}/user-info`, {
                 method: 'GET',
@@ -57,7 +57,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
                     'X-Session-Id': `${SessionId}`
                 },
             });
-            if(response.ok){
+            if (response.ok) {
                 const result = await response.json();
                 // console.log("User Info: ", result);
                 setUser(result);

@@ -5,14 +5,14 @@ import type { NextRequest } from "next/server"
 const protectedRoutes = ["/susunantim"]
 
 export function middleware(req: NextRequest) {
-  const sessionId = req.cookies.get("sessionId")?.value
+    const sessionId = req.cookies.get("timkerja-sessionId")?.value
 
-  // kalau user akses protected page tanpa session
-  if (protectedRoutes.some((p) => req.nextUrl.pathname.startsWith(p))) {
-    if (!sessionId) {
-      return NextResponse.redirect(new URL("/login", req.url))
+    // kalau user akses protected page tanpa session
+    if (protectedRoutes.some((p) => req.nextUrl.pathname.startsWith(p))) {
+        if (!sessionId) {
+            return NextResponse.redirect(new URL("/login", req.url))
+        }
     }
-  }
 
-  return NextResponse.next()
+    return NextResponse.next()
 }

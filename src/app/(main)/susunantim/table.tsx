@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { TableAnggota } from "./comp/TableAnggota";
 import { ButtonSky } from "@/components/button/button";
 import { TbUsersGroup } from "react-icons/tb";
@@ -15,8 +15,35 @@ export const Table = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
     const { branding } = useBrandingContext();
-    const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
-    const { data, loading, error, message } = useGet<TimGetResponse[]>(`/api/v1/timkerja/timkerja?${queryParams}`, FetchTrigger);
+
+    const bulan = branding?.bulan?.value;
+    const tahun = branding?.tahun?.value;
+
+    const isReady = Number.isInteger(bulan) && Number.isInteger(tahun);
+
+    const url = useMemo(() => {
+        if (!isReady) {
+            // endpoint dummy yang tidak dipakai
+            return "/api/__noop";
+        }
+        return `/api/v1/timkerja/timkerja?tahun=${tahun}&bulan=${bulan}`;
+    }, [isReady, tahun, bulan]);
+
+    const { data, loading, error, message } = useGet<TimGetResponse[]>(
+        url,
+        FetchTrigger
+    );
+
+    // Fetch pertama kali saat sudah ready
+    useEffect(() => {
+        if (isReady) {
+            setFetchTrigger(prev => !prev);
+        }
+    }, [isReady]);
+
+    if (!isReady) {
+        return <h1>Menyiapkan periode...</h1>;
+    }
 
     if (loading) {
         return (

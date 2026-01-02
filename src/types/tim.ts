@@ -4,6 +4,8 @@ export interface TimGetResponse {
     kode_tim: string;
     nama_tim: string;
     keterangan: string;
+    bulan: number;
+    tahun: number;
     susunan_tims: AnggotaGetResponse[];
 }
 
