@@ -294,6 +294,7 @@ export const Table: React.FC<Table> = ({ data }) => {
           onClose={() => setModalRekinOpen(false)}
           onSuccess={() => setFetchTrigger((prev) => prev + 1)}
           kode_tim={data.kode_tim}
+          tahun={String(tahun)}
         />
       }
       {ModalEditOpen &&
