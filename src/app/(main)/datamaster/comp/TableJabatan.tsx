@@ -15,7 +15,7 @@ const TableJabatan = () => {
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
     const [DataModal, setDataModal] = useState<JabatanGetResponse | null>(null);
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<number>(0);
 
     const { data, loading, error, message } = useGet<JabatanGetResponse[]>('/api/v1/timkerja/jabatantim', FetchTrigger);
 
@@ -34,10 +34,10 @@ const TableJabatan = () => {
     const HapusJabatan = async (id: number) => {
         await apiFetch(`/api/v1/timkerja/jabatantim/${id}`, {
             method: "DELETE",
-        }).then(resp => {
+        }).then(_resp => {
             // toastSuccess("anggota berhasil dihapus");
             AlertNotification("Berhasil", "Anggota Berhasil Dihapus", "success", 3000, true);
-            setFetchTrigger((prev) => !prev);
+            setFetchTrigger((prev) => prev + 1);
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
@@ -116,7 +116,7 @@ const TableJabatan = () => {
                 <ModalJabatanTim
                     isOpen={ModalOpen}
                     onClose={() => handleModal("", null)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     data={DataModal}
                     jenis={JenisModal}
                 />

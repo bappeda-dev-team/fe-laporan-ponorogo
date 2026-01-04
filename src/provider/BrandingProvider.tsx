@@ -3,7 +3,7 @@
 import { createContext, useContext } from "react"
 import { getCookies } from "@/lib/cookies";
 import { useState, useEffect } from "react";
-import { OptionType, OptionTypeString } from "../types";
+import { OptionType } from "../types";
 import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface BrandingContextType {

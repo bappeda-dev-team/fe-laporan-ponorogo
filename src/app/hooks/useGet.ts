@@ -12,21 +12,28 @@ interface FetchState<T> {
     message: string;
 }
 
-export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
-
+export function useGet<T = unknown>(url: string, fetchTrigger?: number) {
     const { toastError } = useToast();
-    
+
     const router = useRouter();
     const S = getSessionId();
     const [state, setState] = useState<FetchState<T>>({
         data: null,
-        loading: true,
+        loading: false,
         error: false,
         message: "",
     });
 
     useEffect(() => {
+        // guard fetchTrigger
+        if (!fetchTrigger) return;
+
+        console.log('fetch')
+
         const controller = new AbortController();
+
+        // set agar loading saat ada fetch trigger
+        setState((s) => ({ ...s, loading: true }));
 
         async function fetchData() {
             try {
@@ -41,7 +48,7 @@ export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
                     setState({ data: result.data, loading: false, error: false, message: 'success fetch data' });
                     // console.log(result)
                     return;
-                } else if(response.status === 401) {
+                } else if (response.status === 401) {
                     setState({ data: null, loading: false, error: true, message: "Login Ulang" });
                     toastError("Silakan Login Ulang")
                     router.push('/login');
@@ -64,7 +71,7 @@ export function useGet<T = unknown>(url: string, fetchTrigger?: boolean) {
         return () => {
             controller.abort();
         };
-    }, [url, fetchTrigger]);
+    }, [url, fetchTrigger, S, router, toastError]);
 
     return state;
 }

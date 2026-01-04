@@ -1,13 +1,13 @@
 'use client'
 
 import TableComponent from "@/components/page/TableComponent";
-import { ButtonRedBorder, ButtonRed, ButtonSkyBorder, ButtonGreenBorder, ButtonBlackBorder } from "@/components/button/button";
+import { ButtonRedBorder, ButtonSkyBorder, ButtonGreenBorder, ButtonBlackBorder } from "@/components/button/button";
 import { TbX, TbTrash, TbUpload, TbCircleFilled, TbCirclePlus, TbPencil, TbPrinter } from "react-icons/tb";
 import { AlertNotification, AlertQuestion } from "@/components/global/sweetalert2";
 import { formatRupiah } from "@/app/hooks/formatRupiah";
 import useToast from "@/components/global/toast";
 import { TimGetResponse } from "@/types/tim";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ModalProgramUnggulan } from "./ModalProgramUnggulan";
 import { useGet } from "@/app/hooks/useGet";
 import { IndikatorRencanaKinerja, KinerjaKonkerGetResponse, Pelaksanas, PetugasTims, PohonKinerjaKonker, RencanaKinerjaPelaksanas, Target } from "@/types";
@@ -36,14 +36,14 @@ export const Table: React.FC<Table> = ({ data }) => {
     const [KodeTim, setKodeTim] = useState<string>("");
     const [IdProgram, setIdProgram] = useState<number>(0);
 
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const [LoadingHapus, setLoadingHapus] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<number>(0);
+    const [_LoadingHapus, setLoadingHapus] = useState<boolean>(false);
     const { toastSuccess } = useToast();
 
-    const {branding} = useBrandingContext();
+    const { branding } = useBrandingContext();
     const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
     const { data: DataTable, error: ErrorProgram, loading: LoadingProgram } = useGet<KinerjaKonkerGetResponse[]>(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan?${queryParams}`, FetchTrigger)
-    const {cetakPdf} = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
+    const { cetakPdf } = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalProgram = (data: TimGetResponse | null) => {
         if (ModalProgram) {
@@ -84,7 +84,7 @@ export const Table: React.FC<Table> = ({ data }) => {
             method: "DELETE",
         }).then(resp => {
             toastSuccess("Program dihapus");
-            setFetchTrigger((prev) => !prev);
+            setFetchTrigger((prev) => prev + 1);
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
@@ -96,7 +96,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 method: "DELETE",
             }).then(resp => {
                 toastSuccess("petugas dihapus");
-                setFetchTrigger((prev) => !prev);
+                setFetchTrigger((prev) => prev + 1);
             }).catch(err => {
                 AlertNotification("Gagal", `${err}`, "error", 3000, true);
             })
@@ -430,7 +430,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalProgramUnggulan
                     isOpen={ModalProgram}
                     onClose={() => handleModalProgram(null)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     Data={DataTim}
                 />
             }
@@ -438,14 +438,14 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalUpload
                     isOpen={ModalBuktiOpen}
                     onClose={() => setModalBuktiOpen(false)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                 />
             }
             {ModalPelaksanaOpen &&
                 <ModalPelaksana
                     isOpen={ModalPelaksanaOpen}
                     onClose={() => handleModalPelaksana(null, 0)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     kode_tim={data.kode_tim}
                     id_program={IdProgram}
                     Data={DataPohon}
@@ -455,7 +455,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalKinerjaKonker
                     isOpen={ModalKonkerOpen}
                     onClose={() => handleModalKonker(null, "", 0)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     kode_tim={KodeTim}
                     Data={DataModal}
                     id_program={IdProgram}

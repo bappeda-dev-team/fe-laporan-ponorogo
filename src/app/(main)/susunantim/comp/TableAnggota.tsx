@@ -210,6 +210,7 @@ export const TableAnggota: React.FC<Props> = ({ data, onSuccess }) => {
                     isOpen
                     jenis="edit"
                     data={data}
+                    tahun={data.tahun}
                     onClose={() => setTimOpen(false)}
                     onSuccess={onSuccess}
                 />

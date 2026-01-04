@@ -25,7 +25,7 @@ export const Table: React.FC<Table> = ({ data }) => {
 
     const [ModalRekinOpen, setModalRekinOpen] = useState<boolean>(false);
     const [ModalEditOpen, setModalEditOpen] = useState<boolean>(false);
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<number>(0);
     const [DataModalEdit, setDataModalEdit] = useState<any>(null);
     const [KodeTim, setKodeTim] = useState<string>("");
     const [IdProgram, setIdProgram] = useState<number>(0);
@@ -35,7 +35,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     const { branding } = useBrandingContext();
     const queryParams = `tahun=${branding?.tahun?.value}&bulan=${branding?.bulan?.value}`
     const { data: DataTable, error: ErrorRekin, loading: LoadingRekin } = useGet<RencanaKinerjaSekretariatResponse[]>(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja?${queryParams}`, FetchTrigger)
-    const {cetakPdf} = useCetakSekretariat(DataTable ?? [], data.nama_tim, data.keterangan);
+    const { cetakPdf } = useCetakSekretariat(DataTable ?? [], data.nama_tim, data.keterangan);
 
     const handleModalEdit = (kode_tim: string, id_program: number, data: any) => {
         if (ModalEditOpen) {
@@ -54,9 +54,9 @@ export const Table: React.FC<Table> = ({ data }) => {
     const hapusRekin = async (id: number) => {
         await apiFetch(`/api/v1/timkerja/timkerja_sekretariat/${data.kode_tim}/rencana_kinerja/${id}`, {
             method: "DELETE",
-        }).then(resp => {
+        }).then(_resp => {
             toastSuccess("Rencana Kinerja dihapus");
-            setFetchTrigger((prev) => !prev);
+            setFetchTrigger((prev) => prev + 1);
         }).catch(err => {
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         })
@@ -265,7 +265,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalRekin
                     isOpen={ModalRekinOpen}
                     onClose={() => setModalRekinOpen(false)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     kode_tim={data.kode_tim}
                 />
             }
@@ -273,7 +273,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                 <ModalKinerjaSekretariat
                     isOpen={ModalEditOpen}
                     onClose={() => setModalEditOpen((prev) => !prev)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
                     kode_tim={KodeTim}
                     id_program={IdProgram}
                     Data={DataModalEdit}

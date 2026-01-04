@@ -12,32 +12,31 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 export const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-
+    // const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<number>(0);
     const { branding } = useBrandingContext();
 
-    const bulan = branding?.bulan?.value;
-    const tahun = branding?.tahun?.value;
+    const bulan = branding?.bulan?.value ?? null;
+    const tahun = branding?.tahun?.value ?? null;
 
     const isReady = Number.isInteger(bulan) && Number.isInteger(tahun);
 
     const url = useMemo(() => {
         if (!isReady) {
-            // endpoint dummy yang tidak dipakai
-            return "/api/__noop";
+            return null;
         }
         return `/api/v1/timkerja/timkerja?tahun=${tahun}&bulan=${bulan}`;
     }, [isReady, tahun, bulan]);
 
     const { data, loading, error, message } = useGet<TimGetResponse[]>(
-        url,
+        url ?? "",
         FetchTrigger
     );
 
     // Fetch pertama kali saat sudah ready
     useEffect(() => {
         if (isReady) {
-            setFetchTrigger(prev => !prev);
+            setFetchTrigger(1);
         }
     }, [isReady]);
 
@@ -63,14 +62,15 @@ export const Table = () => {
                     </ButtonSky>
                     {data?.map((item: TimGetResponse, index: number) => (
                         <div key={index} className="flex flex-col gap-2">
-                            <TableAnggota data={item} onSuccess={() => setFetchTrigger((prev) => !prev)} />
+                            <TableAnggota data={item} onSuccess={() => setFetchTrigger((prev) => prev + 1)} />
                         </div>
                     ))}
                 </div>
                 <ModalTim
                     isOpen={ModalOpen}
                     onClose={() => setModalOpen(false)}
-                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    onSuccess={() => setFetchTrigger((prev) => prev + 1)}
+                    tahun={tahun}
                     jenis="baru"
                 />
             </>

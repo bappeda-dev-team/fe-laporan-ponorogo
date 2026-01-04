@@ -17,6 +17,7 @@ interface Modal {
     onSuccess: () => void;
     jenis: "baru" | "edit";
     data?: TimGetResponse;
+    tahun: number | null;
 }
 interface FormValue {
     is_active: boolean;
@@ -27,9 +28,15 @@ interface FormValue {
     tahun: string;
 }
 
-export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
-
+export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, data, tahun }) => {
     const [Sekretariat, setSekretariat] = useState<boolean>(false);
+
+    const currentTahunStr = `${tahun}`
+
+    const resolvedTahun =
+        jenis === "edit"
+            ? data?.tahun
+            : String(tahun);
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
@@ -38,17 +45,24 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             kode_tim: data?.kode_tim,
             nama_tim: data?.nama_tim,
             is_sekretariat: data?.is_sekretariat,
-            tahun: "2025"
+            tahun: currentTahunStr,
         }
     });
 
     useEffect(() => {
-        if(data?.is_sekretariat){
-            setSekretariat(true);
-        } else {
-            setSekretariat(false);
-        }
-    }, [data])
+        if (!isOpen) return;
+
+        reset({
+            is_active: true,
+            keterangan: data?.keterangan ?? "",
+            kode_tim: data?.kode_tim ?? "",
+            nama_tim: data?.nama_tim ?? "",
+            is_sekretariat: data?.is_sekretariat ?? false,
+            tahun: String(resolvedTahun),
+        });
+
+        setSekretariat(Boolean(data?.is_sekretariat));
+    }, [isOpen, data, reset, resolvedTahun]);
 
     const [Proses, setProses] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
@@ -59,16 +73,21 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
         { url: `/api/v1/timkerja/timkerja/${timId}`, method: "PUT" }
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
+        if (!resolvedTahun) {
+            toastError("Tahun tidak valid");
+            return;
+        }
+
         const payload = {
             nama_tim: data.nama_tim,
             keterangan: data.keterangan,
             is_active: true,
             is_sekretariat: Sekretariat,
-            tahun: "2025"
+            tahun: resolvedTahun
         }
         // console.log(payload);
 
-        try{
+        try {
             setProses(true);
             await apiFetch(urlConfig.url, {
                 method: urlConfig.method,
@@ -81,7 +100,7 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
             }).catch(err => {
                 AlertNotification("Gagal", `${err}`, "error", 3000, true);
             })
-        } catch(err){
+        } catch (err) {
             console.log(err);
             AlertNotification("Gagal", `${err}`, "error", 3000, true);
         } finally {
@@ -92,6 +111,19 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
     const handleClose = () => {
         onClose();
         reset();
+    }
+
+    if (!resolvedTahun) {
+        return (
+            <ModalComponent isOpen={isOpen} onClose={onClose}>
+                <div className="p-6 text-center text-red-600">
+                    <p>Tahun tidak valid. Data tidak dapat disimpan.</p>
+                    <ButtonRed className="mt-4" onClick={onClose}>
+                        Tutup
+                    </ButtonRed>
+                </div>
+            </ModalComponent>
+        );
     }
 
     return (
@@ -132,14 +164,14 @@ export const ModalTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, d
                     )}
                 />
                 <div className="flex justify-center items-center">
-                    <button 
+                    <button
                         type="button"
-                        className={`flex items-center gap-2 py-1 px-2 border rounded-lg cursor-pointer ${Sekretariat ? "bg-green-700 text-white" : "border-green-700 text-green-700"}`} 
+                        className={`flex items-center gap-2 py-1 px-2 border rounded-lg cursor-pointer ${Sekretariat ? "bg-green-700 text-white" : "border-green-700 text-green-700"}`}
                         onClick={() => setSekretariat((prev) => !prev)}
                     >
-                        {Sekretariat ? 
+                        {Sekretariat ?
                             <TbCircleCheck />
-                        :
+                            :
                             <TbSquare />
                         }
                         Tim Sekretariat

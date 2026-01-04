@@ -8,7 +8,7 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const LaporanKinerjaSekretariat = () => {
 
-    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const [FetchTrigger, setFetchTrigger] = useState<number>(0);
     const { branding } = useBrandingContext();
 
     const bulan = branding?.bulan?.value;
@@ -34,7 +34,7 @@ const LaporanKinerjaSekretariat = () => {
     // Fetch pertama kali saat sudah ready
     useEffect(() => {
         if (isReady) {
-            setFetchTrigger(prev => !prev);
+            setFetchTrigger(1);
         }
     }, [isReady]);
 

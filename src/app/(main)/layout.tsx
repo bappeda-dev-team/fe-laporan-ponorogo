@@ -1,6 +1,6 @@
 'use client'
 
-import { Poppins } from "next/font/google";
+// import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { useState } from "react";
 import "../globals.css";
