@@ -1,10 +1,8 @@
 'use client'
 
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect, useState } from "react";
 import { getCookies } from "@/lib/cookies";
-import { useState, useEffect } from "react";
 import { OptionType } from "../types";
-import { AlertNotification } from "@/components/global/sweetalert2";
 
 interface BrandingContextType {
     loadingBranding: boolean;
@@ -13,11 +11,11 @@ interface BrandingContextType {
         nama_pemda: string;
         logo: string;
         api_url: string;
-        tahun: OptionType | null | undefined;
-        bulan: OptionType | null | undefined;
+        tahun: OptionType | null;
+        bulan: OptionType | null;
         opd: string;
-        user: UserInfo | null | undefined;
-    }
+        user: UserInfo | null;
+    };
 }
 
 interface UserInfo {
@@ -34,64 +32,76 @@ const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
 const api_url = process.env.NEXT_PUBLIC_API_URL || "";
 const opd = process.env.NEXT_PUBLIC_KODE_OPD || "";
 
-// context
+const USER_CACHE_KEY = "branding-user";
+
 const BrandingContext = createContext<BrandingContextType | undefined>(undefined);
 
-export function BrandingProvider({ children }: Readonly<{ children: React.ReactNode; }>) {
-
+export function BrandingProvider({ children }: { children: React.ReactNode }) {
     const [Tahun, setTahun] = useState<OptionType | null>(null);
     const [Bulan, setBulan] = useState<OptionType | null>(null);
     const [User, setUser] = useState<UserInfo | null>(null);
-
-    const [Loading, setLoading] = useState<boolean>(true);
+    const [Loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const get_tahun = getCookies("tahun");
-        const get_bulan = getCookies("bulan");
-        const SessionId = localStorage.getItem("timkerja-sessionId");
-        const FetchUser = async () => {
-            const response = await fetch(`${api_url}/user-info`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Session-Id': `${SessionId}`
-                },
-            });
-            if (response.ok) {
-                const result = await response.json();
-                // console.log("User Info: ", result);
-                setUser(result);
-            } else {
-                AlertNotification("User Failed", "tidak bisa mengambil data user, login ulang, cek koneksi internet, jika berlanjut hubungi tim developer", "error", 3000, true);
-                setUser(null);
-            }
-        }
-        FetchUser();
-        if (get_tahun) {
-            const tahun = JSON.parse(get_tahun);
-            if (tahun === null || tahun === undefined) {
+        // === 1. load tahun & bulan dari cookie ===
+        const tahunCookie = getCookies("tahun");
+        const bulanCookie = getCookies("bulan");
+
+        if (tahunCookie) {
+            try {
+                setTahun(JSON.parse(tahunCookie));
+            } catch {
                 setTahun(null);
-            } else {
-                const valueTahun = {
-                    value: tahun.value,
-                    label: tahun.label
-                }
-                setTahun(valueTahun);
             }
         }
-        if (get_bulan) {
-            const jenis = JSON.parse(get_bulan);
-            if (jenis === null || jenis === undefined) {
+
+        if (bulanCookie) {
+            try {
+                setBulan(JSON.parse(bulanCookie));
+            } catch {
                 setBulan(null);
-            } else {
-                const valueBulan = {
-                    value: jenis.value || null,
-                    label: jenis.label || null
-                }
-                setBulan(valueBulan);
             }
         }
-        setLoading(false);
+
+        // === 2. load user dari cache ===
+        const cachedUser = localStorage.getItem(USER_CACHE_KEY);
+        if (cachedUser) {
+            try {
+                setUser(JSON.parse(cachedUser));
+                setLoading(false);
+                return; // ⛔ STOP DI SINI
+            } catch {
+                localStorage.removeItem(USER_CACHE_KEY);
+            }
+        }
+
+        // === 3. fetch user HANYA jika belum ada ===
+        const sessionId = localStorage.getItem("timkerja-sessionId");
+        if (!sessionId) {
+            setLoading(false);
+            return;
+        }
+
+        fetch(`/user-info`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Session-Id": sessionId,
+            },
+        })
+            .then(async (res) => {
+                if (!res.ok) throw new Error("Unauthorized");
+                const result = await res.json();
+                setUser(result);
+                localStorage.setItem(USER_CACHE_KEY, JSON.stringify(result));
+            })
+            .catch(() => {
+                // ❗ jangan spam alert
+                setUser(null);
+                localStorage.removeItem(USER_CACHE_KEY);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     return (
@@ -101,13 +111,13 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
                 branding: {
                     nama_app: appName,
                     nama_pemda: clientName,
-                    logo: logo,
-                    api_url: api_url,
+                    logo,
+                    api_url,
                     tahun: Tahun,
                     bulan: Bulan,
-                    opd: opd,
+                    opd,
                     user: User,
-                }
+                },
             }}
         >
             {children}
@@ -117,8 +127,8 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
 
 export function useBrandingContext() {
     const context = useContext(BrandingContext);
-    if (context === undefined) {
-        throw new Error("useBrandingContext must be used witihin a BrandingProvider")
+    if (!context) {
+        throw new Error("useBrandingContext must be used within BrandingProvider");
     }
     return context;
 }

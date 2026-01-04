@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image';
-import { useBrandingContext } from "../../../provider/BrandingProvider.tsx";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 export default function LoginLayout({
     children,

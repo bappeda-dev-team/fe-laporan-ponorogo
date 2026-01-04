@@ -46,8 +46,6 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_t
     const [Loading, setLoading] = useState<boolean>(false);
     const { toastError, toastSuccess } = useToast();
 
-    const { data, loading, error, message } = useGet<RencanaKinerjaGetResponse[]>(`/api/v1/perencanaan/rencana_kinerja_opd/findall?kode_opd=${opd}&tahun=2025`, FetchTrigger);
-
     useEffect(() => {
         const S = getSessionId();
         const fetchRekin = async () => {
@@ -98,7 +96,6 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_t
         try {
             await apiFetch(`/api/v1/timkerja/timkerja_sekretariat/${kode_tim}/rencana_kinerja`, {
                 method: "POST",
-                credentials: "include",
                 body: payload as any
             }).then(_ => {
                 toastSuccess("data berhasil disimpan");
