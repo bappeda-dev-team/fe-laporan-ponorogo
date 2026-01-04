@@ -5,30 +5,20 @@ type LoginResponse = {
 }
 
 export async function login(username: string, password: string): Promise<void> {
-    const API_LOGIN = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch(`${API_LOGIN}/auth/login`, {
+    const res = await fetch(`/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-        credentials: "include", // penting kalau backend set cookie
-    });
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+    })
 
     if (!res.ok) {
-        throw new Error("Login gagal");
+        throw new Error("Login gagal")
     }
-
-    const data: LoginResponse = await res.json();
-
-    // optional (frontend only)
-    localStorage.setItem("timkerja-sessionId", data.sessionId);
-
-    // cookie untuk middleware
-    document.cookie =
-        `timkerja-sessionId=${data.sessionId}; path=/; SameSite=Lax`;
-
-    // redirect SETELAH session tersimpan
-    window.location.href = "/";
+    // SET COOKIE DARI BACKEND SAJA
 }
 
 export function getSessionId(): string | null {
@@ -42,6 +32,7 @@ export async function logout(): Promise<void> {
     if (sessionId) {
         await fetch("/auth/logout", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "X-Session-Id": sessionId
@@ -59,3 +50,19 @@ export async function logout(): Promise<void> {
     window.location.href = "/login";
 }
 
+// refresh session
+// sessionId tetap
+export async function refresh(sessionId: string): Promise<void> {
+    const res = await fetch("/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Session-Id": sessionId
+        },
+    })
+
+    if (!res.ok) {
+        throw new Error("harap login lagi")
+    }
+}
