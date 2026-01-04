@@ -52,7 +52,7 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_t
     const fetchRekin = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/v1/perencanaan/rencana_kinerja_opd/findall?kode_opd=${opd}&tahun=2025`, {
+        const response = await fetch(`/api/v1/perencanaan/rencana_kinerja_opd/findall?kode_opd=${opd}&tahun=${tahun}`, {
           method: "GET",
           headers: {
             "Content-Type": 'application/json',
@@ -90,7 +90,7 @@ export const ModalRekin: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_t
     const payload = {
       id_rencana_kinerja: data.id_rencana_kinerja?.id_rencana_kinerja,
       id_pegawai: data.id_rencana_kinerja?.pegawai_id,
-      tahun: "2025",
+      tahun: data.tahun,
       kode_opd: opd
     }
     // console.log(payload);

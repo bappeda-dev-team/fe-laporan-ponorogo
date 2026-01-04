@@ -460,6 +460,7 @@ export const Table: React.FC<Table> = ({ data }) => {
           onClose={() => handleModalProgram(null)}
           onSuccess={() => setFetchTrigger((prev) => prev + 1)}
           Data={DataTim}
+          tahun={String(tahun)}
         />
       }
       {ModalBuktiOpen &&
