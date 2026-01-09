@@ -27,7 +27,7 @@ export function useGet<T = unknown>(url: string, fetchTrigger?: number) {
 
   useEffect(() => {
     // guard fetchTrigger
-    if (!fetchTrigger || !url) return;
+    if (!url) return;
 
     const controller = new AbortController();
 
