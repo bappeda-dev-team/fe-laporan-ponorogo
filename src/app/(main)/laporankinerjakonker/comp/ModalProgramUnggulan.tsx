@@ -43,9 +43,10 @@ export const ModalProgramUnggulan: React.FC<Modal> = ({ isOpen, onClose, onSucce
   const [OptionProgram, setOptionProgram] = useState<ProgramUnggulanGetResponse[]>([]);
   const [Proses, setProses] = useState<boolean>(false);
   const { toastSuccess } = useToast();
-  const tahunAkhir = 2030;
+  const tahunAkhir = 2029;
+  const tahunAwal = 2025;
 
-  const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/program_unggulan/findall/${tahun}/${tahunAkhir}`, 0);
+  const { data, error, loading } = useGet<ProgramUnggulanGetResponse[]>(`/api/v1/perencanaan/program_unggulan/findall/${tahunAwal}/${tahunAkhir}`, 0);
 
   useEffect(() => {
     if (data) {
