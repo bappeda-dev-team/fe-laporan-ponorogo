@@ -25,6 +25,7 @@ export interface PenilaianKinerjas {
     golongan: string;
     jenis_jabatan: string;
     kode_tim: string;
+    nama_tim: string;
     tahun: string;
     bulan: number;
     kinerja_bappeda: number;

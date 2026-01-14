@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Table from "./comp/table";
 import { useGet } from "@/app/hooks/useGet";
-import { TimGetResponse } from "@/types/tim";
+import { PenilaianKinerjas } from "./type";
 import { useBrandingContext } from "@/provider/BrandingProvider";
 
 const PenilaianKinerjaTim = () => {
@@ -21,10 +21,10 @@ const PenilaianKinerjaTim = () => {
         if (!isReady) {
             return null;
         }
-        return `/api/v1/timkerja/penilaian_kinerja?tahun=${tahun}&bulan=${bulan}`;
+        return `/api/v1/timkerja/laporan_tpp_all?tahun=${tahun}&bulan=${bulan}`;
     }, [isReady, tahun, bulan]);
 
-    const { data, loading, error, message } = useGet<TimGetResponse[]>(
+    const { data, loading, error, message } = useGet<PenilaianKinerjas[]>(
         url ?? "",
         FetchTrigger
     );
@@ -50,15 +50,7 @@ const PenilaianKinerjaTim = () => {
     } else {
         return (
             <div className="flex flex-col gap-2">
-                {data && data?.length > 0 ?
-                    data?.map((item: any, index: number) => (
-                        <div key={index} className="flex flex-col gap-2">
-                            <Table data={item} />
-                        </div>
-                    ))
-                    :
-                    <p>Data Tim {branding?.bulan?.label || ""} {branding?.tahun?.label || ""} kosong</p>
-                }
+                    <Table data={data ?? []} />
             </div>
         )
     }
