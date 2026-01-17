@@ -167,7 +167,7 @@ export function useCetakPenilaianTimAll(
         // doc.text(`${data.penilaian_kinerjas[0].pangkat ?? "N/A"} ${data.penilaian_kinerjas[0].golongan ?? "N/A"}`, centerX, startY + 41);
 
 
-        doc.save(`TPP-Konker-${branding?.bulan?.label}-${branding?.tahun?.value || 0}.pdf`);
+        doc.save(`Penilaian-Kinerja-all-tim${branding?.bulan?.label}-${branding?.tahun?.value || 0}.pdf`);
     };
 
     return { cetakPdfAllTim };

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -33,7 +33,7 @@ export const ModalJabatanTim: React.FC<Modal> = ({ isOpen, onClose, onSuccess, j
     })
 
     const [Proses, setProses] = useState<boolean>(false);
-    const { toastError, toastSuccess } = useToast();
+    const { toastSuccess } = useToast();
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata

@@ -7,6 +7,7 @@ import { useBrandingContext } from "@/provider/BrandingProvider";
 import { ButtonBlackBorder } from "@/components/button/button";
 import { TbPrinter } from "react-icons/tb";
 import { useCetakPenilaianTimAll } from "../lib/useCetakPenilaianTimAll";
+import { useCetakPenilaianPerson } from "../lib/useCetakPenilaianPerson";
 import useToast from "@/components/global/toast";
 
 interface Table {
@@ -38,6 +39,85 @@ const Table: React.FC<Table> = ({ data }) => {
 
     const tdClass = `border border-blue-500 px-6 py-4 text-center`;
 
+    const RowPenilaian = ({ item, index, isAllowed, tdClass }: {
+        item: PenilaianKinerjas,
+        index: number,
+        isAllowed: (jabatan: string) => boolean,
+        tdClass: string
+    }) => {
+        const { cetakPdfPerson } = useCetakPenilaianPerson(item);
+        const editable = isAllowed(item.nama_jabatan_tim);
+
+        return (
+            <tr key={index}>
+                <td className={`border-b border-blue-500 px-6 py-4 text-center`}>{index + 1}</td>
+                <td className={`border border-blue-500 px-6 py-4`}>
+                    <div className="flex flex-col">
+                        <p className={`border-b border-blue-500`}>{item.nama_pegawai || "-"}</p>
+                        <p className="font-semibold">{item.id_pegawai || "-"}</p>
+                    </div>
+                </td>
+                <td className={`border border-blue-500 px-6 py-4`}>
+                    <div className="flex flex-col">
+                        <p className="border-b">{item.pangkat || "-"} / {item.golongan || "-"}</p>
+                        <p>{item.nama_jabatan_tim || "-"}</p>
+                    </div>
+                </td>
+                <td className={`border border-blue-500 px-6 py-4`}>{item.nama_tim || "-"}</td>
+                <td className={`border border-blue-500 px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
+                <>
+                    <td className={tdClass}>
+                        {editable ? (
+                            <NilaiKinerja
+                                nilai={item.kinerja_bappeda || 0}
+                                kode_tim={item.kode_tim}
+                                Data={item}
+                            />
+                        ) : (
+                            item.kinerja_bappeda || 0
+                        )}
+                    </td>
+
+                    <td className={tdClass}>
+                        {editable ? (
+                            <NilaiTim
+                                nilai={item.kinerja_tim || 0}
+                                kode_tim={item.kode_tim}
+                                Data={item}
+                            />
+                        ) : (
+                            item.kinerja_tim || 0
+                        )}
+                    </td>
+
+                    <td className={tdClass}>
+                        {editable ? (
+                            <NilaiPerson
+                                nilai={item.kinerja_person || 0}
+                                kode_tim={item.kode_tim}
+                                Data={item}
+                            />
+                        ) : (
+                            item.kinerja_person || 0
+                        )}
+                    </td>
+                </>
+                <td className={`border border-blue-500 px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
+                <td className="border border-blue-500 px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                        <ButtonBlackBorder
+                            className="flex items-center gap-1"
+                            // onClick={() => cetakPdfPenanggungJawab()}
+                        >
+                            <TbPrinter />
+                            Cetak
+                        </ButtonBlackBorder>
+                    </div>
+                </td>
+            </tr>
+        );
+    };
+
     return (
         <div className={`flex flex-col p-2 border-2 rounded-lg border-blue-500`}>
             <div className="flex flex-wrap items-center justify-between mb-1">
@@ -54,7 +134,7 @@ const Table: React.FC<Table> = ({ data }) => {
                         }
                     >
                         <TbPrinter />
-                        Cetak
+                        Cetak Full
                     </ButtonBlackBorder>
                 </div>
             </div>
@@ -88,79 +168,15 @@ const Table: React.FC<Table> = ({ data }) => {
                     </thead>
                     <tbody>
                         {data ?
-                            data.slice().map((item: PenilaianKinerjas, index: number) => {
-                                const editable = isAllowed(item.nama_jabatan_tim);
-                                return (
-                                    <tr key={index}>
-                                        <td className={`border-b border-blue-500 px-6 py-4 text-center`}>{index + 1}</td>
-                                        <td className={`border border-blue-500 px-6 py-4`}>
-                                            <div className="flex flex-col">
-                                                <p className={`border-b border-blue-500`}>{item.nama_pegawai || "-"}</p>
-                                                <p className="font-semibold">{item.id_pegawai || "-"}</p>
-                                            </div>
-                                        </td>
-                                        <td className={`border border-blue-500 px-6 py-4`}>
-                                            <div className="flex flex-col">
-                                                <p className="border-b">{item.pangkat || "-"} / {item.golongan || "-"}</p>
-                                                <p>{item.nama_jabatan_tim || "-"}</p>
-                                            </div>
-                                        </td>
-                                        <td className={`border border-blue-500 px-6 py-4`}>{item.nama_tim || "-"}</td>
-                                        <td className={`border border-blue-500 px-6 py-4`}>{item.nama_jabatan_tim || "-"}</td>
-                                        <>
-                                            <td className={tdClass}>
-                                                {editable ? (
-                                                    <NilaiKinerja
-                                                        nilai={item.kinerja_bappeda || 0}
-                                                        kode_tim={item.kode_tim}
-                                                        Data={item}
-                                                    />
-                                                ) : (
-                                                    item.kinerja_bappeda || 0
-                                                )}
-                                            </td>
-
-                                            <td className={tdClass}>
-                                                {editable ? (
-                                                    <NilaiTim
-                                                        nilai={item.kinerja_tim || 0}
-                                                        kode_tim={item.kode_tim}
-                                                        Data={item}
-                                                    />
-                                                ) : (
-                                                    item.kinerja_tim || 0
-                                                )}
-                                            </td>
-
-                                            <td className={tdClass}>
-                                                {editable ? (
-                                                    <NilaiPerson
-                                                        nilai={item.kinerja_person || 0}
-                                                        kode_tim={item.kode_tim}
-                                                        Data={item}
-                                                    />
-                                                ) : (
-                                                    item.kinerja_person || 0
-                                                )}
-                                            </td>
-                                        </>
-                                        <td className={`border border-blue-500 px-6 py-4 text-center`}>{item.nilai_akhir || 0}</td>
-                                        <td className="border border-blue-500 px-6 py-4">
-                                            <div className="flex flex-col gap-1">
-                                                <ButtonBlackBorder
-                                                    className="flex items-center gap-1"
-                                                    onClick={() => {
-                                                        toastInfo("Dalam Perbaikan");
-                                                    }}
-                                                >
-                                                    <TbPrinter />
-                                                    Cetak
-                                                </ButtonBlackBorder>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })
+                            data.slice().map((item: PenilaianKinerjas, index: number) => (
+                                <RowPenilaian
+                                    key={index}
+                                    item={item}
+                                    index={index}
+                                    isAllowed={isAllowed}
+                                    tdClass={tdClass}
+                                />
+                            ))
                             :
                             <tr>
                                 <td colSpan={9} className={`border border-blue-500 px-6 py-4`}>Data Anggota Kosong</td>
