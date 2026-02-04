@@ -85,6 +85,9 @@ ENV NEXT_PUBLIC_NAMA_APLIKASI=${NEXT_PUBLIC_NAMA_APLIKASI}
 
 ARG NEXT_PUBLIC_NAMA_PEMDA
 ENV NEXT_PUBLIC_NAMA_PEMDA=${NEXT_PUBLIC_NAMA_PEMDA}
+
+# cache locatiom
+ENV NEXT_CACHE_DIR=/tmp/next-cache
 # Uncomment the following line to disable telemetry at run time
 ENV NEXT_TELEMETRY_DISABLED=1
 
