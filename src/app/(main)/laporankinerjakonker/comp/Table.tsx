@@ -463,13 +463,13 @@ export const Table: React.FC<Table> = ({ data }) => {
           tahun={String(tahun)}
         />
       }
-      {ModalBuktiOpen &&
+      {/* {ModalBuktiOpen &&
         <ModalUpload
           isOpen={ModalBuktiOpen}
           onClose={() => setModalBuktiOpen(false)}
           onSuccess={() => setFetchTrigger((prev) => prev + 1)}
         />
-      }
+      } */}
       {ModalPelaksanaOpen &&
         <ModalPelaksana
           isOpen={ModalPelaksanaOpen}
