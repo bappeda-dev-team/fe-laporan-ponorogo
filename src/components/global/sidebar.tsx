@@ -9,8 +9,8 @@ import {
   TbArrowBarLeft, TbArrowBarRight, TbSettings
 } from "react-icons/tb";
 import { usePathname } from "next/navigation";
-import useToast from "./toast";
-import { logout } from "@/lib/logout"
+// import useToast from "./toast";
+import { logout } from "@/lib/auth"
 
 interface Sidebar {
   onShow: () => void;
@@ -21,7 +21,7 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
   const url = usePathname();
   const logo = process.env.NEXT_PUBLIC_LOGO_URL || "";
   const app = process.env.NEXT_PUBLIC_NAMA_APLIKASI || "";
-  const { toastSuccess } = useToast();
+  // const { toastSuccess } = useToast();
 
   const getActiveClass = (isActive: boolean, type = 'default') => {
     const activeClasses = "text-white bg-sky-500";
@@ -38,8 +38,8 @@ export const Sidebar: React.FC<Sidebar> = ({ onShow, show }) => {
 
   const handleLogout = () => {
     logout();
-    localStorage.removeItem("timkerja-sessionId");
-    localStorage.removeItem("branding-user");
+    // localStorage.removeItem("timkerja-sessionId");
+    // localStorage.removeItem("branding-user");
   }
 
   return (

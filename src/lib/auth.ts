@@ -47,10 +47,11 @@ export async function logout(): Promise<void> {
 
   // bersihkan client state
   localStorage.removeItem("timkerja-sessionId");
+  localStorage.removeItem("branding-user");
 
   // // HAPUS COOKIE YANG BENAR
-  document.cookie =
-    `sessionId=; path=/; max-age=0; SameSite=Lax`;
+  // document.cookie =
+  //   `sessionId=; path=/; max-age=0; SameSite=Lax`;
 
   window.location.href = "/login";
 }
