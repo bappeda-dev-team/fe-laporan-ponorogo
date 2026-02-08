@@ -31,7 +31,7 @@ const LaporanKinerjaKonker = () => {
   // Fetch pertama kali saat sudah ready
   useEffect(() => {
     if (isReady) {
-      setFetchTrigger(1);
+      setFetchTrigger((v) => v + 1);
     }
   }, [isReady]);
 
