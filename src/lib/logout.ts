@@ -20,9 +20,6 @@ export async function logout(): Promise<void> {
   cookieStore.delete("timkerja-sessionId");
   cookieStore.delete("sessionId"); // Sesuai nama cookie di browser Anda
 
-  // hapus localstorage
-  localStorage.removeItem("timkerja-sessionId");
-
   // Navigasi di server menggunakan redirect
   redirect("/login");
 }
