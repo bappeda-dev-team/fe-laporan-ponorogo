@@ -10,9 +10,8 @@ export async function logout(): Promise<void> {
 
   if (sessionId) {
     // Panggil API logout jika diperlukan
-    await fetch(`/auth/logout`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
       method: "POST",
-      credentials: "include",
       headers: { "X-Session-Id": sessionId }
     });
   }
