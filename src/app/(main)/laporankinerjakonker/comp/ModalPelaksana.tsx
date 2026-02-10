@@ -18,7 +18,6 @@ interface Modal {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    kode_tim: string;
     Data: PohonKinerjaKonker | null;
     id_program: number;
 }
@@ -30,7 +29,7 @@ interface FormValue {
     tahun: number
 }
 
-export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, kode_tim, id_program, Data }) => {
+export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, id_program, Data }) => {
 
     const kode_opd = process.env.NEXT_PUBLIC_KODE_OPD;
     const { branding } = useBrandingContext();
@@ -39,7 +38,7 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
         defaultValues: {
             bulan: branding?.bulan?.value,
             id_program_unggulan: 0,
-            kode_tim: kode_tim,
+            kode_tim: "",
             pegawai_id: null,
             tahun: branding?.tahun?.value
         }
@@ -49,32 +48,32 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
     const [Proses, setProses] = useState<boolean>(false);
     const { toastSuccess, toastInfo } = useToast();
 
-    const { data, error, loading } = useGet<GetResponseAnggotaTimDropdown[]>(`/api/v1/timkerja/susunantim/${kode_tim}/pelaksana`)
+    // const { data, error, loading } = useGet<GetResponseAnggotaTimDropdown[]>(`/api/v1/timkerja/susunantim/${kode_tim}/pelaksana`)
 
-    useEffect(() => {
-        if (data) {
-            const pegawai = data.map((p: GetResponseAnggotaTimDropdown) => ({
-                value: p.id,
-                label: p.nama_pegawai,
-                id: p.id,
-                id_jabatan_tim: p.id_jabatan_tim,
-                is_active: p.is_active,
-                keterangan: p.keterangan,
-                kode_tim: p.kode_tim,
-                nama_jabatan_tim: p.nama_jabatan_tim,
-                nama_pegawai: p.nama_pegawai,
-                nip: p.nip,
-            }));
-            setOptionPegawai(pegawai);
-        }
-    }, [data]);
+    // useEffect(() => {
+    //     if (data) {
+    //         const pegawai = data.map((p: GetResponseAnggotaTimDropdown) => ({
+    //             value: p.id,
+    //             label: p.nama_pegawai,
+    //             id: p.id,
+    //             id_jabatan_tim: p.id_jabatan_tim,
+    //             is_active: p.is_active,
+    //             keterangan: p.keterangan,
+    //             kode_tim: p.kode_tim,
+    //             nama_jabatan_tim: p.nama_jabatan_tim,
+    //             nama_pegawai: p.nama_pegawai,
+    //             nip: p.nip,
+    //         }));
+    //         setOptionPegawai(pegawai);
+    //     }
+    // }, [data]);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         // backend tidak terima formdata
         const payload = {
             bulan: branding?.bulan?.value,
             id_program_unggulan: id_program,
-            kode_tim: kode_tim,
+            // kode_tim: kode_tim,
             pegawai_id: data.pegawai_id?.nip,
             tahun: branding?.tahun?.value
         }
@@ -113,9 +112,9 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
                     Pilih Pelaksana Program Unggulan
                 </h1>
             </div>
-            {error &&
+            {/* {error &&
                 <h1 className="text-red-500">Error saat mengambil data dropwdown Pelaksana</h1>
-            }
+            } */}
             <div className="min-h-[420px] flex flex-col">
                 <form className="flex flex-col mx-5 py-5 gap-2" onSubmit={handleSubmit(onSubmit)}>
                     <Controller
@@ -129,7 +128,7 @@ export const ModalPelaksana: React.FC<Modal> = ({ isOpen, onClose, onSuccess, ko
                                     id="pegawai_id"
                                     label="Pilih Pelaksana"
                                     options={OptionPegawai}
-                                    isLoading={loading}
+                                    // isLoading={loading}
                                     isClearable
                                 />
                                 {errors.pegawai_id &&
