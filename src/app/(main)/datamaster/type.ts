@@ -1,3 +1,5 @@
+import { OptionType } from "@/types";
+
 export interface GetResponseFindallPegawai {
     id: number;
     nip: string;
@@ -15,4 +17,8 @@ export interface GetResponseFindallPegawai {
     tanggalAkhir: string | null;
     createdDate: string;
     lastModifiedDate: string;
+    bulanMulai: OptionType | null;
+    tahunMulai: OptionType | null;
+    bulanBerakhir: OptionType | null;
+    tahunBerakhir: OptionType | null;
 }

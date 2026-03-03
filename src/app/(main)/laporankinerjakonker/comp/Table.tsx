@@ -19,11 +19,7 @@ import { ModalKinerjaKonker } from "./ModalKinerjaKonker";
 import { useCetakKonker } from "../lib/useCetakKonker";
 import { useBrandingContext } from "@/provider/BrandingProvider";
 
-interface Table {
-  data: TimGetResponse;
-}
-
-export const Table: React.FC<Table> = ({ data }) => {
+export const Table = () => {
 
   const [ModalProgram, setModalProgram] = useState<boolean>(false);
   const [ModalBuktiOpen, setModalBuktiOpen] = useState<boolean>(false);
@@ -45,6 +41,7 @@ export const Table: React.FC<Table> = ({ data }) => {
 
   const bulan = branding?.bulan?.value ?? null;
   const tahun = branding?.tahun?.value ?? null;
+  const opd = branding?.opd ?? "";
 
   const isReady = Number.isInteger(bulan) && Number.isInteger(tahun);
 
@@ -52,7 +49,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     if (!isReady) {
       return null;
     }
-    return `/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan?tahun=${tahun}&bulan=${bulan}`;
+    return `/api/v1/timkerja/timkerja/${opd}/all_program_unggulan?tahun=${tahun}&bulan=${bulan}`;
   }, [isReady, tahun, bulan]);
 
   const { data: DataTable, error: ErrorProgram,
@@ -66,7 +63,7 @@ export const Table: React.FC<Table> = ({ data }) => {
     }
   }, [isReady]);
 
-  const { cetakPdf } = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
+  // const { cetakPdf } = useCetakKonker(DataTable ?? [], data.nama_tim, data.keterangan);
 
   const handleModalProgram = (data: TimGetResponse | null) => {
     if (ModalProgram) {
@@ -102,8 +99,8 @@ export const Table: React.FC<Table> = ({ data }) => {
     }
   }
 
-  const hapusProgram = async (id: number) => {
-    await apiFetch(`/api/v1/timkerja/timkerja/${data.kode_tim}/program_unggulan/${id}`, {
+  const hapusProgram = async (id: number, kode_tim: string) => {
+    await apiFetch(`/api/v1/timkerja/timkerja/${kode_tim}/program_unggulan/${id}`, {
       method: "DELETE",
     }).then(resp => {
       toastSuccess("Program dihapus");
@@ -139,22 +136,19 @@ export const Table: React.FC<Table> = ({ data }) => {
   return (
     <>
       <div className="flex flex-wrap items-center justify-between mb-1">
-        <div className="flex items-start gap-1 mb-1">
-          <TbCircleFilled className="mt-2 text-blue-500" />
-          <div className="flex flex-col">
-            <h1 className="uppercase font-bold text-2xl">Susunan Tim: {data.nama_tim || "-"}</h1>
-            <h1 className="font-medium">{data.keterangan || "-"}</h1>
-          </div>
+        <div className="flex flex-col">
+          <h1 className="uppercase font-bold text-2xl">Laporan Kinerja Konker</h1>
+          <h1 className="font-medium">Bulan {branding?.bulan?.label} {branding?.tahun?.label}</h1>
         </div>
         <div className="flex flex-wrap flex-col justify-center gap-1">
           <ButtonGreenBorder
             className="flex items-center gap-1"
-            onClick={() => handleModalProgram(data)}
+          // onClick={() => handleModalProgram(data)}
           >
             <TbCirclePlus />
             Tambah Program Unggulan
           </ButtonGreenBorder>
-          <ButtonBlackBorder
+          {/* <ButtonBlackBorder
             className="flex items-center gap-1"
             onClick={() =>
               cetakPdf()
@@ -162,7 +156,7 @@ export const Table: React.FC<Table> = ({ data }) => {
           >
             <TbPrinter />
             Cetak
-          </ButtonBlackBorder>
+          </ButtonBlackBorder> */}
         </div>
       </div>
       <TableComponent className="border-blue-500">
@@ -177,6 +171,7 @@ export const Table: React.FC<Table> = ({ data }) => {
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pelaksana</th>
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Petugas Tim</th>
+              <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Nama Tim</th>
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Rencana Kinerja</th>
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[300px] text-center">Sub Kegiatan</th>
               <th className="border-r border-b py-3 px-4 border-gray-300 min-w-[200px] text-center">Pagu Anggaran</th>
@@ -206,7 +201,8 @@ export const Table: React.FC<Table> = ({ data }) => {
               <th className="border-r border-b py-1 border-gray-300 text-center">15</th>
               <th className="border-r border-b py-1 border-gray-300 text-center">16</th>
               <th className="border-r border-b py-1 border-gray-300 text-center">17</th>
-              <th className="border-b py-1 border-gray-300 text-center">18</th>
+              <th className="border-r border-b py-1 border-gray-300 text-center">18</th>
+              <th className="border-b py-1 border-gray-300 text-center">19</th>
             </tr>
           </thead>
           {LoadingProgram ?
@@ -247,7 +243,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                               onClick={() => {
                                 AlertQuestion("Hapus Program", "data dari kolom 9 sampai 14 akan terhapus juga", "question", "Hapus", "Batal").then((result) => {
                                   if (result.isConfirmed) {
-                                    hapusProgram(item.id);
+                                    hapusProgram(item.id, item.kode_opd);
                                   }
                                 })
                               }}
@@ -297,7 +293,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                             }
                             <td className="border border-blue-500 px-6 py-4">{p.nama_opd || "-"}</td>
                             <td className="border border-blue-500 px-6 py-4">
-                              {p.pelaksanas.length > 0 ?
+                              {p.pelaksanas?.length > 0 ?
                                 p.pelaksanas.map((pl: Pelaksanas, pelaksanas_index: number) => (
                                   <p key={pelaksanas_index} className="my-2 border p-1 rounded-lg">{pl.nama_pelaksana || "-"} ({pl.nip_pelaksana || "-"})</p>
                                 ))
@@ -336,8 +332,11 @@ export const Table: React.FC<Table> = ({ data }) => {
                                 </ButtonSkyBorder>
                               </div>
                             </td>
+                            <td className="border border-blue-500 px-6 py-4 text-center">
+                              {item.nama_tim || "-"}
+                            </td>
                             <td className="border border-blue-500 px-6 py-4">
-                              {p.pelaksanas.length > 0 ?
+                              {p.pelaksanas?.length > 0 ?
                                 p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
                                   <React.Fragment key={pl_index}>
                                     {pl.rencana_kinerjas.length > 0 ?
@@ -354,7 +353,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                               }
                             </td>
                             <td className="border border-blue-500 px-6 py-4">
-                              {p.pelaksanas.length > 0 ?
+                              {p.pelaksanas?.length > 0 ?
                                 p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
                                   <React.Fragment key={pl_index}>
                                     {pl.rencana_kinerjas.length > 0 ?
@@ -371,7 +370,7 @@ export const Table: React.FC<Table> = ({ data }) => {
                               }
                             </td>
                             <td className="border border-blue-500 px-6 py-4">
-                              {p.pelaksanas.length > 0 ?
+                              {p.pelaksanas?.length > 0 ?
                                 p.pelaksanas.map((pl: Pelaksanas, pl_index: number) => (
                                   <React.Fragment key={pl_index}>
                                     {pl.rencana_kinerjas.length > 0 ?
@@ -475,7 +474,6 @@ export const Table: React.FC<Table> = ({ data }) => {
           isOpen={ModalPelaksanaOpen}
           onClose={() => handleModalPelaksana(null, 0)}
           onSuccess={() => setFetchTrigger((prev) => prev + 1)}
-          kode_tim={data.kode_tim}
           id_program={IdProgram}
           Data={DataPohon}
         />

@@ -68,6 +68,7 @@ export interface ProgramUnggulanGetResponse {
 export interface KinerjaKonkerGetResponse {
   id: number;
   kode_tim: string;
+  nama_tim: string;
   id_program_unggulan: number;
   program_unggulan: string;
   tahun: string;
