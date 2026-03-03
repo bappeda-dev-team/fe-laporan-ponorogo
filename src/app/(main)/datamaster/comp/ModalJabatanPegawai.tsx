@@ -3,7 +3,7 @@
 import { ChangeEvent, useState } from "react";
 import { ModalComponent } from "@/components/page/ModalComponent";
 import { TbUsersGroup, TbDeviceFloppy, TbX } from "react-icons/tb";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/global/input";
 import { ButtonSky, ButtonRed } from "@/components/button/button";
 import { apiFetch } from "@/lib/apiFetch";
@@ -11,6 +11,7 @@ import useToast from "@/components/global/toast";
 import { AlertNotification } from "@/components/global/sweetalert2";
 import { OptionType, OptionTypeString } from "@/types";
 import { GetResponseFindallPegawai } from "../type";
+import { useBrandingContext } from "@/provider/BrandingProvider";
 
 interface Modal {
     isOpen: boolean;
@@ -35,10 +36,15 @@ interface FormValue {
     isActive: boolean;
     tanggalMulai: string;
     tanggalAkhir: string;
+    bulanMulai: OptionType | null;
+    tahunMulai: OptionType | null;
+    bulanBerakhir?: OptionType | null;
+    tahunBerakhir?: OptionType | null;
 }
 
 export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSuccess, jenis, Data }) => {
 
+    const { branding } = useBrandingContext();
     const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValue>({
         defaultValues: {
             namaPegawai: Data?.namaPegawai,
@@ -60,12 +66,28 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             pangkat: Data?.pangkat,
             golongan: Data?.golongan,
             basicTpp: Data?.basicTpp ?? null,
-            pajak: Data ? {
+            pajak: Data?.pajak ? {
                 value: Data.pajak,
                 label: Data.pajak === 0.0 ? "0%" : `${Data.pajak * 100}%`,
             } : null,
             tanggalMulai: Data?.tanggalMulai ?? "",
             tanggalAkhir: Data?.tanggalAkhir ?? "",
+            bulanMulai: Data?.bulanMulai ? {
+                value: branding?.bulan?.value,
+                label: branding?.bulan?.label,
+            } : null,
+            tahunMulai: Data?.tahunMulai ? {
+                value: branding?.tahun?.value,
+                label: branding?.tahun?.label
+            } : null,
+            bulanBerakhir: Data?.bulanBerakhir ? {
+                value: branding?.bulan?.value,
+                label: branding?.bulan?.label,
+            } : null,
+            tahunBerakhir: Data?.tahunBerakhir ? {
+                value: branding?.tahun?.value,
+                label: branding?.tahun?.label
+            } : null,
         }
     })
 
@@ -108,13 +130,40 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
         { value: "BELUM_DIATUR", label: "BELUM_DIATUR" },
     ];
     const pajakOption = [
-      { value: 0.0, label: "0%" },
-      { value: 0.05, label: "5%" },
-      { value: 0.15, label: "15%" },
+        { value: 0.0, label: "0%" },
+        { value: 0.05, label: "5%" },
+        { value: 0.15, label: "15%" },
     ];
 
+    const OptionTahun = [
+        { label: "2019", value: 2019 },
+        { label: "2020", value: 2020 },
+        { label: "2021", value: 2021 },
+        { label: "2022", value: 2022 },
+        { label: "2023", value: 2023 },
+        { label: "2024", value: 2024 },
+        { label: "2025", value: 2025 },
+        { label: "2026", value: 2026 },
+        { label: "2027", value: 2027 },
+        { label: "2028", value: 2028 },
+        { label: "2029", value: 2029 },
+        { label: "2030", value: 2030 },
+    ];
+    const OptionBulan = [
+        { label: "Januari", value: 1 },
+        { label: "Februari", value: 2 },
+        { label: "Maret", value: 3 },
+        { label: "April", value: 4 },
+        { label: "Mei", value: 5 },
+        { label: "Juni", value: 6 },
+        { label: "Juli", value: 7 },
+        { label: "Agustus", value: 8 },
+        { label: "September", value: 9 },
+        { label: "Oktober", value: 10 },
+        { label: "November", value: 11 },
+        { label: "Desember", value: 12 },
+    ]
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        // backend tidak terima formdata
         const payload = {
             namaPegawai: data.namaPegawai,
             nip: data?.nip,
@@ -129,12 +178,16 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             pajak: data?.pajak?.value,
             tanggalMulai: data?.tanggalMulai,
             tanggalAkhir: data?.tanggalAkhir,
+            bulanMulai: data?.bulanMulai?.value,
+            tahunMulai: data?.tahunMulai?.value,
+            bulanBerakhir: data?.bulanBerakhir?.value,
+            tahunBerakhir: data?.tahunBerakhir?.value,
             // tanggalBerakhir: "01-01-2025"
         }
         // console.log(payload);
         try {
             setProses(true);
-            await apiFetch(jenis === "baru" ? "/api/v1/tpp/jabatan/with-tpp-pajak" : `/api/v1/tpp/jabatan/update/with-tpp-pajak/${Data?.id}`, {
+            await apiFetch(jenis === "baru" ? `/api/v1/tpp/jabatan/with-tpp-pajak` : `/api/v1/tpp/jabatan/update/with-tpp-pajak/${Data?.id}`, {
                 method: jenis === "baru" ? "POST" : "PUT",
                 body: payload as any
             }).then(_ => {
@@ -174,6 +227,11 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
         return numberString === '' ? null : Number(numberString);
     };
 
+    const JabatanBerakhir = useWatch({
+        control,
+        name: "statusJabatan",
+    })
+
     return (
         <ModalComponent isOpen={isOpen} onClose={handleClose}>
             <div className="w-max-[500px] mb-2 border-b border-blue-500 text-blue-500">
@@ -185,6 +243,107 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
             <form className="flex flex-col mx-5 py-8 gap-2" onSubmit={handleSubmit(onSubmit)}>
                 {jenis === "edit" &&
                     <h1 className="font-bold text-sky-500">Nama Pegawai : {Data?.namaPegawai || "tanpa nama"}</h1>
+                }
+                <div className="flex items-center gap-1 rounded-lg w-full">
+                    <Controller
+                        name="bulanMulai"
+                        control={control}
+                        rules={{ required: "wajib terisi" }}
+                        render={({ field }) => (
+                            <>
+                                <FloatingLabelSelect
+                                    {...field}
+                                    className="w-full"
+                                    id="bulanMulai"
+                                    label="Bulan Mulai"
+                                    options={OptionBulan}
+                                />
+                                {errors.bulanMulai &&
+                                    <p className="text-red-400 italic">{errors.bulanMulai.message}</p>
+                                }
+                            </>
+                        )}
+                    />
+                    <Controller
+                        name="tahunMulai"
+                        control={control}
+                        rules={{ required: "wajib terisi" }}
+                        render={({ field }) => (
+                            <>
+                                <FloatingLabelSelect
+                                    {...field}
+                                    className="w-full"
+                                    id="tahunMulai"
+                                    label="Tahun Mulai"
+                                    options={OptionTahun}
+                                />
+                                {errors.tahunMulai &&
+                                    <p className="text-red-400 italic">{errors.tahunMulai.message}</p>
+                                }
+                            </>
+                        )}
+                    />
+                </div>
+                <Controller
+                    name="statusJabatan"
+                    control={control}
+                    rules={{ required: "wajib terisi" }}
+                    render={({ field }) => (
+                        <>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="statusJabatan"
+                                label="Status Jabatan"
+                                options={StatusOption}
+                                isClearable
+                            />
+                            {errors.statusJabatan &&
+                                <p className="text-red-400 italic">{errors.statusJabatan.message}</p>
+                            }
+                        </>
+                    )}
+                />
+                {JabatanBerakhir?.value === "BERAKHIR" &&
+                    <div className="flex items-center gap-1 rounded-lg border border-red-500 py-1  px-2  w-full">
+                        <Controller
+                            name="bulanBerakhir"
+                            control={control}
+                            rules={{ required: "wajib terisi" }}
+                            render={({ field }) => (
+                                <>
+                                    <FloatingLabelSelect
+                                        {...field}
+                                        className="w-full"
+                                        id="bulanBerakhir"
+                                        label="Bulan Berakhir"
+                                        options={OptionBulan}
+                                    />
+                                    {errors.bulanBerakhir &&
+                                        <p className="text-red-400 italic">{errors.bulanBerakhir.message}</p>
+                                    }
+                                </>
+                            )}
+                        />
+                        <Controller
+                            name="tahunBerakhir"
+                            control={control}
+                            rules={{ required: "wajib terisi" }}
+                            render={({ field }) => (
+                                <>
+                                    <FloatingLabelSelect
+                                        {...field}
+                                        className="w-full"
+                                        id="tahunBerakhir"
+                                        label="Tahun Berakhir"
+                                        options={OptionTahun}
+                                    />
+                                    {errors.tahunBerakhir &&
+                                        <p className="text-red-400 italic">{errors.tahunBerakhir.message}</p>
+                                    }
+                                </>
+                            )}
+                        />
+                    </div>
                 }
                 <Controller
                     name="namaPegawai"
@@ -233,24 +392,6 @@ export const ModalJabatanPegawai: React.FC<Modal> = ({ isOpen, onClose, onSucces
                             />
                             {errors.namaJabatan &&
                                 <p className="text-red-400 italic">{errors.namaJabatan.message}</p>
-                            }
-                        </>
-                    )}
-                />
-                <Controller
-                    name="statusJabatan"
-                    control={control}
-                    rules={{ required: "wajib terisi" }}
-                    render={({ field }) => (
-                        <>
-                            <FloatingLabelSelect
-                                {...field}
-                                id="statusJabatan"
-                                label="Status Jabatan"
-                                options={StatusOption}
-                            />
-                            {errors.statusJabatan &&
-                                <p className="text-red-400 italic">{errors.statusJabatan.message}</p>
                             }
                         </>
                     )}
