@@ -193,13 +193,16 @@ export function useCetakTppAllTim(
 
         // Semua teks pakai centerX
         doc.text(`Plt. KEPALA BADAN PERENCANAAN,`, centerX, startY + 5);
-        doc.text("RISET DAN INOVASI ", centerX, startY + 9);
+        doc.text("PEMBANGUNAN, RISET DAN INOVASI ", centerX, startY + 9);
         doc.text("DAERAH ", centerX, startY + 13);
 
         // Spasi tanda tangan
-        doc.text(`${data[0].nama_pegawai ?? "Penanggung Jawab"}`, centerX, startY + 33);
-        doc.text(`NIP ${data[0].id_pegawai ?? "-"}`, centerX, startY + 37);
-        doc.text(`${data[0].pangkat ?? "N/A"} ${data[0].golongan ?? "N/A"}`, centerX, startY + 41);
+        // doc.text(`${data[0].nama_pegawai ?? "Penanggung Jawab"}`, centerX, startY + 33);
+        doc.text(`Dr. LUHUR APIDIANTO, S.STP, M.Si`, centerX, startY + 33);
+        // doc.text(`NIP ${data[0].id_pegawai ?? "-"}`, centerX, startY + 37);
+        doc.text(`NIP 197606041995111001`, centerX, startY + 37);
+        // doc.text(`${data[0].pangkat ?? "N/A"} ${data[0].golongan ?? "N/A"}`, centerX, startY + 41);
+        doc.text(`Pembina Tingkat I IV/b`, centerX, startY + 41);
 
         // Spasi tanda tangan
         // doc.text(`"Penanggung Jawab"}`, centerX, startY + 33);
