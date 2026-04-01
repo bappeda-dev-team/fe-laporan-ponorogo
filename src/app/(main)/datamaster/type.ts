@@ -11,12 +11,12 @@ export interface GetResponseFindallPegawai {
     eselon: string;
     pangkat: string;
     golongan: string;
-    no_rekening: number;
-    no_npwp: number;
     basicTpp: number;
+    npwp: string;
+    nomorRekening: string;
+    pajak: number;
     bpjs_1: number;
     bpjs_4: number;
-    pajak: number;
     tanggalMulai: string;
     tanggalAkhir: string | null;
     createdDate: string;
